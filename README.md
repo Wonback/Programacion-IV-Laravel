@@ -12,6 +12,7 @@
 ## 📌 Descripción del Proyecto
 El **Sistema de Gestión de Eventos y Entradas** es una aplicación web que permite a los usuarios visualizar y comprar entradas para eventos de manera sencilla y segura.  
 
+Para correr el proyecto ingresar a la carpeta "backend" y ejecutar "composer iniciar", y "npm run iniciar" para el front respectivamente.
 ---
 
 ## 🚀 Funcionalidades Principales
