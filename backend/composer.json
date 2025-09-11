@@ -33,6 +33,13 @@
         }
     },
     "scripts": {
+        "iniciar": [
+        "composer install",
+        "php -r \"if (!file_exists('.env')) copy('.env.example', '.env');\"",
+        "php artisan key:generate",
+        "php artisan migrate",
+        "php artisan serve --port=8000"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"

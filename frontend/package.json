@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.0.0",
   "scripts": {
+    "iniciar": "npm install && ng serve --port 4200",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
