@@ -1,0 +1,113 @@
+/* login.scss - centrado y fondo negro/gris oscuro */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #292828; // mismo color de fondo que :host
+  font-family: Arial, sans-serif;
+}
+
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;         
+  background-color: #292828; // fondo sólido
+  width: 100%;
+}
+
+$form-bg-light: #ffffff;     // textos claros
+$form-clr: #58bc82;          // verde principal
+$form-clr-alpha: #33333380;  // inputs semitransparentes
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 350px;
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: rgba(30, 30, 30, 0.85); // fondo del formulario
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+
+  .input-span {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    input[type='email'],
+    input[type='password'] {
+      border-radius: 0.5rem;
+      padding: 1rem 0.75rem;
+      width: 100%;
+      border: none;
+      background-color: $form-clr-alpha;
+      color: $form-bg-light;
+      outline: 2px solid transparent;
+      transition: outline 0.3s;
+
+      &:focus {
+        outline: 2px solid $form-clr;
+      }
+
+      &::placeholder {
+        color: lighten($form-bg-light, 50%);
+      }
+    }
+  }
+
+  .label {
+    align-self: flex-start;
+    color: $form-bg-light;
+    font-weight: 600;
+  }
+
+  .submit {
+    padding: 1rem 0.75rem;
+    width: 100%;
+    border-radius: 3rem;
+    background-color: $form-clr;
+    color: $form-bg-light;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: lighten($form-clr, 10%);
+      color: #000; // negro para contraste
+    }
+  }
+
+  .span {
+    color: $form-bg-light;
+    text-align: center;
+
+    a {
+      color: $form-clr;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+    .form-title {
+    color: $form-bg-light;
+    text-align: center; // 👈 centra el texto
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    }
+
+  .error-message {
+    color: #ff4d4d;
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,39 @@
+<form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <h2 class="form-title">Iniciar Sesion</h2>
+    <span class="input-span">
+    <label for="email" class="label">Email</label>
+    <input
+      id="email"
+      type="email"
+      formControlName="email"
+      placeholder="Ingresa tu email"
+    />
+  </span>
+
+  <span class="input-span">
+    <label for="password" class="label">Password</label>
+    <input
+      id="password"
+      type="password"
+      formControlName="password"
+      placeholder="Ingresa tu contraseña"
+    />
+  </span>
+
+  <span class="span">
+    <a href="#">Forgot password?</a>
+  </span>
+
+  <input
+    class="submit"
+    type="submit"
+    value="Log in"
+    [disabled]="loginForm.invalid"
+  />
+
+  <span class="span">
+    Don't have an account?  <a routerLink="/register">Registrate</a>
+  </span>
+
+  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+</form>
