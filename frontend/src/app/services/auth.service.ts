@@ -18,7 +18,7 @@ interface RegisterResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8000/api/auth'; // 👈 Ajustá si usás otra URL/base
+  private apiUrl = 'http://localhost:8000/api/auth'; 
 
   constructor(private http: HttpClient) {}
 
@@ -26,7 +26,7 @@ export class AuthService {
     return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, data);
   }
   
-  login(data: { email: string; password: string }): Observable<any> {  // 👈 este faltaba
+  login(data: { email: string; password: string }): Observable<any> {  
     return this.http.post(`${this.apiUrl}/login`, data);
   }
 }
