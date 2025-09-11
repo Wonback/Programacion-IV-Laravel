@@ -33,7 +33,7 @@ export class Login {
     this.authService.login(this.loginForm.value).subscribe({
       next: (res) => {
         localStorage.setItem('token', res.token);
-        this.router.navigate(['/']); 
+        this.router.navigate(['/home']); 
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Error en el login';
