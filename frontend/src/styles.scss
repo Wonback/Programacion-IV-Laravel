@@ -1,7 +1,10 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Chilanka&display=swap');
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #292828;  // fondo negro
+  background-color: #292828;  
+  font-family: "Chilanka", cursive;
+  font-weight: 400;
+  font-style: normal;
 }
