@@ -1,0 +1,26 @@
+<div class="container">
+  <h2>Crear Evento</h2>
+  <form class="form" [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+    <label>Título</label>
+    <input type="text" formControlName="title" />
+
+    <label>Descripción</label>
+    <textarea formControlName="description"></textarea>
+
+    <label>Fecha y Hora</label>
+    <input type="datetime-local" formControlName="starts_at" />
+
+    <label>Capacidad</label>
+    <input type="number" formControlName="capacity" />
+
+    <label>Precio</label>
+    <input type="number" formControlName="price" />
+
+    <label>Imagen</label>
+    <input type="file" (change)="onFileChange($event)" />
+
+    <button type="submit" [disabled]="eventForm.invalid">Crear</button>
+  </form>
+
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+</div>
