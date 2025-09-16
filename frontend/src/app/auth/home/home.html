@@ -1,1 +1,13 @@
-<p class="home">Bienvenido al home</p>
+<div class="container home">
+  <h2>Eventos</h2>
+  <div class="grid">
+    <div class="card" *ngFor="let event of events">
+      <img *ngIf="event.image_path" [src]="'/storage/' + event.image_path" [alt]="event.title" />
+      <h3>{{ event.title }}</h3>
+      <p>{{ event.description }}</p>
+      <small>📅 {{ event.starts_at | date:'short' }}</small>
+      <p>Capacidad: {{ event.capacity }}</p>
+      <p>💵 {{ event.price | currency }}</p>
+    </div>
+  </div>
+</div>
