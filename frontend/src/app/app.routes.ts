@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { RegisterComponent } from './auth/register/register.component';
 import { Login } from './auth/login/login';
-import { Home } from './auth/home/home';
+import { Home } from './pages/home/home';
 import { CreateEvent } from './pages/create-event/create-event';   
 
 export const routes: Routes = [

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { NavbarComponent } from '../navbar/navbar';
 
 interface Event {
   id: number;
@@ -15,7 +16,7 @@ interface Event {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NavbarComponent],
   templateUrl: './home.html',
   styleUrls: ['./home.scss']
 })

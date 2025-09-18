@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 interface RegisterResponse {
@@ -12,6 +12,15 @@ interface RegisterResponse {
     updated_at: string;
   };
   token: string;
+}
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  created_at: string;
+  updated_at: string;
 }
 
 @Injectable({
@@ -28,5 +37,13 @@ export class AuthService {
   
   login(data: { email: string; password: string }): Observable<any> {  
     return this.http.post(`${this.apiUrl}/login`, data);
+  }
+
+  getUser(): Observable<User> {
+    const token = localStorage.getItem('token') || '';
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.get<User>(`${this.apiUrl}/me`, { headers });
   }
 }
