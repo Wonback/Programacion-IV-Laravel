@@ -1,0 +1,54 @@
+<div *ngIf="event" class="max-w-2xl mx-auto bg-white shadow-lg rounded-2xl overflow-hidden p-6 mt-6">
+  <h2 class="text-3xl font-bold mb-6 text-center">Editar Evento</h2>
+
+  <form [formGroup]="eventForm" (ngSubmit)="submit()" class="flex flex-col gap-5">
+
+    <div class="flex flex-col">
+      <label class="font-semibold mb-1">Título</label>
+      <input type="text" formControlName="title" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <div class="flex flex-col">
+      <label class="font-semibold mb-1">Descripción</label>
+      <textarea formControlName="description" rows="4" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+    </div>
+
+    <div class="flex flex-col">
+      <label class="font-semibold mb-1">Fecha</label>
+      <input type="datetime-local" formControlName="starts_at" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col">
+        <label class="font-semibold mb-1">Capacidad</label>
+        <input type="number" formControlName="capacity" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+      <div class="flex flex-col">
+        <label class="font-semibold mb-1">Precio</label>
+        <input type="number" formControlName="price" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label class="font-semibold mb-1">Imagen</label>
+
+      <img *ngIf="event.image_path && !imageFile"
+           [src]="'/storage/' + event.image_path"
+           alt="Imagen actual"
+           class="w-full h-52 object-cover rounded-lg shadow-sm" />
+
+      <img *ngIf="imageFile"
+           [src]="imageFile | filePreview"
+           alt="Nueva imagen"
+           class="w-full h-52 object-cover rounded-lg shadow-sm" />
+
+      <input type="file" (change)="onFileChange($event)" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <div class="flex gap-4 mt-6 justify-end">
+      <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Guardar</button>
+      <button type="button" routerLink="/admin/event/{{event.id}}" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">Cancelar</button>
+    </div>
+
+  </form>
+</div>

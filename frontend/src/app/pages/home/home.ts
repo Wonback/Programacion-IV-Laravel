@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NavbarComponent } from '../navbar/navbar';
+import { RouterLink } from '@angular/router';
 
 interface Event {
   id: number;
@@ -16,7 +17,7 @@ interface Event {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NavbarComponent],
+  imports: [CommonModule, NavbarComponent, RouterLink],
   templateUrl: './home.html',
   styleUrls: ['./home.scss']
 })
@@ -26,18 +27,20 @@ export class Home implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-  const token = localStorage.getItem('token');
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
-
-    this.http.get<{ data: Event[] }>('http://localhost:8000/api/events', { headers }).subscribe({
-      next: (res) => {
-    this.events = res.data; 
-    },
-    error: (err) => {
-      console.error('Error al obtener eventos:', err);
-    }
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
     });
+
+    this.http
+      .get<{ data: Event[] }>('http://localhost:8000/api/events', { headers })
+      .subscribe({
+        next: (res) => {
+          this.events = res.data;
+        },
+        error: (err) => {
+          console.error('Error al obtener eventos:', err);
+        }
+      });
   }
 }
