@@ -26,6 +26,9 @@ class EventController extends Controller
             'price' => 'required|numeric|min:0',
             'image' => 'nullable|image|max:2048',
         ]);
+
+        $data['user_id'] = $r->user()->id;
+
         if ($r->hasFile('image')) {
             $data['image_path'] = $r->file('image')->store('events', 'public');
         }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 interface RegisterResponse {
   user: {
@@ -35,8 +36,13 @@ export class AuthService {
     return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, data);
   }
   
-  login(data: { email: string; password: string }): Observable<any> {  
-    return this.http.post(`${this.apiUrl}/login`, data);
+  login(data: { email: string; password: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, data).pipe(
+      tap((res: any) => {
+        localStorage.setItem('token', res.token);     // ya lo tenías
+        localStorage.setItem('userId', res.user.id);  // <-- guardamos el ID del usuario
+      })
+    );
   }
 
   getUser(): Observable<User> {
