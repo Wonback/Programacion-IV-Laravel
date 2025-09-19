@@ -22,7 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Solo admin
     Route::middleware('admin')->group(function () {
         Route::post('/events', [EventController::class, 'store']);
-        Route::post('/events/{event}', [EventController::class, 'update']); // o PUT/PATCH
+        Route::put('/events/{event}', [EventController::class, 'update']);
         Route::delete('/events/{event}', [EventController::class, 'destroy']);
 
         Route::get('/admin/users', UserController::class);

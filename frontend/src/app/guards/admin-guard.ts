@@ -17,7 +17,7 @@ export class AdminGuard implements CanActivate {
   canActivate(): Observable<boolean> {
     return this.authService.getUser().pipe(
       map(user => {
-        if (user.role === 'admin') {  // 👈 compara con el valor esperado del backend
+        if (user.role === 'admin') {  
           return true;
         } else {
           this.router.navigate(['/home']);
