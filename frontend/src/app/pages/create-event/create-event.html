@@ -1,39 +1,26 @@
-<div class="container">
-  <h2>Crear Evento</h2>
-  <form class="form" [formGroup]="eventForm" (ngSubmit)="onSubmit()">
-    
-    <div class="input-span">
-      <label for="title">Título</label>
-      <input id="title" type="text" formControlName="title" placeholder="Ingresa el título" />
-    </div>
+<form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 max-w-lg mx-auto">
+  <label>Título</label>
+  <input formControlName="title" class="border p-2 rounded" />
 
-    <div class="input-span">
-      <label for="description">Descripción</label>
-      <textarea id="description" formControlName="description" placeholder="Describe el evento"></textarea>
-    </div>
+  <label>Descripción</label>
+  <textarea formControlName="description" class="border p-2 rounded"></textarea>
 
-    <div class="input-span">
-      <label for="starts_at">Fecha y Hora</label>
-      <input id="starts_at" type="datetime-local" formControlName="starts_at" />
-    </div>
+  <label>Fecha y hora</label>
+  <input type="datetime-local" formControlName="starts_at" class="border p-2 rounded" />
 
-    <div class="input-span">
-      <label for="capacity">Capacidad</label>
-      <input id="capacity" type="number" formControlName="capacity" placeholder="Ej: 100" />
-    </div>
+  <label>Capacidad</label>
+  <input type="number" formControlName="capacity" class="border p-2 rounded" />
 
-    <div class="input-span">
-      <label for="price">Precio</label>
-      <input id="price" type="number" formControlName="price" placeholder="Ej: 500" />
-    </div>
+  <label>Precio</label>
+  <input type="number" formControlName="price" class="border p-2 rounded" />
 
-    <div class="input-span">
-      <label for="image">Imagen</label>
-      <input id="image" type="file" (change)="onFileChange($event)" />
-    </div>
+  <label>Imagen</label>
+  <input type="file" (change)="onFileChange($event)" />
+  <img *ngIf="imagePreview" [src]="imagePreview" class="w-64 h-64 object-cover mt-2 rounded" />
 
-    <button type="submit" [disabled]="eventForm.invalid">Crear</button>
-  </form>
+  <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+    Crear Evento
+  </button>
 
-  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
-</div>
+  <p *ngIf="errorMessage" class="text-red-600">{{ errorMessage }}</p>
+</form>

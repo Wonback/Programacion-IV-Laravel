@@ -16,6 +16,7 @@ class Event extends Model
         'capacity',
         'price',
         'image_path',
+        'user_id',
     ];
 
     protected $casts = [
@@ -27,4 +28,10 @@ class Event extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

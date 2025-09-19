@@ -7,13 +7,15 @@ import { CreateEvent } from './pages/create-event/create-event';
 import { AdminGuard } from './guards/admin-guard';
 import { EventDetail } from './pages/event-detail/event-detail';
 
+
 export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: Login },
   { path: '', redirectTo: '/register', pathMatch: 'full' },
   { path: 'home', component: Home},
   { path: 'create-event', component: CreateEvent, canActivate: [AdminGuard] },
-  { path: 'event/:id', component: EventDetail }
+  { path: 'event/:id', component: EventDetail },
+
 ];
 
 @NgModule({

@@ -11,46 +11,49 @@ class EventController extends Controller
     {
         return Event::latest()->paginate(10);
     }
+
     public function show(Event $event)
     {
-        return $event;
+        $event->load('user');
+        return response()->json($event);
     }
+
+
 
     public function store(Request $r)
     {
-        $data = $r->validate([
-            'title' => 'required|string|max:180',
-            'description' => 'nullable|string',
-            'starts_at' => 'required|date',
-            'capacity' => 'required|integer|min:0',
-            'price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|max:2048',
-        ]);
+    $data = $r->validate([
+        'title' => 'required|string|max:180',
+        'description' => 'nullable|string',
+        'starts_at' => 'required|date',
+        'capacity' => 'required|integer|min:0',
+        'price' => 'required|numeric|min:0',
+        'image_path' => 'nullable|string', // ahora es string con URL
+    ]);
 
-        $data['user_id'] = $r->user()->id;
+    $data['user_id'] = $r->user()->id;
 
-        if ($r->hasFile('image')) {
-            $data['image_path'] = $r->file('image')->store('events', 'public');
-        }
-        return response()->json(Event::create($data), 201);
+    $event = Event::create($data);
+
+    return response()->json($event, 201);
+}
+
+public function update(Request $r, Event $event)
+{
+    $data = $r->validate([
+        'title' => 'sometimes|string|max:180',
+        'description' => 'nullable|string',
+        'starts_at' => 'sometimes|date',
+        'capacity' => 'sometimes|integer|min:0',
+        'price' => 'sometimes|numeric|min:0',
+        'image_path' => 'nullable|string',
+    ]);
+
+    $event->update($data);
+
+    return response()->json($event);
     }
 
-    public function update(Request $r, Event $event)
-    {
-        $data = $r->validate([
-            'title' => 'sometimes|string|max:180',
-            'description' => 'nullable|string',
-            'starts_at' => 'sometimes|date',
-            'capacity' => 'sometimes|integer|min:0',
-            'price' => 'sometimes|numeric|min:0',
-            'image' => 'nullable|image|max:2048',
-        ]);
-        if ($r->hasFile('image')) {
-            $data['image_path'] = $r->file('image')->store('events', 'public');
-        }
-        $event->update($data);
-        return $event;
-    }
 
     public function destroy(Event $event)
     {

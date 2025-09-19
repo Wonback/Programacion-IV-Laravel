@@ -15,6 +15,7 @@ export class CreateEvent {
   eventForm: FormGroup;
   selectedFile: File | null = null;
   errorMessage: string | null = null;
+  uploading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -38,27 +39,44 @@ export class CreateEvent {
     }
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.eventForm.invalid) return;
-
-    const formData = new FormData();
-    Object.entries(this.eventForm.value).forEach(([key, value]) => {
-      if (value !== null) formData.append(key, value as any);
-    });
-    if (this.selectedFile) {
-      formData.append('image', this.selectedFile);
-    }
-
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
-    this.http.post('http://localhost:8000/api/events', formData, { headers }).subscribe({
-      next: () => this.router.navigate(['/home']),
-      error: (err) => {
-      this.errorMessage = err.error?.message || 'Error al crear evento';
+    this.uploading = true;
+  
+    try {
+      let imageUrl: string | null = null;
+  
+      if (this.selectedFile) {
+        // Subida a Cloudinary
+        const formData = new FormData();
+        formData.append('file', this.selectedFile);
+        formData.append('upload_preset', 'utnentradas'); // tu preset de Cloudinary
+  
+        const cloudRes: any = await this.http
+          .post('https://api.cloudinary.com/v1_1/da80v8vj1/image/upload', formData)
+          .toPromise();
+  
+        imageUrl = cloudRes.secure_url; // URL final de la imagen
       }
-    });
+  
+      // Preparar datos para el backend
+      const token = localStorage.getItem('token');
+      const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+  
+      const body = {
+        ...this.eventForm.value,
+        image_path: imageUrl
+      };
+  
+      await this.http.post('http://localhost:8000/api/events', body, { headers }).toPromise();
+      this.router.navigate(['/home']);
+  
+    } catch (err: any) {
+      console.error('Error al crear evento:', err);
+      this.errorMessage = err.error?.message || 'Error al crear evento';
+    } finally {
+      this.uploading = false;
+    }
   }
+  
 }

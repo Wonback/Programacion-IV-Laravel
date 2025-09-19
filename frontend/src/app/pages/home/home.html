@@ -9,10 +9,9 @@
       class="bg-white rounded-2xl shadow-md hover:shadow-xl transition cursor-pointer overflow-hidden transform hover:-translate-y-1 hover:scale-105 duration-300"
       [routerLink]="['/event', event.id]"
     >
-
       <img
         *ngIf="event.image_path"
-        [src]="'/storage/' + event.image_path"
+        [src]="event.image_path"
         [alt]="event.title"
         class="w-full h-52 object-cover"
       />
