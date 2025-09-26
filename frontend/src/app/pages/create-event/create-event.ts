@@ -16,6 +16,7 @@ export class CreateEvent {
   selectedFile: File | null = null;
   errorMessage: string | null = null;
   uploading: boolean = false;
+  imagePreview: string | null = null;  
 
   constructor(
     private fb: FormBuilder,
@@ -36,6 +37,12 @@ export class CreateEvent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+      };
+      reader.readAsDataURL(this.selectedFile);
     }
   }
 
@@ -78,5 +85,4 @@ export class CreateEvent {
       this.uploading = false;
     }
   }
-  
 }
