@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
-interface Event {
-  target: HTMLInputElement;
+interface EventModel {
   id: number;
   title: string;
   description?: string;
@@ -18,17 +18,18 @@ interface Event {
 @Component({
   selector: 'app-event-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './event-detail.html',
   styleUrls: ['./event-detail.scss']
 })
 export class EventDetail implements OnInit {
-  event?: Event;
+  event?: EventModel;
   currentUserId: number = 0;
   editMode = false;
   formData: any = {};
   selectedFile: File | null = null;
   uploading = false;
+  imagePreview: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,11 +48,11 @@ export class EventDetail implements OnInit {
 
     if (eventId && token) {
       const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-      this.http.get<Event>(`http://localhost:8000/api/events/${eventId}`, { headers })
+      this.http.get<EventModel>(`http://localhost:8000/api/events/${eventId}`, { headers })
         .subscribe({
           next: (res) => {
             this.event = res;
-            this.formData = { ...res }; // inicializamos el formulario
+            this.formData = { ...res };
           },
           error: (err) => console.error('Error al obtener evento:', err)
         });
@@ -67,13 +68,18 @@ export class EventDetail implements OnInit {
     if (this.event) this.formData = { ...this.event };
   }
 
+  
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
+
+      
+      const reader = new FileReader();
+      reader.onload = () => this.imagePreview = reader.result as string;
+      reader.readAsDataURL(this.selectedFile);
     }
   }
-  
 
   async saveEdit(form: any) {
     if (!this.event) return;
@@ -101,7 +107,7 @@ export class EventDetail implements OnInit {
 
       await this.http.put(`http://localhost:8000/api/events/${this.event.id}`, body, { headers }).toPromise();
 
-      this.event = { ...body }; // actualizar UI
+      this.event = { ...body };
       this.editMode = false;
     } catch (err) {
       console.error('Error al editar evento:', err);
