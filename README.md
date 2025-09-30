@@ -12,39 +12,92 @@
 ## 📌 Descripción del Proyecto
 El **Sistema de Gestión de Eventos y Entradas** es una aplicación web que permite a los usuarios visualizar y comprar entradas para eventos de manera sencilla y segura.  
 
-Para correr el proyecto ingresar a la carpeta "backend" y ejecutar "composer iniciar", y "npm run iniciar" para el front respectivamente.
----
+🧱 Arquitectura del repositorio
+Backend (/backend) – API REST construida con Laravel 12, autenticación con Sanctum y dependencias orientadas a PHP 8.2.
 
-## 🚀 Funcionalidades Principales
-1. **Gestión de Usuarios**
-   - Registro, login y logout.
-   - Roles diferenciados: **Administrador** y **Usuario**.
-   - El Administrador puede gestionar usuarios.
+Frontend (/frontend) – SPA en Angular 20 con Tailwind y tooling CLI habitual para desarrollo y pruebas.
 
-2. **Gestión de Eventos**
-   - CRUD de eventos (crear, leer, actualizar, eliminar).
-   - Datos de cada evento: título, descripción, fecha, hora, lugar y categoría.
-   - Posibilidad de subir imágenes representativas.
+🚀 Funcionalidades clave
+Backend
+Autenticación y cuentas: registro, login, perfil autenticado y logout con revocación de tokens; bloquea el acceso a usuarios desactivados.
 
-3. **Gestión de Entradas**
-   - CRUD de entradas asociadas a eventos.
-   - Control de disponibilidad y cantidad.
-   - Compra de entradas con confirmación de reserva.
+Eventos: listado paginado con filtros de categoría, fecha y búsqueda, CRUD exclusivo para administradores y asociación al organizador (usuario) con categoría opcional.
 
-4. **Dashboard y Estadísticas**
-   - Vista para administradores: número de eventos, entradas vendidas y estadísticas.
-   - Gráficos dinámicos de ventas por evento y ocupación de entradas.
+Gestión de usuarios: endpoints admin para alta, actualización y desactivación/ eliminación con protecciones contra cambios de rol propios; listado paginado ordenado por fecha.
 
-5. **Seguridad y Autenticación**
-   - Autenticación con **JWT**.
-   - Protección de rutas con **middlewares** y **guards**.
-   - Validación de formularios y manejo de errores.
+Pedidos/entradas: crea órdenes calculando el total según el precio del evento y validando la disponibilidad de cupos antes de confirmar la compra.
 
-6. **Interfaz de Usuario (Frontend Angular)**
-   - Página principal con lista de eventos.
-   - Detalle de evento con opción de compra.
-   - Formularios reactivos para gestión de eventos y entradas.
-   - Filtros y búsqueda de eventos.
+Autorización admin: alias admin registrado en bootstrap para exigir rol administrador en rutas sensibles.
+
+Modelado de dominio: modelos Eloquent con casts y relaciones para eventos, órdenes y usuarios (incluye flag is_active).
+
+Mapa de endpoints: rutas públicas y protegidas agrupadas bajo middleware Sanctum y reglas admin.
+
+Frontend
+Autenticación en la SPA: formularios reactivos para registro y login que consumen el API, almacenan token e ID del usuario en localStorage y redirigen según el flujo.
+
+Navegación y rol: navbar standalone obtiene el usuario autenticado para mostrar opciones según rol y controla navegación responsive.
+
+Listado y detalle: rutas protegidas para home y event/:id, lista eventos con token vigente y permite navegar al detalle del evento.
+
+Gestión de eventos (admins): guardia AdminGuard consulta el perfil y limita el acceso al formulario de creación; el alta incluye subida opcional de imagen a Cloudinary con preset configurable.
+
+Edición por organizador: vista de detalle permite editar o eliminar el evento solo al creador, reutilizando Cloudinary para actualizar imágenes.
+
+🛠️ Requisitos previos
+PHP 8.2+, Composer y una base de datos MySQL definida en .env (por defecto appeventos_db).
+
+Node.js + npm (Angular CLI) para levantar la SPA.
+
+⚙️ Puesta en marcha del backend
+cd backend
+
+Copia el entorno: cp .env.example .env y ajusta las variables de base de datos si es necesario.
+
+Instala dependencias y genera la clave de la app: composer install && php artisan key:generate.
+
+Ejecuta migraciones: php artisan migrate.
+
+Levanta el servidor: php artisan serve --port=8000.
+
+Todo el flujo anterior está automatizado en el script composer iniciar, que encadena instalación, configuración y arranque.
+
+Ejecutar pruebas backend
+php artisan test borra caché de configuración y lanza la suite completa.
+
+🧪 Cobertura de pruebas automatizadas
+AuthApiTest: valida registro, login/logout, validaciones y revocación de tokens en usuarios desactivados.
+
+EventApiTestCase: cubre listado con filtros, detalle con relaciones, CRUD admin y restricciones a usuarios estándar.
+
+OrderApiTest: garantiza que los cupos se calculan correctamente y se impiden compras que superan la capacidad.
+
+AdminUserIndexTest: comprueba el orden y los campos expuestos al listar usuarios como administrador.
+
+🖥️ Puesta en marcha del frontend
+cd frontend
+
+Instala dependencias: npm install.
+
+Levanta la app: npm run start (o npm run iniciar para instalar y servir en un paso).
+
+La SPA queda disponible en http://localhost:4200, consumiendo la API del backend en http://localhost:8000. Ajusta el endpoint si cambias el host o puerto.
+
+Configuración adicional
+La carga de imágenes usa Cloudinary con upload_preset y cloud_name embebidos en el código; modifica esos valores si utilizas otra cuenta/preset.
+
+| Método                    | Ruta                  | Descripción                              | Protección        |                      |
+| ------------------------- | --------------------- | ---------------------------------------- | ----------------- | -------------------- |
+| POST                      | `/api/auth/register`  | Registro de usuarios con token inmediato | Pública           |                      |
+| POST                      | `/api/auth/login`     | Inicio de sesión y emisión de token      | Pública           |                      |
+| GET                       | `/api/auth/me`        | Perfil autenticado                       | Sanctum           |                      |
+| POST                      | `/api/auth/logout`    | Revoca el token activo                   | Sanctum           |                      |
+| GET                       | `/api/events`         | Listado paginado con filtros             | Pública           |                      |
+| GET                       | `/api/events/{event}` | Detalle de evento con organizador        | Pública           |                      |
+| POST/PUT/DELETE           | `/api/events`         | CRUD de eventos                          | Sanctum + `admin` |                      |
+| GET/POST/PUT/PATCH/DELETE | `/api/admin/users`    | Gestión de usuarios                      | Sanctum + `admin` |                      |
+| POST                      | `/api/orders`         | Compra de entradas con control de cupos  | Sanctum           | :codex-file-citation |
+
 
 ---
 
