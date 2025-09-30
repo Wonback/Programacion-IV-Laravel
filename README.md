@@ -1,10 +1,10 @@
 # 🎟️ Sistema de Gestión de Eventos y Entradas
 
 ## 👥 Integrantes
-- Franco de Iriondo  
-- Mateo Zeballos  
-- Jonas Mendelovich  
-- Gaston Nuñez  
+- [@jonimende](https://github.com/jonimende) (Jonas Mendelovich)
+- [@wonback](https://github.com/Wonback) (Mateo Zaballo)
+- [@Knd0](https://github.com/Knd0) (Franco De Iriondo)
+- [@NunezGaston](https://github.com/NunezGaston) (Gaston Nuñez)
 
 ---
 
@@ -197,10 +197,4 @@ frontend/
 └── …
 ```
 
-## Autores
-
-- [@jonimende](https://github.com/jonimende)
-- [@wonback](https://github.com/Wonback)
-- [@Knd0](https://github.com/Knd0)
-- [@NunezGaston](https://github.com/NunezGaston)
 
