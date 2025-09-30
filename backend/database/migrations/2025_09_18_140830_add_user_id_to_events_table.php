@@ -10,18 +10,17 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::table('events', function (Blueprint $table) {
-        $table->foreignId('user_id')->after('id')->constrained('users')->cascadeOnDelete();
-    });
-}
+    {
+        Schema::table('events', function (Blueprint $table) {
+            $table->foreignId('user_id')->after('id')->constrained('users')->cascadeOnDelete();
+        });
+    }
 
-public function down(): void
-{
-    Schema::table('events', function (Blueprint $table) {
-        $table->dropForeign(['user_id']);
-        $table->dropColumn('user_id');
-    });
-}
-
+    public function down(): void
+    {
+        Schema::table('events', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+            $table->dropColumn('user_id');
+        });
+    }
 };
