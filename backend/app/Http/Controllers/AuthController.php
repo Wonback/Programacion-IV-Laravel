@@ -42,6 +42,10 @@ class AuthController extends Controller
             return response()->json(['message' => 'Credenciales inválidas'], 401);
         }
 
+        if (!$user->is_active) {
+            return response()->json(['message' => 'Usuario desactivado'], 403);
+        }
+
         // Opcional: revocar tokens previos
         $user->tokens()->delete();
 

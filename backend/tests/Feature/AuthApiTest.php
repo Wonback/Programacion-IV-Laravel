@@ -86,6 +86,26 @@ class AuthApiTest extends TestCase
             ]);
     }
 
+
+    public function test_inactive_user_cannot_login(): void
+    {
+        User::factory()->create([
+            'email' => 'inactive@example.com',
+            'password' => 'secret123',
+            'is_active' => false,
+        ]);
+
+        $response = $this->postJson('/api/auth/login', [
+            'email' => 'inactive@example.com',
+            'password' => 'secret123',
+        ]);
+
+        $response->assertStatus(403)
+            ->assertJson([
+                'message' => 'Usuario desactivado',
+            ]);
+    }
+
     public function test_authenticated_user_can_get_profile(): void
     {
         $user = User::factory()->create();
