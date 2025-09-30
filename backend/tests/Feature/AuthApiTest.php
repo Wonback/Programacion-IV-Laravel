@@ -17,6 +17,7 @@ class AuthApiTest extends TestCase
             'name' => 'Jane Doe',
             'email' => 'jane@example.com',
             'password' => 'password123',
+            'password_confirmation' => 'password123',
         ];
 
         $response = $this->postJson('/api/auth/register', $payload);
@@ -86,6 +87,35 @@ class AuthApiTest extends TestCase
             ]);
     }
 
+    public function test_register_rejects_non_string_password(): void
+    {
+        $payload = [
+            'name' => 'Jane Doe',
+            'email' => 'jane@example.com',
+            'password' => 12345678,
+            'password_confirmation' => 12345678,
+        ];
+
+        $response = $this->postJson('/api/auth/register', $payload);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors('password');
+    }
+
+    public function test_login_rejects_non_string_password(): void
+    {
+        User::factory()->create([
+            'email' => 'john@example.com',
+        ]);
+
+        $response = $this->postJson('/api/auth/login', [
+            'email' => 'john@example.com',
+            'password' => ['not', 'a', 'string'],
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors('password');
+    }
 
     public function test_inactive_user_cannot_login(): void
     {
@@ -137,5 +167,42 @@ class AuthApiTest extends TestCase
         $this->assertDatabaseMissing('personal_access_tokens', [
             'id' => $tokenId,
         ]);
+    }
+
+    public function test_user_token_is_revoked_after_deactivation(): void
+    {
+        $admin = User::factory()->create([
+            'role' => 'admin',
+        ]);
+
+        $user = User::factory()->create([
+            'is_active' => true,
+        ]);
+
+        $adminToken = $admin->createToken('api')->plainTextToken;
+
+        $response = $this->deleteJson(
+            "/api/admin/users/{$user->id}",
+            [],
+            ['Authorization' => 'Bearer ' . $adminToken]
+        );
+
+        $response->assertOk()
+            ->assertJsonPath('data.is_active', false);
+
+        // Verificar que el usuario está inactivo
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'is_active' => false,
+        ]);
+
+        // Verificar que el usuario inactivo no puede hacer login
+        $this->postJson('/api/auth/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertStatus(403)
+            ->assertJson([
+                'message' => 'Usuario desactivado',
+            ]);
     }
 }

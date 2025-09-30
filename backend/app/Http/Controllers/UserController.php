@@ -73,6 +73,7 @@ class UserController extends Controller
         }
 
         if ($request->boolean('force')) {
+            $user->tokens()->delete();
             $user->delete();
 
             return response()->json([
@@ -88,7 +89,7 @@ class UserController extends Controller
 
         $user->is_active = false;
         $user->save();
-
+        $user->tokens()->delete();
         return response()->json([
             'message' => 'Usuario desactivado correctamente.',
             'data' => $user->only(['id', 'name', 'email', 'role', 'is_active', 'created_at']),
