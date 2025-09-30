@@ -17,6 +17,7 @@ class Event extends Model
         'price',
         'image_path',
         'user_id',
+        'category',
     ];
 
     protected $casts = [
@@ -33,5 +34,4 @@ class Event extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 }

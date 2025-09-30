@@ -11,7 +11,7 @@ class EventController extends Controller
 
     public function index(Request $request)
     {
-        return Event::latest()->paginate(10);
+
         $filters = $request->validate([
             'category' => 'sometimes|string|max:255',
             'date' => 'sometimes|date',
@@ -37,7 +37,9 @@ class EventController extends Controller
             });
         }
 
-        return $query->paginate(10)->withQueryString();
+        return $query
+            ->paginate(10)
+            ->withQueryString();
     }
 
     public function show(Event $event)
@@ -55,7 +57,8 @@ class EventController extends Controller
             'starts_at' => 'required|date',
             'capacity' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
-            'image_path' => 'nullable|string', // ahora es string con URL
+            'image_path' => 'nullable|string',
+            'category' => 'nullable|string|max:255',
         ]);
 
         $data['user_id'] = $request->user()->id;
@@ -76,6 +79,7 @@ class EventController extends Controller
             'capacity' => 'sometimes|integer|min:0',
             'price' => 'sometimes|numeric|min:0',
             'image_path' => 'nullable|string',
+            'category' => 'sometimes|nullable|string|max:255',
         ]);
 
 

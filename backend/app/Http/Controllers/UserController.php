@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function index(): LengthAwarePaginator
     {
-        return User::select('id', 'name', 'email', 'role', 'created_at')->paginate(20);
+
         return User::select('id', 'name', 'email', 'role', 'is_active', 'created_at')
             ->orderByDesc('created_at')
             ->paginate(20);

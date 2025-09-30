@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-class EventApiTest extends TestCase
+abstract class EventApiTestCase extends TestCase
 {
     use RefreshDatabase;
 
@@ -33,6 +33,7 @@ class EventApiTest extends TestCase
                         'starts_at',
                         'capacity',
                         'price',
+                        'category',
                         'image_path',
                         'created_at',
                         'updated_at',
@@ -51,6 +52,7 @@ class EventApiTest extends TestCase
             ])
             ->assertJsonFragment([
                 'title' => $events->first()->title,
+                'category' => $events->first()->category,
             ]);
     }
 
@@ -67,6 +69,7 @@ class EventApiTest extends TestCase
             ->assertJsonFragment([
                 'id' => $event->id,
                 'title' => $event->title,
+                'category' => $event->category,
             ])
             ->assertJsonStructure([
                 'id',
@@ -78,6 +81,7 @@ class EventApiTest extends TestCase
                 'price',
                 'image_path',
                 'created_at',
+                'category',
                 'updated_at',
                 'user' => [
                     'id',
@@ -105,10 +109,12 @@ class EventApiTest extends TestCase
         $response->assertCreated()
             ->assertJsonFragment([
                 'title' => $payload['title'],
+                'category' => $payload['category'],
             ]);
 
         $this->assertDatabaseHas('events', [
             'title' => $payload['title'],
+            'category' => $payload['category'],
             'user_id' => $admin->id,
         ]);
     }
@@ -123,6 +129,7 @@ class EventApiTest extends TestCase
         $payload = [
             'title' => 'Updated Event Title',
             'capacity' => $event->capacity + 10,
+            'category' => 'Meetups',
         ];
 
         $response = $this->putJson('/api/events/' . $event->id, $payload);
@@ -131,12 +138,14 @@ class EventApiTest extends TestCase
             ->assertJsonFragment([
                 'title' => $payload['title'],
                 'capacity' => $payload['capacity'],
+                'category' => $payload['category'],
             ]);
 
         $this->assertDatabaseHas('events', [
             'id' => $event->id,
             'title' => $payload['title'],
             'capacity' => $payload['capacity'],
+            'category' => $payload['category'],
         ]);
     }
 
@@ -157,6 +166,30 @@ class EventApiTest extends TestCase
         $this->assertDatabaseMissing('events', [
             'id' => $event->id,
         ]);
+    }
+
+    public function test_category_filter_returns_matching_events_only(): void
+    {
+        $user = User::factory()->create();
+        Event::factory()->count(2)->for($user)->state([
+            'category' => 'Music',
+        ])->create();
+        Event::factory()->for($user)->state([
+            'category' => 'Sports',
+        ])->create();
+
+        Sanctum::actingAs($user);
+
+        $response = $this->getJson('/api/events?category=Music');
+
+        $response->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonFragment([
+                'category' => 'Music',
+            ])
+            ->assertJsonMissing([
+                'category' => 'Sports',
+            ]);
     }
 
     public function test_regular_user_cannot_access_admin_event_routes(): void
@@ -183,5 +216,34 @@ class EventApiTest extends TestCase
         $deleteResponse->assertForbidden();
 
         $this->assertDatabaseCount('events', 1);
+    }
+
+    public function test_events_index_can_filter_by_search_and_include_user_relation(): void
+    {
+        $requestingUser = User::factory()->create();
+        $matchingUser = User::factory()->create();
+        $matchingEvent = Event::factory()->for($matchingUser)->create([
+            'title' => 'Laravel Conference',
+            'description' => 'All about Laravel',
+        ]);
+        Event::factory()->create([
+            'title' => 'Symfony Meetup',
+            'description' => 'Different framework',
+        ]);
+
+        Sanctum::actingAs($requestingUser);
+
+        $response = $this->getJson('/api/events?search=Laravel');
+
+        $response->assertOk();
+
+        $data = $response->json('data');
+
+        $this->assertNotEmpty($data);
+        $this->assertCount(1, $data);
+        $this->assertSame($matchingEvent->id, $data[0]['id']);
+        $this->assertArrayHasKey('user', $data[0]);
+        $this->assertSame($matchingUser->id, $data[0]['user']['id']);
+        $this->assertStringContainsString('Laravel', $data[0]['title']);
     }
 }

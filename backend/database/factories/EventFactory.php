@@ -23,6 +23,7 @@ class EventFactory extends Factory
             'capacity' => $this->faker->numberBetween(10, 200),
             'price' => $this->faker->randomFloat(2, 10, 500),
             'image_path' => $this->faker->imageUrl(),
+            'category' => $this->faker->randomElement(['Music', 'Sports', 'Tech']),
         ];
     }
 }
