@@ -10,14 +10,14 @@ use App\Http\Controllers\OrderController;
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
+Route::get('/events', [EventController::class, 'index']);
+Route::get('/events/{event}', [EventController::class, 'show']);
+
 // Rutas protegidas con Sanctum
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
-    // Eventos (lectura pública opcional; aquí las dejo protegidas de ejemplo)
-    Route::get('/events', [EventController::class, 'index']);
-    Route::get('/events/{event}', [EventController::class, 'show']);
 
     // Solo admin
     Route::middleware('admin')->group(function () {
@@ -25,7 +25,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/events/{event}', [EventController::class, 'update']);
         Route::delete('/events/{event}', [EventController::class, 'destroy']);
 
-        Route::get('/admin/users', UserController::class);
+        Route::get('/admin/users', [UserController::class, 'index']);
+        Route::post('/admin/users', [UserController::class, 'store']);
+        Route::put('/admin/users/{user}', [UserController::class, 'update']);
+        Route::patch('/admin/users/{user}', [UserController::class, 'update']);
+        Route::delete('/admin/users/{user}', [UserController::class, 'destroy']);
     });
 
     // Compras
