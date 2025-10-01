@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('events', function (Blueprint $table) {
-            $table->foreignId('user_id')->after('id')->constrained('users')->cascadeOnDelete();
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('is_active')->default(true)->after('role');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::table('events', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('is_active');
         });
     }
 };

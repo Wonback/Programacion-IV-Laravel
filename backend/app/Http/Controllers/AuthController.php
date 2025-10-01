@@ -13,7 +13,7 @@ class AuthController extends Controller
         $data = $r->validate([
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         $user = User::create([
@@ -33,13 +33,17 @@ class AuthController extends Controller
     {
         $data = $r->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required|string'
         ]);
 
         $user = User::where('email', $data['email'])->first();
 
         if (!$user || !Hash::check($data['password'], $user->password)) {
             return response()->json(['message' => 'Credenciales inválidas'], 401);
+        }
+
+        if (!$user->is_active) {
+            return response()->json(['message' => 'Usuario desactivado'], 403);
         }
 
         // Opcional: revocar tokens previos
@@ -52,7 +56,13 @@ class AuthController extends Controller
 
     public function me(Request $r)
     {
-        return $r->user();
+        $user = $r->user();
+
+        if (!$user->is_active) {
+            return response()->json(['message' => 'Usuario desactivado'], 403);
+        }
+
+        return $user;
     }
 
     public function logout(Request $r)
