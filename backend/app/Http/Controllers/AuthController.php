@@ -5,32 +5,57 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
-/**
- * @OA\Tag(
- *     name="Auth",
- *     description="Operaciones de autenticación"
- * )
- */
 class AuthController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/auth/register",
-     *     tags={"Auth"},
-     *     summary="Registrar un usuario",
+     *     path="/api/auth/register",
+     *     summary="Registrar un nuevo usuario",
+     *     tags={"Autenticación"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"name","email","password","password_confirmation"},
-     *             @OA\Property(property="name", type="string"),
-     *             @OA\Property(property="email", type="string", format="email"),
-     *             @OA\Property(property="password", type="string", format="password"),
-     *             @OA\Property(property="password_confirmation", type="string", format="password")
+     *             required={"name","email","password","password_confirmation","role"},
+     *             @OA\Property(property="name", type="string", example="Juan Pérez"),
+     *             @OA\Property(property="email", type="string", format="email", example="juan@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="secret123"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="secret123"),
+     *             @OA\Property(
+     *                 property="role",
+     *                 type="string",
+     *                 description="Tipo de rol del usuario",
+     *                 enum={"admin","user","client"},
+     *                 example="user"
+     *             )
      *         )
      *     ),
-     *     @OA\Response(response=201, description="Usuario creado"),
-     *     @OA\Response(response=422, description="Error de validación")
+     *     @OA\Response(
+     *         response=201,
+     *         description="Usuario creado correctamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Usuario creado correctamente"),
+     *             @OA\Property(
+     *                 property="user",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Juan Pérez"),
+     *                 @OA\Property(property="email", type="string", example="juan@example.com"),
+     *                 @OA\Property(property="role", type="string", example="user")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Error de validación"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
      * )
      */
     public function register(Request $r)
@@ -39,35 +64,54 @@ class AuthController extends Controller
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|in:admin,user,client'
         ]);
 
         $user = User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
+            'name' => $data['name'],
+            'email' => $data['email'],
             'password' => bcrypt($data['password']),
-            'role'     => 'user'
+            'role' => $data['role']
         ]);
 
-        $token = $user->createToken('frontend')->plainTextToken;
-
-        return response()->json(['user' => $user, 'token' => $token], 201);
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario creado correctamente',
+            'user' => $user
+        ], 201);
     }
 
     /**
      * @OA\Post(
-     *     path="/auth/login",
-     *     tags={"Auth"},
-     *     summary="Login de usuario",
+     *     path="/api/auth/login",
+     *     summary="Iniciar sesión y obtener token",
+     *     tags={"Autenticación"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
      *             required={"email","password"},
-     *             @OA\Property(property="email", type="string", format="email"),
-     *             @OA\Property(property="password", type="string", format="password")
+     *             @OA\Property(property="email", type="string", format="email", example="juan@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="secret123")
      *         )
      *     ),
-     *     @OA\Response(response=200, description="Login exitoso"),
-     *     @OA\Response(response=401, description="Credenciales inválidas")
+     *     @OA\Response(
+     *         response=200,
+     *         description="Login exitoso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Login exitoso"),
+     *             @OA\Property(property="user", type="object"),
+     *             @OA\Property(property="token", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Credenciales inválidas",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Credenciales inválidas")
+     *         )
+     *     )
      * )
      */
     public function login(Request $r)
@@ -80,27 +124,45 @@ class AuthController extends Controller
         $user = User::where('email', $data['email'])->first();
 
         if (!$user || !Hash::check($data['password'], $user->password)) {
-            return response()->json(['message' => 'Credenciales inválidas'], 401);
-        }
-
-        if (!$user->is_active) {
-            return response()->json(['message' => 'Usuario desactivado'], 403);
+            return response()->json([
+                'success' => false,
+                'message' => 'Credenciales inválidas'
+            ], 401);
         }
 
         $user->tokens()->delete();
         $token = $user->createToken('frontend')->plainTextToken;
 
-        return response()->json(['user' => $user, 'token' => $token]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Login exitoso',
+            'user' => $user,
+            'token' => $token
+        ]);
     }
 
     /**
      * @OA\Get(
-     *     path="/auth/me",
-     *     tags={"Auth"},
+     *     path="/api/auth/me",
      *     summary="Obtener datos del usuario autenticado",
+     *     tags={"Autenticación"},
      *     security={{"sanctum":{}}},
-     *     @OA\Response(response=200, description="Datos del usuario"),
-     *     @OA\Response(response=403, description="Usuario desactivado")
+     *     @OA\Response(
+     *         response=200,
+     *         description="Datos del usuario",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="user", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Usuario desactivado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Usuario desactivado")
+     *         )
+     *     )
      * )
      */
     public function me(Request $r)
@@ -108,24 +170,41 @@ class AuthController extends Controller
         $user = $r->user();
 
         if (!$user->is_active) {
-            return response()->json(['message' => 'Usuario desactivado'], 403);
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuario desactivado'
+            ], 403);
         }
 
-        return $user;
+        return response()->json([
+            'success' => true,
+            'user' => $user
+        ]);
     }
 
     /**
      * @OA\Post(
-     *     path="/auth/logout",
-     *     tags={"Auth"},
+     *     path="/api/auth/logout",
      *     summary="Cerrar sesión del usuario",
+     *     tags={"Autenticación"},
      *     security={{"sanctum":{}}},
-     *     @OA\Response(response=200, description="Sesión cerrada")
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sesión cerrada",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Sesión cerrada")
+     *         )
+     *     )
      * )
      */
     public function logout(Request $r)
     {
         $r->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Sesión cerrada']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sesión cerrada'
+        ]);
     }
 }

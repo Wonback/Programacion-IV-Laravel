@@ -7,18 +7,18 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000",
+            "url": "http://127.0.0.1:8000",
             "description": "Servidor local"
         }
     ],
     "paths": {
-        "/auth/register": {
+        "/api/auth/register": {
             "post": {
                 "tags": [
-                    "Auth"
+                    "Autenticación"
                 ],
-                "summary": "Registrar un usuario",
-                "operationId": "ed42f392010c301892e640067141676e",
+                "summary": "Registrar un nuevo usuario",
+                "operationId": "d764dd091cc4494ae0baf360b03319f3",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -28,23 +28,38 @@
                                     "name",
                                     "email",
                                     "password",
-                                    "password_confirmation"
+                                    "password_confirmation",
+                                    "role"
                                 ],
                                 "properties": {
                                     "name": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "Juan Pérez"
                                     },
                                     "email": {
                                         "type": "string",
-                                        "format": "email"
+                                        "format": "email",
+                                        "example": "juan@example.com"
                                     },
                                     "password": {
                                         "type": "string",
-                                        "format": "password"
+                                        "format": "password",
+                                        "example": "secret123"
                                     },
                                     "password_confirmation": {
                                         "type": "string",
-                                        "format": "password"
+                                        "format": "password",
+                                        "example": "secret123"
+                                    },
+                                    "role": {
+                                        "description": "Tipo de rol del usuario",
+                                        "type": "string",
+                                        "enum": [
+                                            "admin",
+                                            "user",
+                                            "client"
+                                        ],
+                                        "example": "user"
                                     }
                                 },
                                 "type": "object"
@@ -54,21 +69,79 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Usuario creado"
+                        "description": "Usuario creado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario creado correctamente"
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Juan Pérez"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "juan@example.com"
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "example": "user"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Error de validación"
+                        "description": "Error de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error de validación"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
-        "/auth/login": {
+        "/api/auth/login": {
             "post": {
                 "tags": [
-                    "Auth"
+                    "Autenticación"
                 ],
-                "summary": "Login de usuario",
-                "operationId": "8cb7742ae98d0990acb2907c4e00bf24",
+                "summary": "Iniciar sesión y obtener token",
+                "operationId": "8dcb70df1020986038d098cc08d05dae",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -81,11 +154,13 @@
                                 "properties": {
                                     "email": {
                                         "type": "string",
-                                        "format": "email"
+                                        "format": "email",
+                                        "example": "juan@example.com"
                                     },
                                     "password": {
                                         "type": "string",
-                                        "format": "password"
+                                        "format": "password",
+                                        "example": "secret123"
                                     }
                                 },
                                 "type": "object"
@@ -95,27 +170,100 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Login exitoso"
+                        "description": "Login exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login exitoso"
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Credenciales inválidas"
+                        "description": "Credenciales inválidas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Credenciales inválidas"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
-        "/auth/me": {
+        "/api/auth/me": {
             "get": {
                 "tags": [
-                    "Auth"
+                    "Autenticación"
                 ],
                 "summary": "Obtener datos del usuario autenticado",
-                "operationId": "a9c495788506b114956e3f509e5d90a2",
+                "operationId": "b9abb1a7a74670a19c215c2c133f14d8",
                 "responses": {
                     "200": {
-                        "description": "Datos del usuario"
+                        "description": "Datos del usuario",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "403": {
-                        "description": "Usuario desactivado"
+                        "description": "Usuario desactivado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario desactivado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -125,16 +273,33 @@
                 ]
             }
         },
-        "/auth/logout": {
+        "/api/auth/logout": {
             "post": {
                 "tags": [
-                    "Auth"
+                    "Autenticación"
                 ],
                 "summary": "Cerrar sesión del usuario",
-                "operationId": "0d29c740dc06d77602af8095bf4654cc",
+                "operationId": "69281b12abb272c76871f19cb17ca563",
                 "responses": {
                     "200": {
-                        "description": "Sesión cerrada"
+                        "description": "Sesión cerrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Sesión cerrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -549,14 +714,16 @@
                 "type": "http",
                 "bearerFormat": "JWT",
                 "scheme": "bearer"
+            },
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "Usar token en formato: Bearer {token}"
             }
         }
     },
     "tags": [
-        {
-            "name": "Auth",
-            "description": "Operaciones de autenticación"
-        },
         {
             "name": "Events",
             "description": "Operaciones de eventos"
@@ -568,11 +735,15 @@
         {
             "name": "Users",
             "description": "Operaciones de administración de usuarios"
+        },
+        {
+            "name": "Autenticación",
+            "description": "Autenticación"
         }
     ],
     "security": [
         {
-            "sanctum": []
+            "bearerAuth": []
         }
     ]
 }
