@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-abstract class EventApiTestCase extends TestCase
+abstract class EventApi extends TestCase
 {
     use RefreshDatabase;
 

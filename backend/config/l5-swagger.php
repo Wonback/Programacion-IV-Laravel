@@ -55,15 +55,10 @@ return [
 
         'securityDefinitions' => [
             'securitySchemes' => [
-                'bearerAuth' => [
-                    'type' => 'http',
-                    'scheme' => 'bearer',
-                    'bearerFormat' => 'JWT',
-                    'description' => 'Usar token en formato: Bearer {token}'
-                ],
+                
             ],
             'security' => [
-                ['bearerAuth' => []],
+                
             ],
         ],
 

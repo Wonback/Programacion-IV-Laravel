@@ -16,7 +16,7 @@ class EventController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/events",
+     *     path="/api/events",
      *     tags={"Events"},
      *     summary="Listar eventos",
      *     @OA\Parameter(name="category", in="query", required=false, @OA\Schema(type="string")),
@@ -59,7 +59,7 @@ class EventController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/events/{event}",
+     *     path="/api/events/{event}",
      *     tags={"Events"},
      *     summary="Mostrar un evento",
      *     @OA\Parameter(name="event", in="path", required=true, @OA\Schema(type="integer")),
@@ -75,7 +75,7 @@ class EventController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/events",
+     *     path="/api/events",
      *     tags={"Events"},
      *     summary="Crear un evento",
      *     security={{"sanctum":{}}},
@@ -116,7 +116,7 @@ class EventController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/events/{event}",
+     *     path="/api/events/{event}",
      *     tags={"Events"},
      *     summary="Actualizar un evento",
      *     security={{"sanctum":{}}},
@@ -154,7 +154,7 @@ class EventController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/events/{event}",
+     *     path="/api/events/{event}",
      *     tags={"Events"},
      *     summary="Eliminar un evento",
      *     security={{"sanctum":{}}},

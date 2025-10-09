@@ -45,4 +45,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Compras
     Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders', [OrderController::class, 'index']);
 });

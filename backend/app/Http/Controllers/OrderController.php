@@ -16,7 +16,7 @@ class OrderController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/orders",
+     *     path="/api/orders",
      *     tags={"Orders"},
      *     summary="Crear una orden",
      *     security={{"sanctum":{}}},
@@ -56,4 +56,51 @@ class OrderController extends Controller
 
         return response()->json($order, 201);
     }
+    /**
+ * @OA\Get(
+ *     path="/api/orders",
+ *     tags={"Orders"},
+ *     summary="Listar órdenes del usuario autenticado",
+ *     description="Devuelve todas las órdenes realizadas por el usuario autenticado, junto con la información del evento asociado.",
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Listado de órdenes del usuario autenticado",
+ *         @OA\JsonContent(
+ *             type="array",
+ *             @OA\Items(
+ *                 @OA\Property(property="id", type="integer", example=1),
+ *                 @OA\Property(property="quantity", type="integer", example=2),
+ *                 @OA\Property(property="total", type="number", format="float", example=1500.00),
+ *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-10-08T18:00:00Z"),
+ *                 @OA\Property(property="event", type="object",
+ *                     @OA\Property(property="id", type="integer", example=3),
+ *                     @OA\Property(property="title", type="string", example="Concierto de Rock"),
+ *                     @OA\Property(property="starts_at", type="string", format="date-time", example="2025-11-01T21:00:00Z"),
+ *                     @OA\Property(property="price", type="number", example=750.00)
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(response=401, description="No autenticado")
+ * )
+ */
+public function index(Request $request)
+{
+    $user = $request->user();
+
+    // Si el usuario no está autenticado (por seguridad extra)
+    if (!$user) {
+        return response()->json(['message' => 'No autenticado'], 401);
+    }
+
+    // Buscamos las órdenes del usuario con la relación de evento
+    $orders = Order::where('user_id', $user->id)
+        ->with('event')
+        ->orderByDesc('created_at')
+        ->get();
+
+    return response()->json($orders, 200);
+}
+
 }

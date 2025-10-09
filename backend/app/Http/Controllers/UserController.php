@@ -15,7 +15,7 @@ class UserController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/admin/users",
+     *     path="/api/admin/users",
      *     tags={"Users"},
      *     summary="Listar usuarios",
      *     security={{"sanctum":{}}},
@@ -31,7 +31,7 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/admin/users",
+     *     path="/api/admin/users",
      *     tags={"Users"},
      *     summary="Crear usuario",
      *     security={{"sanctum":{}}},
@@ -70,7 +70,7 @@ class UserController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/admin/users/{user}",
+     *     path="/api/admin/users/{user}",
      *     tags={"Users"},
      *     summary="Actualizar usuario",
      *     security={{"sanctum":{}}},
@@ -112,7 +112,7 @@ class UserController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/admin/users/{user}",
+     *     path="/api/admin/users/{user}",
      *     tags={"Users"},
      *     summary="Eliminar/desactivar usuario",
      *     security={{"sanctum":{}}},

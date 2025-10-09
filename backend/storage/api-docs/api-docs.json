@@ -309,13 +309,13 @@
                 ]
             }
         },
-        "/events": {
+        "/api/events": {
             "get": {
                 "tags": [
                     "Events"
                 ],
                 "summary": "Listar eventos",
-                "operationId": "66c820e79ec6535e179375c186db9395",
+                "operationId": "7058ab7c89d20c752b6afd6d808f6526",
                 "parameters": [
                     {
                         "name": "category",
@@ -354,7 +354,7 @@
                     "Events"
                 ],
                 "summary": "Crear un evento",
-                "operationId": "698833baaa136da25b55969bda5104d7",
+                "operationId": "508895e03d7f10edac84357084c87b20",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -407,13 +407,13 @@
                 ]
             }
         },
-        "/events/{event}": {
+        "/api/events/{event}": {
             "get": {
                 "tags": [
                     "Events"
                 ],
                 "summary": "Mostrar un evento",
-                "operationId": "0c4645e9bd5ac6f20a9c712c14999dc9",
+                "operationId": "2ee679ce749d46144599318b5ba161f5",
                 "parameters": [
                     {
                         "name": "event",
@@ -435,7 +435,7 @@
                     "Events"
                 ],
                 "summary": "Actualizar un evento",
-                "operationId": "c9229b41cfc4829252c5a58d69bf5eb9",
+                "operationId": "2e0419cd91b178e7bcffa79a3ebc44d6",
                 "parameters": [
                     {
                         "name": "event",
@@ -495,7 +495,7 @@
                     "Events"
                 ],
                 "summary": "Eliminar un evento",
-                "operationId": "94ba1fd5bb33e7be5274f5ec8226d89f",
+                "operationId": "f4dd0f8b74a8e726ca902d975bb372d8",
                 "parameters": [
                     {
                         "name": "event",
@@ -518,13 +518,86 @@
                 ]
             }
         },
-        "/orders": {
+        "/api/orders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Listar órdenes del usuario autenticado",
+                "description": "Devuelve todas las órdenes realizadas por el usuario autenticado, junto con la información del evento asociado.",
+                "operationId": "2cd7e03021e72d9d799c12dfe179c865",
+                "responses": {
+                    "200": {
+                        "description": "Listado de órdenes del usuario autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "quantity": {
+                                                "type": "integer",
+                                                "example": 2
+                                            },
+                                            "total": {
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 1500
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2025-10-08T18:00:00Z"
+                                            },
+                                            "event": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 3
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Concierto de Rock"
+                                                    },
+                                                    "starts_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2025-11-01T21:00:00Z"
+                                                    },
+                                                    "price": {
+                                                        "type": "number",
+                                                        "example": 750
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
             "post": {
                 "tags": [
                     "Orders"
                 ],
                 "summary": "Crear una orden",
-                "operationId": "445bab4f7dc9ea6fcd54f286c0209478",
+                "operationId": "d690d6834318e9b064df441e854de8b9",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -562,13 +635,13 @@
                 ]
             }
         },
-        "/admin/users": {
+        "/api/admin/users": {
             "get": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Listar usuarios",
-                "operationId": "b2c82e7c972ca4c5910b82f3c498d9ea",
+                "operationId": "7682ed8f32d8216884bcdfd052b767cd",
                 "responses": {
                     "200": {
                         "description": "Listado de usuarios"
@@ -585,7 +658,7 @@
                     "Users"
                 ],
                 "summary": "Crear usuario",
-                "operationId": "024e0e9203cd7c7d366cd21586f7daea",
+                "operationId": "7997db9d5b23ee5fdb22678f1e412f3c",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -627,13 +700,13 @@
                 ]
             }
         },
-        "/admin/users/{user}": {
+        "/api/admin/users/{user}": {
             "put": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Actualizar usuario",
-                "operationId": "4479d108ceb127a4e74fd4eedb5431f3",
+                "operationId": "3f38db1d3f22e0cf33bd98000e2e934f",
                 "parameters": [
                     {
                         "name": "user",
@@ -684,7 +757,7 @@
                     "Users"
                 ],
                 "summary": "Eliminar/desactivar usuario",
-                "operationId": "762a6bd24d896af047c64db2b1182c31",
+                "operationId": "5088d8e641b01ec0f6753fa0495357ee",
                 "parameters": [
                     {
                         "name": "user",
@@ -714,12 +787,6 @@
                 "type": "http",
                 "bearerFormat": "JWT",
                 "scheme": "bearer"
-            },
-            "bearerAuth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT",
-                "description": "Usar token en formato: Bearer {token}"
             }
         }
     },
@@ -739,11 +806,6 @@
         {
             "name": "Autenticación",
             "description": "Autenticación"
-        }
-    ],
-    "security": [
-        {
-            "bearerAuth": []
         }
     ]
 }
