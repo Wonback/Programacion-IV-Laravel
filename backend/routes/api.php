@@ -6,25 +6,36 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 
+/*
+|--------------------------------------------------------------------------
+| Rutas API
+|--------------------------------------------------------------------------
+| Todas las rutas de tu API deben empezar con /api/
+| Laravel agrega automáticamente el prefijo /api a todo lo que está acá.
+*/
+
 // Auth públicas
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
+// Eventos públicos
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events/{event}', [EventController::class, 'show']);
 
 // Rutas protegidas con Sanctum
 Route::middleware('auth:sanctum')->group(function () {
+    // Usuario autenticado
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
-
-    // Solo admin
+    // Solo administradores
     Route::middleware('admin')->group(function () {
+        // Eventos
         Route::post('/events', [EventController::class, 'store']);
         Route::put('/events/{event}', [EventController::class, 'update']);
         Route::delete('/events/{event}', [EventController::class, 'destroy']);
 
+        // Usuarios
         Route::get('/admin/users', [UserController::class, 'index']);
         Route::post('/admin/users', [UserController::class, 'store']);
         Route::put('/admin/users/{user}', [UserController::class, 'update']);
@@ -34,4 +45,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Compras
     Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders', [OrderController::class, 'index']);
 });

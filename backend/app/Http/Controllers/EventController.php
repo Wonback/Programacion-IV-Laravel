@@ -6,12 +6,27 @@ use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * @OA\Tag(
+ *     name="Events",
+ *     description="Operaciones de eventos"
+ * )
+ */
 class EventController extends Controller
 {
-
+    /**
+     * @OA\Get(
+     *     path="/api/events",
+     *     tags={"Events"},
+     *     summary="Listar eventos",
+     *     @OA\Parameter(name="category", in="query", required=false, @OA\Schema(type="string")),
+     *     @OA\Parameter(name="date", in="query", required=false, @OA\Schema(type="string", format="date")),
+     *     @OA\Parameter(name="search", in="query", required=false, @OA\Schema(type="string")),
+     *     @OA\Response(response=200, description="Listado de eventos")
+     * )
+     */
     public function index(Request $request)
     {
-
         $filters = $request->validate([
             'category' => 'sometimes|string|max:255',
             'date' => 'sometimes|date',
@@ -42,6 +57,15 @@ class EventController extends Controller
             ->withQueryString();
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/events/{event}",
+     *     tags={"Events"},
+     *     summary="Mostrar un evento",
+     *     @OA\Parameter(name="event", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Detalle del evento")
+     * )
+     */
     public function show(Event $event)
     {
         $event->load('user');
@@ -49,6 +73,28 @@ class EventController extends Controller
         return response()->json($event);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/events",
+     *     tags={"Events"},
+     *     summary="Crear un evento",
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"title","starts_at","capacity","price"},
+     *             @OA\Property(property="title", type="string"),
+     *             @OA\Property(property="description", type="string"),
+     *             @OA\Property(property="starts_at", type="string", format="date-time"),
+     *             @OA\Property(property="capacity", type="integer"),
+     *             @OA\Property(property="price", type="number"),
+     *             @OA\Property(property="category", type="string"),
+     *             @OA\Property(property="image_path", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Evento creado")
+     * )
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -63,13 +109,32 @@ class EventController extends Controller
 
         $data['user_id'] = $request->user()->id;
 
-
         $event = Event::create($data);
-
 
         return response()->json($event, 201);
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/events/{event}",
+     *     tags={"Events"},
+     *     summary="Actualizar un evento",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="event", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(property="title", type="string"),
+     *             @OA\Property(property="description", type="string"),
+     *             @OA\Property(property="starts_at", type="string", format="date-time"),
+     *             @OA\Property(property="capacity", type="integer"),
+     *             @OA\Property(property="price", type="number"),
+     *             @OA\Property(property="category", type="string"),
+     *             @OA\Property(property="image_path", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Evento actualizado")
+     * )
+     */
     public function update(Request $request, Event $event)
     {
         $data = $request->validate([
@@ -82,13 +147,21 @@ class EventController extends Controller
             'category' => 'sometimes|nullable|string|max:255',
         ]);
 
-
         $event->update($data);
-
 
         return response()->json($event);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/events/{event}",
+     *     tags={"Events"},
+     *     summary="Eliminar un evento",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="event", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Evento eliminado")
+     * )
+     */
     public function destroy(Event $event)
     {
         $event->delete();
