@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { NavbarComponent } from '../navbar/navbar';
 
 interface EventModel {
   id: number;
@@ -18,7 +19,7 @@ interface EventModel {
 @Component({
   selector: 'app-event-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, NavbarComponent, RouterModule, FormsModule],
   templateUrl: './event-detail.html',
   styleUrls: ['./event-detail.scss']
 })
