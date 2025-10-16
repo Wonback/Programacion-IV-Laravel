@@ -1,26 +1,27 @@
-<form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 max-w-lg mx-auto">
+<app-navbar></app-navbar>
+
+<form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="event-form">
+  
   <label>Título</label>
-  <input formControlName="title" class="border p-2 rounded" />
+  <input formControlName="title" />
 
   <label>Descripción</label>
-  <textarea formControlName="description" class="border p-2 rounded"></textarea>
+  <textarea formControlName="description" rows="3"></textarea>
 
   <label>Fecha y hora</label>
-  <input type="datetime-local" formControlName="starts_at" class="border p-2 rounded" />
+  <input type="datetime-local" formControlName="starts_at" />
 
   <label>Capacidad</label>
-  <input type="number" formControlName="capacity" class="border p-2 rounded" />
+  <input type="number" formControlName="capacity" />
 
   <label>Precio</label>
-  <input type="number" formControlName="price" class="border p-2 rounded" />
+  <input type="number" formControlName="price" />
 
   <label>Imagen</label>
   <input type="file" (change)="onFileChange($event)" />
-  <img *ngIf="imagePreview" [src]="imagePreview" class="w-64 h-64 object-cover mt-2 rounded" />
+  <img *ngIf="imagePreview" [src]="imagePreview" class="preview-image" />
 
-  <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-    Crear Evento
-  </button>
+  <button type="submit">Crear Evento</button>
 
-  <p *ngIf="errorMessage" class="text-red-600">{{ errorMessage }}</p>
+  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
 </form>
