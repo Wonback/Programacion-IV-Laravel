@@ -1,0 +1,38 @@
+<div class="checkout-container text-gray-200 bg-[#0a0a0a] min-h-screen flex flex-col items-center justify-center px-6">
+  <div class="bg-[#111] p-8 rounded-2xl shadow-lg max-w-md w-full text-center">
+    <h2 class="text-2xl font-bold mb-4 text-cyan-400">Compra tu entrada</h2>
+    <p class="text-gray-400 mb-2">Evento: <span class="text-white font-semibold">{{ eventTitle }}</span></p>
+    <p class="text-gray-400 mb-6">Precio: <span class="text-green-400 font-bold">${{ price }}</span></p>
+
+    <button
+      *ngIf="!paymentDone"
+      (click)="processPayment()"
+      class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:opacity-90 text-white py-3 rounded-full font-semibold transition-all"
+    >
+      💳 Pagar ahora
+    </button>
+
+    <div *ngIf="paymentDone" class="mt-6">
+      <h3 class="text-xl text-green-400 font-semibold mb-3">✅ ¡Pago realizado con éxito!</h3>
+      <p class="text-sm text-gray-400 mb-4">Mostrá este código en la entrada del evento:</p>
+
+      <div class="flex justify-center mb-4">
+        <qrcode [qrdata]="qrData!" [width]="180" [errorCorrectionLevel]="'M'"></qrcode>
+      </div>
+
+      <button
+        (click)="downloadQR()"
+        class="w-full bg-yellow-600 hover:bg-yellow-700 text-black py-2 rounded-full font-semibold mb-3 transition"
+      >
+        📥 Descargar QR
+      </button>
+
+      <button
+        (click)="goHome()"
+        class="w-full bg-gray-700 hover:bg-gray-800 py-2 rounded-full text-white transition"
+      >
+        🏠 Volver al inicio
+      </button>
+    </div>
+  </div>
+</div>

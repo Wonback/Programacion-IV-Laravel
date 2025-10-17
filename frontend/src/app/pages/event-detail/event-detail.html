@@ -1,4 +1,3 @@
-<app-navbar></app-navbar>
 <div *ngIf="event" class="max-w-3xl mx-auto bg-gray-900 text-gray-100 shadow-2xl rounded-2xl p-8 mt-10">
 
   <!-- Imagen -->
@@ -113,6 +112,13 @@
   </form>
 
   <div class="mt-8 text-center">
+    <button
+  (click)="router.navigate(['/checkout', event.id])"
+  class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-700 rounded-xl transition text-white font-medium shadow-md"
+>
+  🎟️ Comprar Entrada
+</button>
+
     <button
       routerLink="/home"
       class="px-6 py-2.5 bg-blue-700 hover:bg-blue-800 rounded-full text-white font-semibold shadow-md transition"

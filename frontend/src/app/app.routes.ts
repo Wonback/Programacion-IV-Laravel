@@ -6,6 +6,8 @@ import { Home } from './pages/home/home';
 import { CreateEvent } from './pages/create-event/create-event';   
 import { AdminGuard } from './guards/admin-guard';
 import { EventDetail } from './pages/event-detail/event-detail';
+import { Checkout } from './pages/checkout/checkout';
+import { TicketScanner } from './pages/ticket-scanner/ticket-scanner';
 
 
 export const routes: Routes = [
@@ -15,6 +17,8 @@ export const routes: Routes = [
   { path: 'home', component: Home},
   { path: 'create-event', component: CreateEvent, canActivate: [AdminGuard] },
   { path: 'event/:id', component: EventDetail },
+{   path: 'checkout/:id',component: Checkout },
+{ path: 'validate-tickets', component: TicketScanner }
 
 ];
 

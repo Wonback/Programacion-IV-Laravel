@@ -8,6 +8,7 @@
     <div class="hidden md:flex space-x-6">
       <a (click)="navigate('/home')" class="nav-link">Inicio</a>
       <a *ngIf="userRole === 'admin'" (click)="navigate('/create-event')" class="nav-link">Crear Evento</a>
+      <a *ngIf="userRole === 'admin'" (click)="navigate('/validate-tickets')" class="nav-link">Validar Tickets</a> <!-- Nuevo link -->
     </div>
   </div>
 
@@ -55,6 +56,7 @@
 <div *ngIf="isMenuOpen" class="md:hidden bg-[#0f0f0f] border-t border-white/10 px-6 py-4 space-y-3">
   <a (click)="navigate('/home')" class="block nav-link">Inicio</a>
   <a *ngIf="userRole === 'admin'" (click)="navigate('/create-event')" class="block nav-link">Crear Evento</a>
+  <a *ngIf="userRole === 'admin'" (click)="navigate('/validate-tickets')" class="block nav-link">Validar Tickets</a> <!-- Nuevo link -->
   <a *ngIf="isLoggedIn" (click)="logout()" class="block nav-link text-red-400">Cerrar sesión</a>
   <a *ngIf="!isLoggedIn" (click)="navigate('/login')" class="block nav-link text-cyan-400">Iniciar sesión</a>
 </div>
