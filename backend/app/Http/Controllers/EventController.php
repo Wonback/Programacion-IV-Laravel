@@ -167,4 +167,26 @@ class EventController extends Controller
         $event->delete();
         return response()->json(['deleted' => true]);
     }
+    // EventController.php
+
+/**
+ * @OA\Get(
+ *     path="/api/my-events",
+ *     tags={"Events"},
+ *     summary="Listar eventos del usuario autenticado",
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(response=200, description="Listado de eventos propios")
+ * )
+ */
+public function myEvents(Request $request)
+{
+    $user = $request->user();
+
+    $events = Event::where('user_id', $user->id)
+        ->latest('starts_at')
+        ->get(['id', 'title']); // solo id y title para desplegar en select
+
+    return response()->json($events);
+}
+
 }

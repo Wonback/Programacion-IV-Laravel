@@ -14,6 +14,7 @@ class Order extends Model
         'event_id',
         'quantity',
         'total',
+        'qr_code', // 👈 NUEVO
     ];
 
     public function user()
@@ -25,4 +26,5 @@ class Order extends Model
     {
         return $this->belongsTo(Event::class);
     }
+    
 }

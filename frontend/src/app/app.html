@@ -1,7 +1,7 @@
-<app-navbar></app-navbar>
+<app-navbar *ngIf="showLayout"></app-navbar>
 
 <main class="min-h-[calc(100vh-160px)] bg-[#0f0f0f]">
   <router-outlet></router-outlet>
 </main>
 
-<app-footer></app-footer>
+<app-footer *ngIf="showLayout"></app-footer>

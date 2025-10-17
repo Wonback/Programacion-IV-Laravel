@@ -36,7 +36,9 @@ export class Home implements OnInit {
       .get<{ data: Event[] }>('http://localhost:8000/api/events', { headers })
       .subscribe({
         next: (res) => {
-          this.events = res.data;
+          this.events = res.data.sort((a, b) => {
+            return new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime();
+          });
         },
         error: (err) => {
           console.error('Error al obtener eventos:', err);
