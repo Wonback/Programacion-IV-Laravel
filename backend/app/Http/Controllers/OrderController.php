@@ -213,4 +213,48 @@ public function ordersByEvent(Request $request, $eventId)
     return response()->json($orders, 200);
 }
 
+/**
+ * @OA\Get(
+ *     path="/api/my-tickets",
+ *     tags={"Orders"},
+ *     summary="Listar eventos comprados por el usuario autenticado",
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(response=200, description="Listado de eventos comprados")
+ * )
+ */
+public function myTickets(Request $request)
+{
+    $user = $request->user();
+    if (!$user) {
+        return response()->json(['message' => 'No autenticado'], 401);
+    }
+
+    // Traemos todas las órdenes del usuario con la info completa del evento
+    $orders = Order::where('user_id', $user->id)
+        ->with('event') // carga toda la info del evento
+        ->orderByDesc('created_at')
+        ->get();
+
+    // Mapear cada orden para el frontend
+    $tickets = $orders->map(function($order) {
+        return [
+            'order_id' => $order->id,
+            'quantity' => $order->quantity,
+            'qr_code' => $order->qr_code,
+            'event' => [
+                'id' => $order->event->id,
+                'title' => $order->event->title,
+                'description' => $order->event->description,
+                'starts_at' => $order->event->starts_at,
+                'price' => $order->event->price,
+                'image_path' => $order->event->image_path,
+            ]
+        ];
+    });
+
+    return response()->json($tickets, 200);
+}
+
+
+
 }

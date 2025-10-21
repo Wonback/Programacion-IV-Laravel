@@ -1,0 +1,62 @@
+<app-navbar></app-navbar>
+
+<div class="min-h-screen bg-gray-900 px-6 py-8">
+  <h2 class="text-4xl font-extrabold text-cyan-400 mb-10 text-center drop-shadow-lg">
+    🎟️ Mis Entradas
+  </h2>
+
+  <ng-container *ngIf="!loading; else loadingTpl">
+    <div *ngIf="myEvents.length > 0; else noEventsTpl" class="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      
+      <div *ngFor="let e of myEvents" class="bg-gradient-to-br from-gray-800 via-gray-900 to-gray-800 rounded-3xl shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+        
+        <!-- Imagen del evento -->
+        <div class="overflow-hidden rounded-t-3xl">
+          <img 
+            [src]="e.image_path || 'https://via.placeholder.com/400x200?text=Evento'" 
+            alt="Imagen del evento" 
+            class="w-full h-52 object-cover hover:brightness-90 transition"
+          >
+        </div>
+
+        <!-- Info del evento -->
+        <div class="p-6 bg-gray-900">
+          <h3 class="text-2xl font-bold text-white mb-2">{{ e.title }}</h3>
+          <p class="text-gray-400 mb-3 line-clamp-3">{{ e.description || 'Sin descripción disponible' }}</p>
+
+          <div class="flex flex-col gap-1 mb-4 text-gray-300">
+            <p><strong>📅 Fecha:</strong> {{ e.starts_at | date:'medium' }}</p>
+            <p><strong>💵 Precio:</strong> ${{ e.price }}</p>
+            <p><strong>🎫 Cantidad:</strong> {{ e.quantity || 1 }}</p>
+            <p><strong>🎫 Cantidad: </strong>{{ e.orderId }}</p>
+          </div>
+
+          <!-- QR -->
+          <div *ngIf="e.qrData" class="flex flex-col items-center bg-gray-800 p-4 rounded-xl shadow-inner">
+            <qrcode [qrdata]="e.qrData" [width]="160" [errorCorrectionLevel]="'M'"></qrcode>
+            <p class="text-sm text-gray-400 mt-2 break-all text-center">{{ e.orderId }}</p>
+            <button 
+              (click)="downloadQR(e.orderId)" 
+              class="mt-4 w-full bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-full font-semibold transition"
+            >
+              📥 Descargar QR
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </ng-container>
+
+  <!-- Loading -->
+  <ng-template #loadingTpl>
+    <div class="text-gray-400 text-center mt-20 text-lg animate-pulse">Cargando tus entradas...</div>
+  </ng-template>
+
+  <!-- No hay eventos -->
+  <ng-template #noEventsTpl>
+    <div class="text-gray-400 text-center mt-20 text-lg">
+      No compraste ningún evento todavía 😢
+    </div>
+  </ng-template>
+</div>
