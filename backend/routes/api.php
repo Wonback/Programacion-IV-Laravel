@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\VerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,8 @@ use App\Http\Controllers\OrderController;
 // Auth públicas
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
+
+Route::get('/verify-email/{token}', [VerificationController::class, 'verifyEmail']);
 
 // Eventos públicos
 Route::get('/events', [EventController::class, 'index']);
@@ -31,6 +34,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Usuario autenticado
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/send-verification', [VerificationController::class, 'sendVerificationEmail']);
+    Route::post('/request-admin', [VerificationController::class, 'requestAdmin']);
 
     // Solo administradores
     Route::middleware('admin')->group(function () {

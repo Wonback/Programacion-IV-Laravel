@@ -5,11 +5,23 @@
       xXGagaEventsXx
     </a>
 
-    <div class="hidden md:flex space-x-6">
+    <div class="hidden md:flex space-x-6 items-center">
       <a (click)="navigate('/home')" class="nav-link">Inicio</a>
       <a *ngIf="userRole === 'admin'" (click)="navigate('/create-event')" class="nav-link">Crear Evento</a>
-      <a *ngIf="userRole === 'admin'" (click)="navigate('/validate-tickets')" class="nav-link">Validar Tickets</a> <!-- Nuevo link -->
-      <a *ngIf="isLoggedIn" (click)="navigate('/my-tickets')" class="nav-link"> Mis Tickets </a>      
+      <a *ngIf="userRole === 'admin'" (click)="navigate('/validate-tickets')" class="nav-link">Validar Tickets</a>
+      <a *ngIf="isLoggedIn" (click)="navigate('/my-tickets')" class="nav-link">Mis Tickets</a>
+
+      <!-- Botón Verificar Cuenta -->
+      <button
+        *ngIf="isLoggedIn && !isVerified"
+        (click)="requestVerification()"
+        [disabled]="loadingVerify"
+        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {{ loadingVerify ? 'Enviando...' : 'Verificar cuenta' }}
+      </button>
+
+      <p *ngIf="verifyMessage" class="text-sm text-yellow-300 ml-2">{{ verifyMessage }}</p>
     </div>
   </div>
 
@@ -57,8 +69,20 @@
 <div *ngIf="isMenuOpen" class="md:hidden bg-[#0f0f0f] border-t border-white/10 px-6 py-4 space-y-3">
   <a (click)="navigate('/home')" class="block nav-link">Inicio</a>
   <a *ngIf="userRole === 'admin'" (click)="navigate('/create-event')" class="block nav-link">Crear Evento</a>
-  <a *ngIf="userRole === 'admin'" (click)="navigate('/validate-tickets')" class="block nav-link">Validar Tickets</a> 
-  <a *ngIf="isLoggedIn" (click)="navigate('/my-tickets')" class="block nav-link text-cyan-400"> Mis Tickets </a>  
+  <a *ngIf="userRole === 'admin'" (click)="navigate('/validate-tickets')" class="block nav-link">Validar Tickets</a>
+  <a *ngIf="isLoggedIn" (click)="navigate('/my-tickets')" class="block nav-link text-cyan-400">Mis Tickets</a>
+
+  <!-- Botón Verificar Cuenta Mobile -->
+  <button
+    *ngIf="isLoggedIn && !isVerified"
+    (click)="requestVerification()"
+    [disabled]="loadingVerify"
+    class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    {{ loadingVerify ? 'Enviando...' : 'Verificar cuenta' }}
+  </button>
+  <p *ngIf="verifyMessage" class="text-sm text-yellow-300 mt-1">{{ verifyMessage }}</p>
+
   <a *ngIf="isLoggedIn" (click)="logout()" class="block nav-link text-red-400">Cerrar sesión</a>
   <a *ngIf="!isLoggedIn" (click)="navigate('/login')" class="block nav-link text-cyan-400">Iniciar sesión</a>
 </div>
