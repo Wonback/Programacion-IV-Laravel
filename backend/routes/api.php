@@ -55,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/orders', [OrderController::class, 'store']);
     Route::get('/orders', [OrderController::class, 'index']);
     Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/orders/my-tickets', [OrderController::class, 'myTickets']);
         Route::post('/orders/validate', [OrderController::class, 'validateQR']);
     });
     

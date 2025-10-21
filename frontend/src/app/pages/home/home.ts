@@ -36,9 +36,12 @@ export class Home implements OnInit {
       .get<{ data: Event[] }>('http://localhost:8000/api/events', { headers })
       .subscribe({
         next: (res) => {
-          this.events = res.data.sort((a, b) => {
-            return new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime();
-          });
+          const now = new Date();
+
+          //Filtramos solo los eventos futuros
+          this.events = res.data
+            .filter(event => new Date(event.starts_at) > now)
+            .sort((a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime());
         },
         error: (err) => {
           console.error('Error al obtener eventos:', err);

@@ -8,7 +8,7 @@ import { AdminGuard } from './guards/admin-guard';
 import { EventDetail } from './pages/event-detail/event-detail';
 import { Checkout } from './pages/checkout/checkout';
 import { TicketScanner } from './pages/ticket-scanner/ticket-scanner';
-
+import { MyTickets } from './pages/my-tickets/my-tickets';
 
 export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
@@ -17,8 +17,10 @@ export const routes: Routes = [
   { path: 'home', component: Home},
   { path: 'create-event', component: CreateEvent, canActivate: [AdminGuard] },
   { path: 'event/:id', component: EventDetail },
-{   path: 'checkout/:id',component: Checkout },
-{ path: 'validate-tickets', component: TicketScanner }
+  { path: 'checkout/:id',component: Checkout },
+  { path: 'validate-tickets', component: TicketScanner },
+  { path: 'my-tickets', component: MyTickets },
+
 
 ];
 

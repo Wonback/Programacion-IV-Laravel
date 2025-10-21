@@ -14,7 +14,7 @@ class Order extends Model
         'event_id',
         'quantity',
         'total',
-        'qr_code', // 👈 NUEVO
+        'qr_code', 
     ];
 
     public function user()
