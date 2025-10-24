@@ -71,7 +71,7 @@ class AuthController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
-            'role' => $data['role']
+            'role' => 'user',
         ]);
 
         return response()->json([

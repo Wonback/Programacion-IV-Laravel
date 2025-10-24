@@ -3,17 +3,23 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService, LoginResponse } from '../../services/auth.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faEnvelope, faLock, faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './login.html',
   styleUrls: ['./login.scss']
 })
 export class Login {
   loginForm: FormGroup;
   errorMessage: string | null = null;
+  faEnvelope = faEnvelope;
+  faLock = faLock;
+  faCheckCircle = faCheckCircle;
+  faExclamationCircle = faExclamationCircle;
 
   constructor(
     private fb: FormBuilder,
@@ -41,6 +47,5 @@ export class Login {
         console.error(err);
       }
     });
-    
   }
 }

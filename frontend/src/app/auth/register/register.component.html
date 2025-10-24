@@ -1,35 +1,90 @@
-<div class="register-container">
-  <h2>Crear cuenta</h2>
+<div class="register-container bg-[#0a0a0a] min-h-screen flex flex-col items-center justify-center px-6 py-10">
+  <div class="bg-gradient-to-br from-[#002e35] via-[#00373f] to-[#002e35] p-8 rounded-3xl shadow-2xl max-w-md w-full text-center transform transition-all duration-300 hover:scale-105">
 
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <div class="input-span">
-      <label for="name">Nombre</label>
-      <input id="name" type="text" formControlName="name" placeholder="Tu nombre"/>
-      <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="error">
-        El nombre es obligatorio y debe tener al menos 3 caracteres
+    <h2 class="text-3xl font-extrabold text-cyan-400 mb-6 drop-shadow-lg flex items-center justify-center gap-2">
+      <fa-icon [icon]="faUserShield" class="text-green-400"></fa-icon>
+      Crear Cuenta
+    </h2>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+
+      <!-- Nombre -->
+      <div class="input-group flex flex-col text-left">
+        <label for="name" class="text-gray-400 mb-1">Nombre</label>
+        <div class="flex items-center gap-2">
+          <fa-icon [icon]="faUserShield" class="text-gray-400"></fa-icon>
+          <input id="name" type="text" formControlName="name" placeholder="Tu nombre"
+                 class="w-full p-2 rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"/>
+        </div>
+        <p *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
+           class="text-red-500 text-sm flex items-center gap-2">
+           <fa-icon [icon]="faTimesCircle"></fa-icon>
+           El nombre es obligatorio y debe tener al menos 3 caracteres
+        </p>
       </div>
-    </div>
 
-    <div class="input-span">
-      <label for="email">Email</label>
-      <input id="email" type="email" formControlName="email" placeholder="correo@ejemplo.com"/>
-      <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="error">
-        Debe ser un email válido
+      <!-- Email -->
+      <div class="input-group flex flex-col text-left">
+        <label for="email" class="text-gray-400 mb-1">Email</label>
+        <div class="flex items-center gap-2">
+          <fa-icon [icon]="faEnvelope" class="text-gray-400"></fa-icon>
+          <input id="email" type="email" formControlName="email" placeholder="correo@ejemplo.com"
+                 class="w-full p-2 rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"/>
+        </div>
+        <p *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+           class="text-red-500 text-sm flex items-center gap-2">
+           <fa-icon [icon]="faTimesCircle"></fa-icon>
+           Debe ser un email válido
+        </p>
       </div>
-    </div>
 
-    <div class="input-span">
-      <label for="password">Contraseña</label>
-      <input id="password" type="password" formControlName="password" placeholder="********"/>
-      <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="error">
-        La contraseña debe tener al menos 8 caracteres
+      <!-- Password -->
+      <div class="input-group flex flex-col text-left">
+        <label for="password" class="text-gray-400 mb-1">Contraseña</label>
+        <div class="flex items-center gap-2">
+          <fa-icon [icon]="faLock" class="text-gray-400"></fa-icon>
+          <input id="password" type="password" formControlName="password" placeholder="********"
+                 class="w-full p-2 rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"/>
+        </div>
+        <p *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+           class="text-red-500 text-sm flex items-center gap-2">
+           <fa-icon [icon]="faTimesCircle"></fa-icon>
+           La contraseña debe tener al menos 8 caracteres
+        </p>
       </div>
-    </div>
 
-    <button type="submit">Registrarse</button>
-  </form>
+      <!-- Password confirmation -->
+      <div class="input-group flex flex-col text-left">
+        <label for="password_confirmation" class="text-gray-400 mb-1">Confirmar contraseña</label>
+        <div class="flex items-center gap-2">
+          <fa-icon [icon]="faLock" class="text-gray-400"></fa-icon>
+          <input id="password_confirmation" type="password" formControlName="password_confirmation" placeholder="********"
+                 class="w-full p-2 rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"/>
+        </div>
+        <p *ngIf="registerForm.errors?.['mismatch'] && registerForm.get('password_confirmation')?.touched"
+           class="text-red-500 text-sm flex items-center gap-2">
+           <fa-icon [icon]="faTimesCircle"></fa-icon>
+           Las contraseñas no coinciden
+        </p>
+      </div>
 
-  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+      <button type="submit" [disabled]="registerForm.invalid"
+              class="mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-full font-semibold text-white flex justify-center items-center gap-2 hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+        <fa-icon [icon]="faCheckCircle"></fa-icon>
+        Registrarse
+      </button>
 
-  <p class="span">¿Ya tenés cuenta? <a routerLink="/login">Inicia sesión</a></p>
+    </form>
+
+    <p class="text-gray-400 text-sm text-center mt-2">
+      ¿Ya tenés cuenta?
+      <a routerLink="/login" class="text-cyan-400 hover:underline">Inicia sesión</a>
+    </p>
+
+    <p *ngIf="errorMessage" class="text-red-500 text-sm flex items-center justify-center gap-2 mt-2">
+      <fa-icon [icon]="faExclamationCircle"></fa-icon>
+      {{ errorMessage }}
+    </p>
+
+  </div>
 </div>

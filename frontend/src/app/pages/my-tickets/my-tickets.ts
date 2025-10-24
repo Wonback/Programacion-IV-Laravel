@@ -3,17 +3,23 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { NavbarComponent } from '../navbar/navbar';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faCalendar, faDollarSign, faTicketAlt, faDownload } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-my-tickets',
   standalone: true,
-  imports: [CommonModule, QRCodeComponent, NavbarComponent],
+  imports: [CommonModule, QRCodeComponent, NavbarComponent, FontAwesomeModule],
   templateUrl: './my-tickets.html',
   styleUrls: ['./my-tickets.scss'],
 })
 export class MyTickets implements OnInit {
   myEvents: any[] = [];
   loading = true;
+  faCalendar = faCalendar;
+  faDollarSign = faDollarSign;
+  faTicketAlt = faTicketAlt;
+  faDownload = faDownload;
 
   constructor(private http: HttpClient) {}
 
@@ -26,9 +32,8 @@ export class MyTickets implements OnInit {
 
     this.http.get<any[]>('http://localhost:8000/api/orders/my-tickets', { headers }).subscribe({
       next: (res) => {
-        // Generamos el QR igual que en Checkout
         this.myEvents = res.map(order => ({
-          ...order.event,        // info del evento
+          ...order.event,
           quantity: order.quantity,
           qrData: `ORDEN-${order.id}-EVENT-${order.event.id}-USER-${userId}`,
           orderId: order.order_id

@@ -1,0 +1,53 @@
+<div class="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#111] to-[#0f0f0f] px-6">
+  <div class="bg-gradient-to-br from-[#002e35] via-[#00373f] to-[#002e35] shadow-2xl rounded-3xl p-8 w-full max-w-md text-center transform transition-all duration-300 hover:scale-105">
+
+    <h2 class="text-3xl font-extrabold text-cyan-400 mb-6 drop-shadow-lg flex items-center justify-center gap-2">
+      <fa-icon [icon]="faCheckCircle" class="text-green-400"></fa-icon>
+      Verificar cuenta
+    </h2>
+
+    <!-- Si NO es admin -->
+    <div *ngIf="!isAdmin; else adminMessage">
+      <input
+        [(ngModel)]="email"
+        type="email"
+        placeholder="Ingresa tu correo"
+        class="w-full px-4 py-3 mb-4 rounded-xl bg-gray-900 border border-[#00d58b] focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 text-gray-200 transition"
+      />
+
+      <button
+        (click)="sendMail()"
+        [disabled]="loading"
+        class="w-full mb-3 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 disabled:opacity-50"
+      >
+        <fa-icon [icon]="faEnvelope"></fa-icon>
+        <span>{{ loading ? 'Enviando...' : 'Enviar correo' }}</span>
+      </button>
+
+      <button
+        *ngIf="isVerified && !isAdmin"
+        (click)="requestAdmin()"
+        [disabled]="loading"
+        class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 disabled:opacity-50"
+      >
+        <fa-icon [icon]="faUserShield"></fa-icon>
+        <span>{{ loading ? 'Procesando...' : 'Solicitar rol de administrador' }}</span>
+      </button>
+    </div>
+
+    <!-- Mensaje si ya es admin -->
+    <ng-template #adminMessage>
+      <p class="text-green-400 font-semibold text-lg flex items-center justify-center gap-2">
+        <fa-icon [icon]="faUserShield"></fa-icon>
+        Tu cuenta ya tiene privilegios de administrador
+      </p>
+    </ng-template>
+
+    <!-- Feedback de estado -->
+    <p class="mt-6 text-gray-300 text-sm flex items-center justify-center gap-2" *ngIf="message">
+      <fa-icon *ngIf="!isVerified" [icon]="faTimesCircle" class="text-red-500"></fa-icon>
+      {{ message }}
+    </p>
+
+  </div>
+</div>

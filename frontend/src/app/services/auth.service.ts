@@ -8,6 +8,7 @@ export interface User {
   name: string;
   email: string;
   role: string;
+  is_verified: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -31,7 +32,14 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   register(data: { name: string; email: string; password: string }): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, data);
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, data).pipe(
+      tap((res: RegisterResponse) => {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('userId', res.user.id.toString());
+        localStorage.setItem('role', res.user.role);
+        localStorage.setItem('email', res.user.email); 
+      })
+    );
   }
 
   login(data: { email: string; password: string }): Observable<LoginResponse> {
@@ -40,6 +48,7 @@ export class AuthService {
         localStorage.setItem('token', res.token);
         localStorage.setItem('userId', res.user.id.toString());
         localStorage.setItem('role', res.user.role);
+        localStorage.setItem('email', res.user.email); 
       })
     );
   }
@@ -48,6 +57,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     localStorage.removeItem('role');
+    localStorage.removeItem('email'); 
   }
 
   getUser(): Observable<User> {

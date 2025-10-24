@@ -3,6 +3,10 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { NavbarComponent } from '../navbar/navbar';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faTicket, faArrowLeft, faPen, faTrash, faCalendar, faUsers, faMoneyBill} from '@fortawesome/free-solid-svg-icons';
 
 interface EventModel {
   id: number;
@@ -18,7 +22,7 @@ interface EventModel {
 @Component({
   selector: 'app-event-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, NavbarComponent, FormsModule, FaIconComponent, FontAwesomeModule],
   templateUrl: './event-detail.html',
   styleUrls: ['./event-detail.scss']
 })
@@ -30,6 +34,13 @@ export class EventDetail implements OnInit {
   selectedFile: File | null = null;
   uploading = false;
   imagePreview: string | null = null;
+  faTicket = faTicket;
+  faArrowLeft = faArrowLeft;
+  faPen = faPen;
+  faTrash = faTrash;
+  faCalendar = faCalendar;
+  faUsers = faUsers;
+  faMoney = faMoneyBill;
 
   constructor(
     public router: Router,
