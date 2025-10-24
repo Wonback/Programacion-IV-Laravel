@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { QRCodeComponent } from 'angularx-qrcode';
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faCheckCircle, faEnvelope, faUserShield, faTimesCircle, faTicketAlt, faCalendar, faDollarSign, faDownload, faCreditCard, faHome } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, QRCodeComponent],
+  imports: [CommonModule, FormsModule, RouterModule, QRCodeComponent, FontAwesomeModule],
   templateUrl: './checkout.html',
   styleUrls: ['./checkout.scss']
 })
@@ -18,7 +19,16 @@ export class Checkout implements OnInit {
   price: number = 0;
   paymentDone = false;
   qrData: string | null = null;
-
+  faCheckCircle = faCheckCircle;
+  faEnvelope = faEnvelope;
+  faUserShield = faUserShield;
+  faTimesCircle = faTimesCircle;
+  faTicketAlt = faTicketAlt;
+  faCalendar = faCalendar;
+  faDollarSign = faDollarSign;
+  faDownload = faDownload;
+  faCreditCard = faCreditCard;
+  faHome = faHome;
   constructor(public router: Router, private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {

@@ -21,7 +21,7 @@ export const routes: Routes = [
   { path: 'checkout/:id',component: Checkout },
   { path: 'validate-tickets', component: TicketScanner },
   { path: 'my-tickets', component: MyTickets },
-  { path: 'verify', component: VerifyAccount },
+  { path: 'verify-account', component: VerifyAccount },
   { path: 'verified', component: Verified }
 ];
 

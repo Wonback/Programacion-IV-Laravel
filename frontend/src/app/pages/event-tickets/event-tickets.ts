@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 interface Ticket {
   id: number;
@@ -15,7 +17,7 @@ interface Ticket {
 @Component({
   selector: 'app-event-tickets',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './event-tickets.html',
   styleUrls: ['./event-tickets.scss']
 })
@@ -23,6 +25,9 @@ export class EventTickets implements OnInit {
   tickets: Ticket[] = [];
   eventId: number = 0;
   message: string = '';
+
+  faCheck = faCheck;
+  faTimes = faTimes;
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {}
 

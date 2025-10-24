@@ -13,8 +13,8 @@
 
       <!-- Botón Verificar Cuenta -->
       <button
-        *ngIf="isLoggedIn && !isVerified"
-        (click)="requestVerification()"
+        *ngIf="isLoggedIn && !isVerified && userRole != 'admin'"
+        (click)="requestVerification()" 
         [disabled]="loadingVerify"
         class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed"
       >

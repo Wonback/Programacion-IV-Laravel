@@ -1,39 +1,63 @@
-<form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <h2 class="form-title">Iniciar Sesion</h2>
-    <span class="input-span">
-    <label for="email" class="label">Email</label>
-    <input
-      id="email"
-      type="email"
-      formControlName="email"
-      placeholder="Ingresa tu email"
-    />
-  </span>
+<div class="login-container bg-[#0a0a0a] min-h-screen flex flex-col items-center justify-center px-6 py-10">
+  <div class="bg-gradient-to-br from-[#002e35] via-[#00373f] to-[#002e35] p-8 rounded-3xl shadow-2xl max-w-md w-full text-center transform transition-all duration-300">
+    
+    <h2 class="text-3xl font-extrabold text-cyan-400 mb-6 drop-shadow-lg flex items-center justify-center gap-2">
+      <fa-icon [icon]="faCheckCircle" class="text-green-400"></fa-icon>
+      Iniciar Sesión
+    </h2>
 
-  <span class="input-span">
-    <label for="password" class="label">Password</label>
-    <input
-      id="password"
-      type="password"
-      formControlName="password"
-      placeholder="Ingresa tu contraseña"
-    />
-  </span>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
 
-  <span class="span">
-    <a href="#">Forgot password?</a>
-  </span>
+      <div class="input-group flex flex-col text-left">
+        <label for="email" class="text-gray-400 mb-1">Email</label>
+        <div class="flex items-center gap-2">
+          <fa-icon [icon]="faEnvelope" class="text-gray-400"></fa-icon>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="Ingresa tu email"
+            class="w-full p-2 rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          />
+        </div>
+      </div>
 
-  <input
-    class="submit"
-    type="submit"
-    value="Log in"
-    [disabled]="loginForm.invalid"
-  />
+      <div class="input-group flex flex-col text-left">
+        <label for="password" class="text-gray-400 mb-1">Password</label>
+        <div class="flex items-center gap-2">
+          <fa-icon [icon]="faLock" class="text-gray-400"></fa-icon>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            placeholder="Ingresa tu contraseña"
+            class="w-full p-2 rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          />
+        </div>
+      </div>
 
-  <span class="span">
-    Don't have an account?  <a routerLink="/register">Registrate</a>
-  </span>
+      <a href="#" class="text-sm text-cyan-400 hover:underline self-end">¿Olvidaste tu contraseña?</a>
 
-  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
-</form>
+      <button
+        type="submit"
+        [disabled]="loginForm.invalid"
+        class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 py-3 rounded-full font-semibold text-white flex justify-center items-center gap-2 hover:opacity-90 transition-all"
+      >
+        <fa-icon [icon]="faCheckCircle"></fa-icon>
+        Ingresar
+      </button>
+
+      <p class="text-gray-400 text-sm text-center">
+        ¿No tienes cuenta?
+        <a routerLink="/register" class="text-cyan-400 hover:underline">Registrate</a>
+      </p>
+
+      <p *ngIf="errorMessage" class="text-red-500 text-sm flex items-center justify-center gap-2">
+        <fa-icon [icon]="faExclamationCircle"></fa-icon>
+        {{ errorMessage }}
+      </p>
+      
+    </form>
+
+  </div>
+</div>

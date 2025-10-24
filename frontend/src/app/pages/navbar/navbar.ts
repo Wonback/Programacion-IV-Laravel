@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService, User } from '../../services/auth.service';
 import { VerificationService } from '../../services/verification.service';
 import { HttpErrorResponse } from '@angular/common/http';
-
+import { SearchService } from '../../services/search.service';
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -26,6 +26,7 @@ export class NavbarComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private verificationService: VerificationService,
+    private searchService: SearchService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -67,9 +68,13 @@ export class NavbarComponent implements OnInit {
   }
 
   onSearch(): void {
-    if (this.searchTerm.trim()) {
-      this.router.navigate(['/search'], { queryParams: { q: this.searchTerm } });
+    const term = this.searchTerm.trim();
+    this.searchService.updateSearchTerm(term); 
+
+    if (this.router.url !== '/home') {
+      this.router.navigate(['/home']);
     }
+
     this.isMenuOpen = false;
   }
 

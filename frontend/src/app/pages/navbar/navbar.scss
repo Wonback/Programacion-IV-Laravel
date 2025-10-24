@@ -1,24 +1,122 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+.navbar {
+  background-color: rgba(0, 46, 53, 0.7); // color1 con transparencia
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
 
-@layer utilities {
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-3px);
+.nav-link {
+  color: #92fa87; // color4
+  font-weight: 500;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  position: relative;
+
+  &:hover {
+    color: #00d58b; // color3
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: #00d58b;
+    transition: width 0.3s ease;
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
+}
+
+input[type='text'] {
+  background-color: #002e35;
+  color: #ffffa3; // color5 para contraste
+  border: 1px solid #005d99;
+  border-radius: 9999px;
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
+  transition: all 0.3s ease;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #00d58b;
+    box-shadow: 0 0 0 2px rgba(0, 213, 139, 0.3);
+  }
+}
+
+button {
+  font-weight: 600;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+}
+
+button.bg-main {
+  background: linear-gradient(90deg, #00d58b, #005d99);
+  color: #002e35;
+
+  &:hover {
+    opacity: 0.9;
+    transform: scale(1.03);
+  }
+}
+
+button.bg-secondary {
+  background-color: #005d99;
+  color: #ffffa3;
+
+  &:hover {
+    background-color: #00d58b;
+    color: #002e35;
+  }
+}
+
+button.bg-danger {
+  background-color: #d44;
+  color: white;
+
+  &:hover {
+    background-color: #b33;
+  }
+}
+
+.verify-btn {
+  background: linear-gradient(90deg, #ffffa3, #92fa87);
+  color: #002e35;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: linear-gradient(90deg, #92fa87, #00d58b);
+    transform: scale(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.mobile-menu {
+  background-color: #002e35;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  a {
+    color: #92fa87;
+    font-weight: 500;
+
+    &:hover {
+      color: #00d58b;
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
+}
 
-  .animate-fadeIn {
-    animation: fadeIn 0.5s ease-out forwards;
-  }
-
-  .nav-link {
-    @apply text-gray-300 hover:text-cyan-400 transition duration-300 cursor-pointer;
-  }
+.verify-message {
+  color: #ffffa3;
+  font-size: 0.875rem;
 }

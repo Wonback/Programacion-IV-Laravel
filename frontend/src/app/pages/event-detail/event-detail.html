@@ -1,129 +1,50 @@
-<div *ngIf="event" class="max-w-3xl mx-auto bg-gray-900 text-gray-100 shadow-2xl rounded-2xl p-8 mt-10">
-
+<app-navbar></app-navbar>
+<div
+  *ngIf="event"
+  class="max-w-3xl mx-auto bg-gradient-to-b from-[#002e35] to-[#0a0a0a] text-gray-100 shadow-xl rounded-2xl p-8 mt-10 border border-[#00d58b]/20"
+>
   <!-- Imagen -->
-  <div class="relative w-full h-72 mb-6 rounded-xl overflow-hidden shadow-lg">
-    <img
-      *ngIf="!editMode"
-      [src]="event.image_path"
-      [alt]="event.title"
-      class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-    />
-    <img
-      *ngIf="editMode && imagePreview"
-      [src]="imagePreview"
-      class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-    />
+  <div class="relative w-full h-72 mb-6 rounded-xl overflow-hidden shadow-lg border border-[#00d58b]/30">
+    <img *ngIf="!editMode" [src]="event.image_path" [alt]="event.title"
+      class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+    <img *ngIf="editMode && imagePreview" [src]="imagePreview"
+      class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
   </div>
 
   <!-- Modo lectura -->
-  <div *ngIf="!editMode" class="space-y-4">
-    <h2 class="text-3xl font-bold text-blue-400 tracking-tight">{{ event.title }}</h2>
+  <div *ngIf="!editMode" class="space-y-5">
+    <h2 class="text-3xl font-bold bg-gradient-to-r from-[#00d58b] to-[#92fa87] bg-clip-text text-transparent tracking-tight">
+      {{ event.title }}
+    </h2>
     <p class="text-gray-300 leading-relaxed">{{ event.description }}</p>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-400 mt-4">
-      <span><strong class="text-gray-200">📅 Fecha:</strong> {{ event.starts_at | date:'fullDate' }}</span>
-      <span><strong class="text-gray-200">👥 Capacidad:</strong> {{ event.capacity }}</span>
-      <span><strong class="text-gray-200">💰 Precio:</strong> ${{ event.price }}</span>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-400 mt-4 border-t border-[#00d58b]/20 pt-3">
+      <span><fa-icon [icon]="faCalendar" class="text-[#92fa87] mr-2"></fa-icon> {{ event.starts_at | date:'fullDate' }}</span>
+      <span><fa-icon [icon]="faUsers" class="text-[#92fa87] mr-2"></fa-icon> {{ event.capacity }}</span>
+      <span><fa-icon [icon]="faMoney" class="text-[#92fa87] mr-2"></fa-icon> ${{ event.price }}</span>
     </div>
 
     <div *ngIf="canEdit()" class="flex flex-wrap gap-3 mt-6">
-      <button
-        (click)="toggleEdit()"
-        class="px-5 py-2.5 bg-green-600 hover:bg-green-700 rounded-xl transition text-white font-medium shadow-md"
-      >
-        ✏️ Editar
+      <button (click)="toggleEdit()" class="px-5 py-2.5 bg-[#00d58b] hover:bg-[#92fa87] text-black font-medium rounded-xl transition shadow-md">
+        <fa-icon [icon]="faPen" class="mr-2"></fa-icon> Editar
       </button>
-      <button
-        (click)="deleteEvent()"
-        class="px-5 py-2.5 bg-red-600 hover:bg-red-700 rounded-xl transition text-white font-medium shadow-md"
-      >
-        ❌ Cancelar Evento
+      <button (click)="deleteEvent()" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 rounded-xl transition text-white font-medium shadow-md">
+        <fa-icon [icon]="faTrash" class="mr-2"></fa-icon> Cancelar Evento
       </button>
     </div>
   </div>
 
-  <!-- Modo edición -->
-  <form
-    *ngIf="editMode"
-    (ngSubmit)="saveEdit($event)"
-    class="flex flex-col gap-4 mt-4 text-gray-200"
-  >
-    <div>
-      <label class="block mb-1 font-semibold">Título</label>
-      <input [(ngModel)]="formData.title" name="title"
-        class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        required />
-    </div>
+  <!-- Botones inferiores -->
+  <div class="mt-10 text-center flex flex-wrap justify-center gap-4">
+    <button (click)="router.navigate(['/checkout', event.id])"
+      class="px-6 py-3 bg-gradient-to-r from-[#00d58b] to-[#92fa87] text-black font-semibold rounded-full hover:opacity-90 transition shadow-md">
+      <fa-icon [icon]="faTicket" class="mr-2"></fa-icon> Comprar Entrada
+    </button>
 
-    <div>
-      <label class="block mb-1 font-semibold">Descripción</label>
-      <textarea [(ngModel)]="formData.description" name="description"
-        class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        rows="3"></textarea>
-    </div>
-
-    <div class="grid sm:grid-cols-2 gap-4">
-      <div>
-        <label class="block mb-1 font-semibold">Fecha y Hora</label>
-        <input type="datetime-local" [(ngModel)]="formData.starts_at" name="starts_at"
-          class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          required />
-      </div>
-
-      <div>
-        <label class="block mb-1 font-semibold">Capacidad</label>
-        <input type="number" [(ngModel)]="formData.capacity" name="capacity"
-          class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          required />
-      </div>
-    </div>
-
-    <div class="grid sm:grid-cols-2 gap-4">
-      <div>
-        <label class="block mb-1 font-semibold">Precio</label>
-        <input type="number" [(ngModel)]="formData.price" name="price"
-          class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          required />
-      </div>
-
-      <div>
-        <label class="block mb-1 font-semibold">Imagen</label>
-        <input type="file" (change)="onFileChange($event)"
-          class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700" />
-      </div>
-    </div>
-
-    <div class="flex flex-wrap gap-3 mt-4">
-      <button
-        type="submit"
-        [disabled]="uploading"
-        class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-xl text-white font-medium transition shadow-md"
-      >
-        💾 Guardar
-      </button>
-      <button
-        type="button"
-        (click)="toggleEdit()"
-        class="px-5 py-2.5 bg-gray-600 hover:bg-gray-700 rounded-xl text-white font-medium transition shadow-md"
-      >
-        ↩️ Cancelar
-      </button>
-    </div>
-  </form>
-
-  <div class="mt-8 text-center">
-    <button
-  (click)="router.navigate(['/checkout', event.id])"
-  class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-700 rounded-xl transition text-white font-medium shadow-md"
->
-  🎟️ Comprar Entrada
-</button>
-
-    <button
-      routerLink="/home"
-      class="px-6 py-2.5 bg-blue-700 hover:bg-blue-800 rounded-full text-white font-semibold shadow-md transition"
-    >
-      Volver al Inicio
+    <button routerLink="/home"
+      class="px-6 py-3 bg-[#005d99] hover:bg-[#002e35] rounded-full text-white font-semibold shadow-md transition">
+      <fa-icon [icon]="faArrowLeft" class="mr-2"></fa-icon> Volver al Inicio
     </button>
   </div>
 </div>
