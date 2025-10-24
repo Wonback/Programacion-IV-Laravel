@@ -6,7 +6,8 @@ import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SearchService } from '../../services/search.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCalendar, faArrowRight } from '@fortawesome/free-solid-svg-icons'; // íconos
+import { faCalendar, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { FooterComponent } from '../footer/footer';
 
 interface Event {
   id: number;
@@ -21,16 +22,31 @@ interface Event {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, RouterLink, FontAwesomeModule],
+  imports: [CommonModule, NavbarComponent, FooterComponent, RouterLink, FontAwesomeModule],
   templateUrl: './home.html',
   styleUrls: ['./home.scss']
 })
 export class Home implements OnInit, OnDestroy {
   events: Event[] = [];
   filteredEvents: Event[] = [];
+  paginatedEvents: Event[] = [];
+
+  // Paginación
+  currentPage = 1;
+  pageSize = 8;
+
+  // Filtros
+  filters = {
+    term: '',
+    date: 'all'
+  };
+
+  // Animación
+  animated = true;
+
   private searchSub!: Subscription;
 
-  // FontAwesome
+  // Icons
   faCalendar = faCalendar;
   faArrowRight = faArrowRight;
 
@@ -46,26 +62,100 @@ export class Home implements OnInit, OnDestroy {
         this.events = res.data
           .filter(e => new Date(e.starts_at) > now)
           .sort((a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime());
-        this.filteredEvents = [...this.events];
+
+        this.applyFilters(true);
       },
       error: (err) => console.error('Error al obtener eventos:', err)
     });
 
     this.searchSub = this.searchService.searchTerm$.subscribe(term => {
-      this.filterEvents(term);
+      this.filters.term = term.toLowerCase();
+      this.applyFilters();
     });
   }
 
-  filterEvents(term: string) {
-    if (!term) {
-      this.filteredEvents = [...this.events];
-      return;
+  // Cambio de fecha en el select
+  onFilterDateChange(event: any) {
+    const select = event.target as HTMLSelectElement;
+    this.filters.date = select.value;
+    this.applyFilters(true);
+  }
+
+  // Resetear filtros
+  resetFilters() {
+    this.filters = { term: '', date: 'all' };
+    this.currentPage = 1;
+    this.applyFilters(true);
+    this.searchService.updateSearchTerm('');
+  }
+
+  // Aplicar filtros
+  applyFilters(resetPage = false) {
+    if (resetPage) this.currentPage = 1;
+
+    const now = new Date();
+
+    this.filteredEvents = this.events.filter(ev => {
+      const starts = new Date(ev.starts_at);
+
+      // Filtrado por término
+      const matchTerm =
+        !this.filters.term ||
+        ev.title.toLowerCase().includes(this.filters.term) ||
+        (ev.description && ev.description.toLowerCase().includes(this.filters.term));
+
+      // Filtrado por fecha
+      let matchDate = true;
+      if (this.filters.date === 'today') matchDate = starts.toDateString() === now.toDateString();
+      if (this.filters.date === 'week') {
+        const week = new Date(now);
+        week.setDate(week.getDate() + 7);
+        matchDate = starts >= now && starts <= week;
+      }
+      if (this.filters.date === 'month') {
+        const month = new Date(now);
+        month.setMonth(month.getMonth() + 1);
+        matchDate = starts >= now && starts <= month;
+      }
+
+      return matchTerm && matchDate;
+    });
+
+    this.updatePagination();
+    this.triggerAnimation();
+  }
+
+  // Control animación
+  triggerAnimation() {
+    this.animated = false;
+    setTimeout(() => (this.animated = true), 50);
+  }
+
+  // Paginación
+  updatePagination() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedEvents = this.filteredEvents.slice(startIndex, endIndex);
+  }
+
+  totalPages(): number {
+    return Math.ceil(this.filteredEvents.length / this.pageSize);
+  }
+
+  nextPage() {
+    if (this.currentPage * this.pageSize < this.filteredEvents.length) {
+      this.currentPage++;
+      this.updatePagination();
+      this.triggerAnimation();
     }
-    const lower = term.toLowerCase();
-    this.filteredEvents = this.events.filter(ev =>
-      ev.title.toLowerCase().includes(lower) ||
-      (ev.description && ev.description.toLowerCase().includes(lower))
-    );
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePagination();
+      this.triggerAnimation();
+    }
   }
 
   ngOnDestroy() {

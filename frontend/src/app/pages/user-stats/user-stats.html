@@ -1,0 +1,53 @@
+<app-navbar></app-navbar>
+
+<section class="min-h-screen bg-[#0a0a0a] text-gray-200 px-6 sm:px-12 py-12">
+
+  <!-- Título -->
+  <h2 class="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-[#00d58b] to-[#005d99] bg-clip-text text-transparent tracking-wide">
+    <fa-icon [icon]="faCalendar" class="text-[#00d58b] mr-2"></fa-icon>
+    Mis Estadísticas
+  </h2>
+
+  <!-- Resumen general -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+    <div class="bg-gradient-to-b from-[#002e35] to-[#0f0f0f] border border-[#00d58b]/20 rounded-2xl p-6 shadow-md hover:shadow-[#00d58b]/30 transition-all">
+      <h3 class="text-lg font-semibold text-[#ffffa3]">Eventos creados</h3>
+      <p class="text-3xl font-bold text-[#00d58b] mt-2">{{ totalEvents }}</p>
+    </div>
+
+    <div class="bg-gradient-to-b from-[#002e35] to-[#0f0f0f] border border-[#00d58b]/20 rounded-2xl p-6 shadow-md hover:shadow-[#00d58b]/30 transition-all">
+      <h3 class="text-lg font-semibold text-[#ffffa3]">Entradas vendidas</h3>
+      <p class="text-3xl font-bold text-[#00d58b] mt-2">{{ totalTickets }}</p>
+    </div>
+  </div>
+
+  <!-- Gráfico de barras -->
+  <div class="bg-gradient-to-b from-[#002e35] to-[#0f0f0f] border border-[#00d58b]/20 rounded-2xl p-6 shadow-md hover:shadow-[#00d58b]/30 transition-all mb-10">
+    <canvas
+      baseChart
+      [datasets]="barChartData.datasets"
+      [labels]="barChartData.labels"
+      [options]="barChartOptions"
+      [type]="barChartType">
+    </canvas>
+  </div>
+
+  <!-- Detalle por evento -->
+  <h3 class="text-2xl font-semibold text-[#ffffa3] mb-6">Detalle por evento</h3>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let event of events"
+      class="bg-gradient-to-b from-[#002e35] to-[#0f0f0f] border border-[#00d58b]/20 rounded-2xl p-5 shadow-md hover:shadow-[#00d58b]/30 transition-all">
+      <h4 class="text-lg font-semibold text-[#ffffa3] truncate">{{ event.title }}</h4>
+      <p class="text-gray-400 mt-2">Capacidad: {{ event.capacity }}</p>
+      <p class="text-[#00d58b] font-semibold mt-1">Tickets vendidos: {{ event.orders_count }}</p>
+    </div>
+  </div>
+
+  <!-- Mensaje si no hay eventos -->
+  <div *ngIf="events.length === 0" class="text-center mt-20 text-gray-400 text-lg">
+    <p>No se encontraron eventos 😔</p>
+  </div>
+
+</section>
+
+<app-footer></app-footer>

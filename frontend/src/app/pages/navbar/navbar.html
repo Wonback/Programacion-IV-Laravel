@@ -6,24 +6,29 @@
     </a>
 
     <div class="hidden md:flex space-x-6 items-center">
-      <a (click)="navigate('/home')" class="nav-link">Inicio</a>
-      <a *ngIf="userRole === 'admin'" (click)="navigate('/create-event')" class="nav-link">Crear Evento</a>
-      <a *ngIf="userRole === 'admin'" (click)="navigate('/validate-tickets')" class="nav-link">Validar Tickets</a>
-      <a *ngIf="isLoggedIn" (click)="navigate('/my-tickets')" class="nav-link">Mis Tickets</a>
+  <a (click)="navigate('/home')" class="nav-link">Inicio</a>
+  <a *ngIf="userRole === 'admin'" (click)="navigate('/create-event')" class="nav-link">Crear Evento</a>
+  <a *ngIf="userRole === 'admin'" (click)="navigate('/validate-tickets')" class="nav-link">Validar Tickets</a>
+  <a *ngIf="isLoggedIn" (click)="navigate('/my-tickets')" class="nav-link">Mis Tickets</a>
 
-      <!-- Botón Verificar Cuenta -->
-      <button
-        *ngIf="isLoggedIn && !isVerified && userRole != 'admin'"
-        (click)="requestVerification()" 
-        [disabled]="loadingVerify"
-        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {{ loadingVerify ? 'Enviando...' : 'Verificar cuenta' }}
-      </button>
+  <!-- Botón Estadísticas (solo admin) -->
+  <a *ngIf="userRole === 'admin'" (click)="navigate('/my-events')" class="nav-link bg-gradient-to-r from-[#00d58b] to-[#005d99] px-3 py-1 rounded-full text-white hover:opacity-90 transition">
+    Estadísticas
+  </a>
 
-      <p *ngIf="verifyMessage" class="text-sm text-yellow-300 ml-2">{{ verifyMessage }}</p>
-    </div>
-  </div>
+  <!-- Botón Verificar Cuenta -->
+  <button
+    *ngIf="isLoggedIn && !isVerified && userRole != 'admin'"
+    (click)="requestVerification()" 
+    [disabled]="loadingVerify"
+    class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    {{ loadingVerify ? 'Enviando...' : 'Verificar cuenta' }}
+  </button>
+
+  <p *ngIf="verifyMessage" class="text-sm text-yellow-300 ml-2">{{ verifyMessage }}</p>
+</div>
+</div>
 
   <!-- Right -->
   <div class="flex items-center space-x-3">
