@@ -24,6 +24,7 @@ interface EventStat {
   standalone: true,
   imports: [CommonModule, NavbarComponent, FooterComponent, RouterLink, FontAwesomeModule, BaseChartDirective],
   templateUrl: './user-stats.html',
+  styleUrls: ['./user-stats.scss']
 })
 export class UserStats implements OnInit {
   faCalendar = faCalendar;
@@ -39,7 +40,7 @@ export class UserStats implements OnInit {
       title: { display: true, text: 'Entradas vendidas por evento', color: '#00d58b', font: { size: 18 } }
     },
     scales: {
-      y: { ticks: { color: '#00d58b' }, beginAtZero: true },
+      y: { ticks: { color: '#00d58b',  precision: 0,  stepSize: 1 }, beginAtZero: true, },
       x: { ticks: { color: '#00d58b' } }
     }
   };

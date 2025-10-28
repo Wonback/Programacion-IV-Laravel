@@ -202,16 +202,22 @@ public function validateQR(Request $request)
 public function ordersByEvent(Request $request, $eventId)
 {
     $user = $request->user();
-    $event = Event::where('id', $eventId)->where('user_id', $user->id)->first();
+    $event = Event::where('id', $eventId)
+        ->where('user_id', $user->id)
+        ->first();
 
     if (!$event) {
         return response()->json(['message' => 'No autorizado'], 403);
     }
 
-    $orders = Order::where('event_id', $eventId)->get();
+    // Incluye los datos del usuario comprador
+    $orders = Order::with('user')
+        ->where('event_id', $eventId)
+        ->get();
 
     return response()->json($orders, 200);
 }
+
 
 /**
  * @OA\Get(
