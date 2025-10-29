@@ -1,0 +1,17 @@
+:host {
+    display: block;
+    width: 100%;
+  }
+  
+  h2, h3, h4 {
+    letter-spacing: 0.03em;
+  }
+  
+  div:hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  canvas {
+    max-height: 400px;
+  }
+  

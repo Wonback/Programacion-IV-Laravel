@@ -1,18 +1,28 @@
-<footer class="bg-[#0a0a0a] text-white py-6 mt-12 border-t border-white/5">
-    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center px-6">
-      
-      <div class="text-center md:text-left mb-4 md:mb-0">
-        <p class="text-sm text-gray-400">
-          &copy; {{ currentYear }} xXGagaEventsXx. Todos los derechos reservados.
-        </p>
-      </div>
-  
-      <div class="flex space-x-4">
-        <a href="#" class="text-gray-400 hover:text-cyan-400 transition">Política de privacidad</a>
-        <a href="#" class="text-gray-400 hover:text-cyan-400 transition">Términos y condiciones</a>
-        <a href="#" class="text-gray-400 hover:text-cyan-400 transition">Contacto</a>
-      </div>
-  
+<footer class="relative bg-[#0a0a0a] text-gray-300 py-10 border-t border-[#00d58b]/20 overflow-hidden">
+
+  <!-- Efecto de brillo superior -->
+  <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#00d58b]/70 to-transparent animate-pulse"></div>
+
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 px-6">
+
+    <!-- Logo o nombre -->
+    <div class="text-center md:text-left">
+      <h3 class="text-xl font-semibold tracking-wide text-[#00d58b]">
+        Wa<span class="text-[#92fa87]">mo</span>Events
+      </h3>
+      <p class="text-sm text-gray-500 mt-1">
+        &copy; {{ currentYear }}. Todos los derechos reservados.
+      </p>
     </div>
-  </footer>
-  
+
+    <!-- Enlaces -->
+    <div class="flex flex-wrap justify-center md:justify-end gap-6 text-sm">
+      <a href="#" class="text-gray-400 hover:text-[#00d58b] transition-colors duration-300">Política de privacidad</a>
+      <a href="#" class="text-gray-400 hover:text-[#00d58b] transition-colors duration-300">Términos y condiciones</a>
+      <a href="#" class="text-gray-400 hover:text-[#00d58b] transition-colors duration-300">Contacto</a>
+    </div>
+  </div>
+
+  <!-- Línea inferior luminosa -->
+  <div class="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-[#005d99]/0 via-[#00d58b]/50 to-[#005d99]/0"></div>
+</footer>

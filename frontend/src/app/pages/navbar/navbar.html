@@ -1,49 +1,60 @@
-<nav class="navbar flex items-center justify-between px-8 py-4 backdrop-blur-md bg-[#0a0a0a]/70 border-b border-white/5 sticky top-0 z-50">
-  <!-- Left -->
-  <div class="flex items-center space-x-8">
-    <a routerLink="/" class="text-xl font-semibold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent tracking-wide">
-      xXGagaEventsXx
+<nav
+  class="navbar flex items-center justify-between px-8 py-4 sticky top-0 z-50 backdrop-blur-xl bg-[#0a0a0a]/80 border-b border-[#00d58b]/20 shadow-[0_0_15px_#00d58b20] transition-all duration-300"
+>
+  <!-- Left: Logo + Links -->
+  <div class="flex items-center space-x-10">
+    <a
+      routerLink="/"
+      class="text-2xl font-bold bg-gradient-to-r from-[#00d58b] to-[#00b3ff] bg-clip-text text-transparent tracking-wider hover:opacity-90 transition"
+    >
+      Wa<span class="text-[#7dffd6]">mo</span>Events
     </a>
 
-    <div class="hidden md:flex space-x-6 items-center">
-  <a (click)="navigate('/home')" class="nav-link">Inicio</a>
-  <a *ngIf="userRole === 'admin'" (click)="navigate('/create-event')" class="nav-link">Crear Evento</a>
-  <a *ngIf="userRole === 'admin'" (click)="navigate('/validate-tickets')" class="nav-link">Validar Tickets</a>
-  <a *ngIf="isLoggedIn" (click)="navigate('/my-tickets')" class="nav-link">Mis Tickets</a>
+    <!-- Desktop Menu -->
+    <div class="hidden md:flex items-center space-x-6 text-sm font-medium">
+      <a (click)="navigate('/home')" class="nav-link text-gray-300 hover:text-[#00d58b] transition">Inicio</a>
+      <a *ngIf="userRole === 'admin'" (click)="navigate('/create-event')" class="nav-link text-gray-300 hover:text-[#00d58b] transition">Crear Evento</a>
+      <a *ngIf="userRole === 'admin'" (click)="navigate('/validate-tickets')" class="nav-link text-gray-300 hover:text-[#00d58b] transition">Validar Tickets</a>
+      <a *ngIf="isLoggedIn" (click)="navigate('/my-tickets')" class="nav-link text-gray-300 hover:text-[#00d58b] transition">Mis Tickets</a>
 
-  <!-- Botón Estadísticas (solo admin) -->
-  <a *ngIf="userRole === 'admin'" (click)="navigate('/my-events')" class="nav-link bg-gradient-to-r from-[#00d58b] to-[#005d99] px-3 py-1 rounded-full text-white hover:opacity-90 transition">
-    Estadísticas
-  </a>
+      <!-- Estadísticas (Admin) -->
+      <a
+        *ngIf="userRole === 'admin'"
+        (click)="navigate('/my-events')"
+        class="nav-link text-gray-300 hover:text-[#00d58b] transition"
+      >
+        Estadísticas
+      </a>
 
-  <!-- Botón Verificar Cuenta -->
-  <button
-    *ngIf="isLoggedIn && !isVerified && userRole != 'admin'"
-    (click)="requestVerification()" 
-    [disabled]="loadingVerify"
-    class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed"
-  >
-    {{ loadingVerify ? 'Enviando...' : 'Verificar cuenta' }}
-  </button>
+      <!-- Verificar Cuenta -->
+      <button
+        *ngIf="isLoggedIn && !isVerified && userRole != 'admin'"
+        (click)="requestVerification()"
+        [disabled]="loadingVerify"
+        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {{ loadingVerify ? 'Enviando...' : 'Verificar cuenta' }}
+      </button>
 
-  <p *ngIf="verifyMessage" class="text-sm text-yellow-300 ml-2">{{ verifyMessage }}</p>
-</div>
-</div>
+      <p *ngIf="verifyMessage" class="text-sm text-yellow-300 ml-2">{{ verifyMessage }}</p>
+    </div>
+  </div>
 
-  <!-- Right -->
+  <!-- Right: Search + Buttons -->
   <div class="flex items-center space-x-3">
-    <div class="relative">
+    <div class="relative hidden sm:block">
       <input
         type="text"
         [(ngModel)]="searchTerm"
         placeholder="Buscar..."
-        class="bg-[#141415] text-white placeholder-gray-400 rounded-full px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all w-40 sm:w-56"
+        class="bg-[#141415] text-gray-200 placeholder-gray-500 rounded-full px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-[#00d58b] transition-all w-48 sm:w-60"
       />
+      
     </div>
 
     <button
       (click)="onSearch()"
-      class="hidden sm:flex bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-2 rounded-full hover:opacity-90 transition"
+      class="hidden sm:flex bg-gradient-to-r from-[#00d58b] to-[#00b3ff] text-black font-semibold px-4 py-2 rounded-full hover:opacity-90 transition"
     >
       Buscar
     </button>
@@ -51,7 +62,7 @@
     <button
       *ngIf="isLoggedIn"
       (click)="logout()"
-      class="hidden sm:flex text-sm px-4 py-2 rounded-full border border-white/10 hover:bg-white/10 transition"
+      class="hidden sm:flex text-sm font-medium px-4 py-2 rounded-full border border-white/10 text-gray-300 hover:bg-white/10 transition"
     >
       Cerrar sesión
     </button>
@@ -59,35 +70,38 @@
     <button
       *ngIf="!isLoggedIn"
       (click)="navigate('/login')"
-      class="hidden sm:flex text-sm px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:opacity-90 transition"
+      class="hidden sm:flex text-sm font-semibold px-4 py-2 rounded-full bg-gradient-to-r from-[#00d58b] to-[#00b3ff] text-black hover:opacity-90 transition"
     >
       Iniciar sesión
     </button>
 
-    <button (click)="toggleMenu()" class="md:hidden text-gray-300 hover:text-cyan-400 transition">
+    <!-- Menu Button -->
+    <button (click)="toggleMenu()" class="md:hidden text-gray-300 hover:text-[#00d58b] transition">
       <span class="material-icons text-[28px]">menu</span>
     </button>
   </div>
 </nav>
 
 <!-- Mobile Menu -->
-<div *ngIf="isMenuOpen" class="md:hidden bg-[#0f0f0f] border-t border-white/10 px-6 py-4 space-y-3">
-  <a (click)="navigate('/home')" class="block nav-link">Inicio</a>
-  <a *ngIf="userRole === 'admin'" (click)="navigate('/create-event')" class="block nav-link">Crear Evento</a>
-  <a *ngIf="userRole === 'admin'" (click)="navigate('/validate-tickets')" class="block nav-link">Validar Tickets</a>
-  <a *ngIf="isLoggedIn" (click)="navigate('/my-tickets')" class="block nav-link text-cyan-400">Mis Tickets</a>
+<div
+  *ngIf="isMenuOpen"
+  class="md:hidden bg-[#0f0f0f]/95 border-t border-[#00d58b]/10 px-6 py-5 space-y-4 animate-fadeIn"
+>
+  <a (click)="navigate('/home')" class="block nav-link text-gray-300 hover:text-[#00d58b] transition">Inicio</a>
+  <a *ngIf="userRole === 'admin'" (click)="navigate('/create-event')" class="block nav-link text-gray-300 hover:text-[#00d58b] transition">Crear Evento</a>
+  <a *ngIf="userRole === 'admin'" (click)="navigate('/validate-tickets')" class="block nav-link text-gray-300 hover:text-[#00d58b] transition">Validar Tickets</a>
+  <a *ngIf="isLoggedIn" (click)="navigate('/my-tickets')" class="block nav-link text-[#00d58b]">Mis Tickets</a>
 
-  <!-- Botón Verificar Cuenta Mobile -->
   <button
     *ngIf="isLoggedIn && !isVerified"
     (click)="requestVerification()"
     [disabled]="loadingVerify"
-    class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed"
+    class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
   >
     {{ loadingVerify ? 'Enviando...' : 'Verificar cuenta' }}
   </button>
   <p *ngIf="verifyMessage" class="text-sm text-yellow-300 mt-1">{{ verifyMessage }}</p>
 
-  <a *ngIf="isLoggedIn" (click)="logout()" class="block nav-link text-red-400">Cerrar sesión</a>
-  <a *ngIf="!isLoggedIn" (click)="navigate('/login')" class="block nav-link text-cyan-400">Iniciar sesión</a>
+  <a *ngIf="isLoggedIn" (click)="logout()" class="block nav-link text-red-400 hover:text-red-500">Cerrar sesión</a>
+  <a *ngIf="!isLoggedIn" (click)="navigate('/login')" class="block nav-link text-[#00d58b] hover:text-[#00b3ff]">Iniciar sesión</a>
 </div>

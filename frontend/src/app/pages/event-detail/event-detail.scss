@@ -1,0 +1,22 @@
+:host {
+    display: block;
+    width: 100%;
+  }
+  
+  img {
+    transition: transform 0.6s ease, filter 0.6s ease;
+  }
+  
+  img:hover {
+    transform: scale(1.05);
+    filter: brightness(1.05);
+  }
+  
+  button {
+    transition: all 0.3s ease;
+  }
+  
+  button:hover {
+    transform: translateY(-2px);
+  }
+  

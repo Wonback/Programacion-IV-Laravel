@@ -25,11 +25,15 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+                "output": "/assets/webfonts"
               }
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+              "src/styles.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": ["src"]
@@ -87,6 +91,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+                "output": "/assets/webfonts"
               }
             ],
             "styles": ["src/styles.scss"]
