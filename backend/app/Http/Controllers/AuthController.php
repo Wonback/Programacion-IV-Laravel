@@ -71,7 +71,7 @@ class AuthController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
-            'role' => $data['role']
+            'role' => 'user',
         ]);
 
         return response()->json([
@@ -136,9 +136,17 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Login exitoso',
-            'user' => $user,
-            'token' => $token
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role, // 🔥 asegurate de incluirlo
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ],
+            'token' => $token,
         ]);
+        
     }
 
     /**
@@ -166,21 +174,27 @@ class AuthController extends Controller
      * )
      */
     public function me(Request $r)
-    {
-        $user = $r->user();
+{
+    $user = $r->user();
 
-        if (!$user->is_active) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Usuario desactivado'
-            ], 403);
-        }
-
+    if (!$user->is_active) {
         return response()->json([
-            'success' => true,
-            'user' => $user
-        ]);
+            'success' => false,
+            'message' => 'Usuario desactivado'
+        ], 403);
     }
+
+    // Devuelve solo los campos necesarios o todo el usuario
+    return response()->json([
+        'id' => $user->id,
+        'name' => $user->name,
+        'email' => $user->email,
+        'role' => $user->role,
+        'created_at' => $user->created_at,
+        'updated_at' => $user->updated_at
+    ]);
+}
+
 
     /**
      * @OA\Post(

@@ -1,0 +1,131 @@
+<app-navbar></app-navbar>
+
+<div
+  class="scanner-container text-gray-200 bg-gradient-to-b from-[#050505] to-[#0a0a0a] min-h-screen flex flex-col items-center px-6 py-12"
+>
+  <div
+    class="bg-[#101010]/90 p-10 rounded-2xl shadow-[0_0_25px_#00d58b25] w-full max-w-3xl text-center border border-[#00d58b]/20 backdrop-blur-md animate-fadeIn"
+  >
+    <h2
+      class="text-3xl font-bold mb-6 bg-gradient-to-r from-[#00d58b] to-[#00b3ff] bg-clip-text text-transparent tracking-wide"
+    >
+      Validar Tickets
+    </h2>
+
+    <!-- Selección de evento -->
+    <div class="mb-8 text-left">
+      <label class="block mb-2 font-semibold text-sm text-gray-400"
+        >Selecciona un evento:</label
+      >
+      <select
+        [(ngModel)]="selectedEventId"
+        (change)="selectEvent()"
+        class="w-full p-3 rounded-xl bg-[#161616] border border-[#00d58b]/20 focus:ring-2 focus:ring-[#00d58b] text-gray-100 transition"
+      >
+        <option [value]="null">-- Seleccionar --</option>
+        <option *ngFor="let e of events" [value]="e.id">{{ e.title }}</option>
+      </select>
+    </div>
+
+    <!-- Toggle cámara / archivo -->
+    <button
+      (click)="useFileInput = !useFileInput"
+      class="mb-6 px-5 py-2.5 bg-gradient-to-r from-[#00d58b] to-[#00b3ff] hover:opacity-90 text-black font-semibold rounded-full shadow-lg transition-all"
+    >
+      {{ useFileInput ? 'Usar cámara' : 'Subir QR desde archivo' }}
+    </button>
+
+    <!-- Scanner de cámara -->
+    <div *ngIf="!useFileInput && selectedEventId" class="rounded-xl overflow-hidden mb-6 border border-[#00d58b]/20 shadow-inner">
+      <zxing-scanner
+        (scanSuccess)="onCodeResult($event)"
+        [formats]="formats"
+        class="w-full h-72"
+      ></zxing-scanner>
+    </div>
+
+    <!-- Input de archivo -->
+    <div *ngIf="useFileInput && selectedEventId" class="mb-8">
+      <input
+        type="file"
+        (change)="onFileSelected($event)"
+        accept="image/*"
+        class="w-full p-3 rounded-xl bg-[#161616] border border-[#00d58b]/20 text-gray-300 cursor-pointer hover:border-[#00d58b]/40 transition"
+      />
+    </div>
+
+    <!-- Resultado QR -->
+    <div *ngIf="qrResult || message" class="mb-6 space-y-2">
+      <p
+        *ngIf="qrResult"
+        class="text-gray-300 flex items-center justify-center gap-2 text-sm"
+      >
+        <fa-icon [icon]="faQrcode"></fa-icon>
+        <span class="break-all">{{ qrResult }}</span>
+      </p>
+      <p
+        *ngIf="message"
+        class="text-sm font-semibold flex items-center justify-center gap-2"
+        [ngClass]="{
+          'text-green-400': message.includes('válido') || message.includes('exitosamente'),
+          'text-red-400': message.includes('inválido') || message.includes('usado')
+        }"
+      >
+        <fa-icon [icon]="faCheck"></fa-icon> {{ message }}
+      </p>
+    </div>
+
+    <!-- Tabla de tickets -->
+    <div *ngIf="orders.length" class="mt-8 text-left">
+      <h3 class="text-xl text-[#00d58b] font-semibold mb-4 text-center">
+        Tickets del evento
+      </h3>
+      <div class="overflow-x-auto rounded-xl border border-[#00d58b]/10">
+        <table class="w-full text-sm border-collapse">
+          <thead class="bg-[#161616] border-b border-[#00d58b]/20 text-gray-400 uppercase text-xs tracking-wider">
+            <tr>
+              <th class="px-4 py-2">ID</th>
+              <th class="px-4 py-2"><fa-icon [icon]="faUser"></fa-icon> Usuario</th>
+              <th class="px-4 py-2"><fa-icon [icon]="faTicketAlt"></fa-icon> QR</th>
+              <th class="px-4 py-2">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let o of orders"
+              class="hover:bg-[#0f0f0f] transition"
+            >
+              <td class="px-4 py-2 border-t border-[#1a1a1a]">{{ o.id }}</td>
+              <td class="px-4 py-2 border-t border-[#1a1a1a]">
+                <div class="font-semibold text-gray-100">{{ o.user?.name }}</div>
+                <div class="text-xs text-gray-400">{{ o.user?.email }}</div>
+                <div class="text-[10px] text-gray-500">ID: {{ o.user?.id }}</div>
+              </td>
+              <td class="px-4 py-2 border-t border-[#1a1a1a] break-all text-xs text-gray-400">
+                {{ o.qr_code }}
+              </td>
+              <td
+                class="px-4 py-2 border-t border-[#1a1a1a] font-semibold"
+                [ngClass]="{
+                  'text-green-400': !o.used,
+                  'text-red-400': o.used
+                }"
+              >
+                {{ o.used ? 'Usado' : 'Disponible' }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Botón volver -->
+    <button
+      routerLink="/home"
+      class="mt-10 px-6 py-3 bg-gradient-to-r from-[#00d58b] to-[#00b3ff] hover:opacity-90 rounded-full text-black font-semibold transition flex items-center gap-2 justify-center shadow-lg"
+    >
+      <fa-icon [icon]="faHome"></fa-icon>
+      Volver al inicio
+    </button>
+  </div>
+</div>

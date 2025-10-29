@@ -167,4 +167,41 @@ class EventController extends Controller
         $event->delete();
         return response()->json(['deleted' => true]);
     }
+    // EventController.php
+
+    /**
+     * @OA\Get(
+     *     path="/api/my-events",
+     *     tags={"Events"},
+     *     summary="Listar eventos del usuario autenticado con estadísticas",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Listado de eventos propios con cantidad de tickets vendidos",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="Concierto A"),
+     *                 @OA\Property(property="capacity", type="integer", example=100),
+     *                 @OA\Property(property="orders_count", type="integer", example=25)
+     *             )
+     *         )
+     *     )
+     * )
+     */
+   
+    public function myEvents(Request $request)
+    {
+        $user = $request->user();
+
+        $events = Event::where('user_id', $user->id)
+            ->withCount('orders') 
+            ->latest('starts_at')
+            ->get(['id', 'title', 'capacity']);
+
+        return response()->json($events);
+    }
+
+
 }

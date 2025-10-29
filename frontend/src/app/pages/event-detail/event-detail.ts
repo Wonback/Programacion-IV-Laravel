@@ -3,6 +3,10 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { NavbarComponent } from '../navbar/navbar';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { faTicket, faArrowLeft, faPen, faTrash, faCalendar, faUsers, faMoneyBill} from '@fortawesome/free-solid-svg-icons';
 
 interface EventModel {
   id: number;
@@ -18,7 +22,7 @@ interface EventModel {
 @Component({
   selector: 'app-event-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, NavbarComponent, FormsModule, FaIconComponent, FontAwesomeModule],
   templateUrl: './event-detail.html',
   styleUrls: ['./event-detail.scss']
 })
@@ -30,11 +34,18 @@ export class EventDetail implements OnInit {
   selectedFile: File | null = null;
   uploading = false;
   imagePreview: string | null = null;
+  faTicket = faTicket;
+  faArrowLeft = faArrowLeft;
+  faPen = faPen;
+  faTrash = faTrash;
+  faCalendar = faCalendar;
+  faUsers = faUsers;
+  faMoney = faMoneyBill;
 
   constructor(
+    public router: Router,
     private route: ActivatedRoute,
-    private http: HttpClient,
-    private router: Router
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -68,13 +79,10 @@ export class EventDetail implements OnInit {
     if (this.event) this.formData = { ...this.event };
   }
 
-  
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
-
-      
       const reader = new FileReader();
       reader.onload = () => this.imagePreview = reader.result as string;
       reader.readAsDataURL(this.selectedFile);
@@ -128,5 +136,14 @@ export class EventDetail implements OnInit {
         next: () => this.router.navigate(['/home']),
         error: (err) => console.error('Error al borrar evento:', err)
       });
+  }
+
+  // Navegación pública 
+  goToCheckout(eventId: number) {
+    this.router.navigate(['/checkout', eventId]);
+  }
+
+  goHome() {
+    this.router.navigate(['/home']);
   }
 }

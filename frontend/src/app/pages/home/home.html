@@ -1,26 +1,105 @@
 <app-navbar></app-navbar>
 
-<div class="container mx-auto px-4 py-6">
-  <h2 class="text-3xl font-bold mb-8 text-center">Eventos</h2>
+<section class="min-h-screen bg-[#0a0a0a] text-gray-200 px-6 sm:px-12 py-12">
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+  <h2
+    class="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-[#00d58b] to-[#005d99] bg-clip-text text-transparent tracking-wide"
+  >
+    <fa-icon [icon]="faCalendar" class="text-[#00d58b] mr-2"></fa-icon>
+    Eventos Destacados
+  </h2>
+
+  <!-- filtros -->
+  <div class="flex justify-center gap-4 mb-10">
+    <select
+      class="bg-[#002e35] border border-[#00d58b]/40 text-gray-200 rounded-lg px-5 py-2"
+      (change)="onFilterDateChange($event)"
+    >
+      <option value="all">Todas las fechas</option>
+      <option value="today">Hoy</option>
+      <option value="week">Esta semana</option>
+      <option value="month">Este mes</option>
+    </select>
+
+    <button
+      class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition"
+      (click)="resetFilters()"
+    >
+      Resetear filtros
+    </button>
+  </div>
+
+  <!-- Grid con animación -->
+  <div
+    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 transition-opacity duration-500"
+    [class.opacity-0]="!animated"
+    [class.opacity-100]="animated"
+  >
     <div
-      *ngFor="let event of events"
-      class="bg-white rounded-2xl shadow-md hover:shadow-xl transition cursor-pointer overflow-hidden transform hover:-translate-y-1 hover:scale-105 duration-300"
+      *ngFor="let event of paginatedEvents"
+      class="group bg-gradient-to-b from-[#002e35] to-[#0f0f0f] border border-[#00d58b]/20 rounded-2xl overflow-hidden shadow-md hover:shadow-[#00d58b]/30 transition-all duration-500 hover:-translate-y-2 cursor-pointer animate-fadeIn"
       [routerLink]="['/event', event.id]"
     >
-      <img
-        *ngIf="event.image_path"
-        [src]="event.image_path"
-        [alt]="event.title"
-        class="w-full h-52 object-cover"
-      />
+      <div class="relative overflow-hidden h-56">
+        <img
+          *ngIf="event.image_path"
+          [src]="event.image_path"
+          [alt]="event.title"
+          class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+      </div>
 
       <div class="p-5">
-        <h3 class="text-xl font-semibold mb-2 truncate">
+        <h3 class="text-lg font-semibold text-[#ffffa3] group-hover:text-[#92fa87] transition truncate">
           {{ event.title }}
         </h3>
+
+        <p class="text-sm text-gray-400 line-clamp-2 mt-2" *ngIf="event.description">
+          {{ event.description }}
+        </p>
+
+        <div class="flex justify-between items-center text-sm pt-4 mt-4 border-t border-[#00d58b]/20">
+          <span class="text-gray-400 flex items-center gap-1">
+            <fa-icon [icon]="faCalendar" class="text-[#00d58b] text-[18px]"></fa-icon>
+            {{ event.starts_at | date: 'dd/MM/yyyy' }}
+          </span>
+
+          <span class="text-[#00d58b] font-semibold group-hover:text-[#92fa87] transition flex items-center gap-1">
+            Ver más
+            <fa-icon [icon]="faArrowRight"></fa-icon>
+          </span>
+        </div>
       </div>
     </div>
   </div>
-</div>
+
+  <!-- Paginación -->
+  <div class="flex justify-center gap-4 mt-12" *ngIf="filteredEvents.length > pageSize">
+    <button
+      class="px-5 py-2 rounded-lg bg-[#002e35] border border-[#00d58b]/40 hover:bg-[#00414a] transition"
+      (click)="prevPage()"
+      [disabled]="currentPage === 1"
+    >
+      Anterior
+    </button>
+
+    <span class="text-gray-300 font-semibold my-auto">
+      Página {{ currentPage }} de {{ totalPages() }}
+    </span>
+
+    <button
+      class="px-5 py-2 rounded-lg bg-[#002e35] border border-[#00d58b]/40 hover:bg-[#00414a] transition"
+      (click)="nextPage()"
+      [disabled]="currentPage * pageSize >= filteredEvents.length"
+    >
+      Siguiente
+    </button>
+  </div>
+
+  <!-- Si no hay eventos -->
+  <div *ngIf="filteredEvents.length === 0" class="text-center mt-20 text-gray-400 text-lg">
+    <p>No se encontraron eventos 😔</p>
+  </div>
+</section>
+<app-footer></app-footer>

@@ -1,51 +1,90 @@
-<div *ngIf="event" class="max-w-2xl mx-auto bg-white shadow-lg rounded-2xl p-6 mt-6">
+<app-navbar></app-navbar>
 
-  <img *ngIf="!editMode" [src]="event.image_path" [alt]="event.title"
-       class="w-full h-64 object-cover mb-4 rounded-lg" />
-  <img *ngIf="editMode && imagePreview" [src]="imagePreview" class="w-full h-64 object-cover mb-4 rounded-lg" />
+<div *ngIf="event" class="min-h-screen bg-gradient-to-b from-[#002e35] to-[#0a0a0a] text-gray-100 flex flex-col">
+  <!-- Imagen principal -->
+  <div class="relative w-full h-[420px] overflow-hidden">
+    <img
+      *ngIf="!editMode"
+      [src]="event.image_path"
+      [alt]="event.title"
+      class="w-full h-full object-cover brightness-90 hover:scale-105 transition-transform duration-700"
+    />
+    <img
+      *ngIf="editMode && imagePreview"
+      [src]="imagePreview"
+      class="w-full h-full object-cover brightness-90 hover:scale-105 transition-transform duration-700"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/90 via-transparent to-transparent"></div>
 
-  <div *ngIf="!editMode">
-    <h2 class="text-2xl font-bold mb-2">{{ event.title }}</h2>
-    <p class="text-gray-600 mb-4">{{ event.description }}</p>
-    <div class="flex flex-col gap-1 text-sm text-gray-700">
-      <span><strong>Fecha:</strong> {{ event.starts_at | date:'fullDate' }}</span>
-      <span><strong>Capacidad:</strong> {{ event.capacity }}</span>
-      <span><strong>Precio:</strong> ${{ event.price }}</span>
-    </div>
-    <div *ngIf="canEdit()" class="flex gap-2 mt-4">
-      <button (click)="toggleEdit()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-        Editar
-      </button>
-      <button (click)="deleteEvent()" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
-        Cancelar Evento
-      </button>
+    <!-- Título sobre imagen -->
+    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-center px-6">
+      <h1
+        class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-[#00d58b] to-[#92fa87] bg-clip-text text-transparent tracking-tight"
+      >
+        {{ event.title }}
+      </h1>
     </div>
   </div>
 
-  <form *ngIf="editMode" (ngSubmit)="saveEdit($event)" class="flex flex-col gap-3">
-    <label>Título</label>
-    <input [(ngModel)]="formData.title" name="title" class="border p-2 rounded" required />
-
-    <label>Descripción</label>
-    <textarea [(ngModel)]="formData.description" name="description" class="border p-2 rounded" rows="3"></textarea>
-
-    <label>Fecha y Hora</label>
-    <input type="datetime-local" [(ngModel)]="formData.starts_at" name="starts_at" class="border p-2 rounded" required />
-
-    <label>Capacidad</label>
-    <input type="number" [(ngModel)]="formData.capacity" name="capacity" class="border p-2 rounded" required />
-
-    <label>Precio</label>
-    <input type="number" [(ngModel)]="formData.price" name="price" class="border p-2 rounded" required />
-
-    <label>Imagen</label>
-    <input type="file" (change)="onFileChange($event)" />
-
-    <div class="flex gap-2 mt-2">
-      <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Guardar</button>
-      <button type="button" (click)="toggleEdit()" class="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500">Cancelar</button>
+  <!-- Contenido -->
+  <div class="flex-1 w-full max-w-5xl mx-auto px-6 py-10 space-y-10">
+    <!-- Descripción -->
+    <div class="text-gray-300 text-lg leading-relaxed">
+      {{ event.description }}
     </div>
-  </form>
 
-  <button routerLink="/home" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Volver</button>
+    <!-- Datos del evento -->
+    <div
+      class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center py-6 rounded-2xl bg-[#00343a]/40 border border-[#00d58b]/20 backdrop-blur-sm"
+    >
+      <div class="flex flex-col items-center">
+        <fa-icon [icon]="faCalendar" class="text-[#92fa87] text-2xl mb-2"></fa-icon>
+        <span class="text-gray-400 text-sm">Fecha</span>
+        <span class="font-semibold text-gray-100 mt-1">{{ event.starts_at | date:'fullDate' }}</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <fa-icon [icon]="faUsers" class="text-[#92fa87] text-2xl mb-2"></fa-icon>
+        <span class="text-gray-400 text-sm">Capacidad</span>
+        <span class="font-semibold text-gray-100 mt-1">{{ event.capacity }}</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <fa-icon [icon]="faMoney" class="text-[#92fa87] text-2xl mb-2"></fa-icon>
+        <span class="text-gray-400 text-sm">Precio</span>
+        <span class="font-semibold text-gray-100 mt-1">${{ event.price }}</span>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="flex flex-wrap justify-center gap-5 mt-8">
+      <button
+        (click)="router.navigate(['/checkout', event.id])"
+        class="px-8 py-3 bg-gradient-to-r from-[#00d58b] to-[#92fa87] text-black font-semibold rounded-full hover:opacity-90 transition shadow-lg"
+      >
+        <fa-icon [icon]="faTicket" class="mr-2"></fa-icon> Comprar Entrada
+      </button>
+
+      <button
+        routerLink="/home"
+        class="px-8 py-3 bg-[#005d99] hover:bg-[#002e35] rounded-full text-white font-semibold shadow-lg transition"
+      >
+        <fa-icon [icon]="faArrowLeft" class="mr-2"></fa-icon> Volver al Inicio
+      </button>
+    </div>
+
+    <!-- Modo edición -->
+    <div *ngIf="canEdit()" class="flex flex-wrap justify-center gap-4 pt-10 border-t border-[#00d58b]/20">
+      <button
+        (click)="toggleEdit()"
+        class="px-6 py-2.5 bg-[#00d58b] hover:bg-[#92fa87] text-black font-medium rounded-xl transition shadow-md"
+      >
+        <fa-icon [icon]="faPen" class="mr-2"></fa-icon> Editar
+      </button>
+      <button
+        (click)="deleteEvent()"
+        class="px-6 py-2.5 bg-red-600 hover:bg-red-700 rounded-xl text-white font-medium shadow-md transition"
+      >
+        <fa-icon [icon]="faTrash" class="mr-2"></fa-icon> Cancelar Evento
+      </button>
+    </div>
+  </div>
 </div>

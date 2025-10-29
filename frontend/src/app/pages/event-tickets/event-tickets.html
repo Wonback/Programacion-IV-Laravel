@@ -1,0 +1,49 @@
+<div class="p-6 bg-[#0a0a0a] min-h-screen text-gray-200">
+  <h2 class="text-2xl font-bold text-center mb-6 bg-gradient-to-r from-[#00d58b] to-[#92fa87] bg-clip-text text-transparent">
+    Tickets del Evento
+  </h2>
+
+  <div *ngIf="message" class="mb-4 font-semibold text-green-400 text-center">{{ message }}</div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border border-gray-700 rounded-lg overflow-hidden">
+      <thead class="bg-gray-900">
+        <tr>
+          <th class="p-3 border-b border-gray-700">ID</th>
+          <th class="p-3 border-b border-gray-700">Usuario</th>
+          <th class="p-3 border-b border-gray-700">Cantidad</th>
+          <th class="p-3 border-b border-gray-700">Total</th>
+          <th class="p-3 border-b border-gray-700">Estado</th>
+          <th class="p-3 border-b border-gray-700">Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ticket of tickets" class="hover:bg-gray-800 transition">
+          <td class="p-3 border-b border-gray-700">{{ ticket.id }}</td>
+          <td class="p-3 border-b border-gray-700">{{ ticket.user_id }}</td>
+          <td class="p-3 border-b border-gray-700">{{ ticket.quantity }}</td>
+          <td class="p-3 border-b border-gray-700">${{ ticket.total }}</td>
+          <td class="p-3 border-b border-gray-700">
+            <span [ngClass]="ticket.used ? 'text-red-500 font-bold flex items-center gap-1' : 'text-green-400 font-bold flex items-center gap-1'">
+              <fa-icon [icon]="ticket.used ? faTimes : faCheck"></fa-icon>
+              {{ ticket.used ? 'Usado' : 'Disponible' }}
+            </span>
+          </td>
+          <td class="p-3 border-b border-gray-700">
+            <button 
+              (click)="markAsUsed(ticket)" 
+              [disabled]="ticket.used"
+              class="flex items-center gap-2 px-3 py-1 rounded bg-cyan-600 hover:bg-cyan-700 text-white transition disabled:opacity-50">
+              <fa-icon [icon]="faCheck"></fa-icon>
+              Marcar como usado
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="tickets.length === 0" class="text-center mt-10 text-gray-400 text-lg">
+    No hay tickets para este evento.
+  </div>
+</div>
