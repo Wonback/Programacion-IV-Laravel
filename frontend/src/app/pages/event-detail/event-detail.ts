@@ -50,6 +50,8 @@ export class EventDetail implements OnInit {
   selectedFile: File | null = null;
   uploading = false;
   imagePreview: string | null = null;
+  errorMessage: string | null = null;
+
   faTicket = faTicket;
   faArrowLeft = faArrowLeft;
   faPen = faPen;
@@ -91,6 +93,9 @@ export class EventDetail implements OnInit {
   toggleEdit() {
     this.editMode = !this.editMode;
     if (this.event) this.formData = { ...this.event };
+    this.imagePreview = null;
+    this.selectedFile = null;
+    this.errorMessage = null;
   }
 
   onFileChange(event: Event) {
@@ -106,35 +111,41 @@ export class EventDetail implements OnInit {
   async saveEdit(form: any) {
     if (!this.event) return;
     this.uploading = true;
+    this.errorMessage = null;
 
     try {
       let imageUrl = this.formData.image_path;
 
+      // 🔥 Subida a Cloudinary si hay nueva imagen
       if (this.selectedFile) {
-        const formData = new FormData();
-        formData.append('file', this.selectedFile);
-        formData.append('upload_preset', 'eventos_preset');
+        const formDataCloud = new FormData();
+        formDataCloud.append('file', this.selectedFile);
+        formDataCloud.append('upload_preset', 'utnentradas'); // mismo preset que usás al crear evento
 
         const cloudRes: any = await this.http
-          .post('https://api.cloudinary.com/v1_1/da80v8vj1/image/upload', formData)
+          .post('https://api.cloudinary.com/v1_1/da80v8vj1/image/upload', formDataCloud)
           .toPromise();
 
         imageUrl = cloudRes.secure_url;
       }
 
+      // 🔥 Actualización del evento en el backend
       const token = localStorage.getItem('token');
       const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
       const body = { ...this.formData, image_path: imageUrl };
 
-      await this.http
+      const response: any = await this.http
         .put(`http://localhost:8000/api/events/${this.event.id}`, body, { headers })
         .toPromise();
 
-      this.event = { ...body };
+      this.event = response; // Actualizamos los datos locales
       this.editMode = false;
-    } catch (err) {
+      this.selectedFile = null;
+      this.imagePreview = null;
+    } catch (err: any) {
       console.error('Error al editar evento:', err);
+      this.errorMessage = err.error?.message || 'Error al editar el evento';
     } finally {
       this.uploading = false;
     }
