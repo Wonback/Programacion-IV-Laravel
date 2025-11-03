@@ -6,7 +6,16 @@ import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../navbar/navbar';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { faTicket, faArrowLeft, faPen, faTrash, faCalendar, faUsers, faMoneyBill} from '@fortawesome/free-solid-svg-icons';
+import {
+  faTicket,
+  faArrowLeft,
+  faPen,
+  faTrash,
+  faCalendar,
+  faUsers,
+  faMoneyBill,
+  faDollarSign,
+} from '@fortawesome/free-solid-svg-icons';
 
 interface EventModel {
   id: number;
@@ -22,9 +31,16 @@ interface EventModel {
 @Component({
   selector: 'app-event-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, NavbarComponent, FormsModule, FaIconComponent, FontAwesomeModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    NavbarComponent,
+    FormsModule,
+    FaIconComponent,
+    FontAwesomeModule,
+  ],
   templateUrl: './event-detail.html',
-  styleUrls: ['./event-detail.scss']
+  styleUrls: ['./event-detail.scss'],
 })
 export class EventDetail implements OnInit {
   event?: EventModel;
@@ -41,12 +57,9 @@ export class EventDetail implements OnInit {
   faCalendar = faCalendar;
   faUsers = faUsers;
   faMoney = faMoneyBill;
+  faDollarSign = faDollarSign;
 
-  constructor(
-    public router: Router,
-    private route: ActivatedRoute,
-    private http: HttpClient
-  ) {}
+  constructor(public router: Router, private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.currentUserId = Number(localStorage.getItem('userId') || 0);
@@ -59,13 +72,14 @@ export class EventDetail implements OnInit {
 
     if (eventId && token) {
       const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-      this.http.get<EventModel>(`http://localhost:8000/api/events/${eventId}`, { headers })
+      this.http
+        .get<EventModel>(`http://localhost:8000/api/events/${eventId}`, { headers })
         .subscribe({
           next: (res) => {
             this.event = res;
             this.formData = { ...res };
           },
-          error: (err) => console.error('Error al obtener evento:', err)
+          error: (err) => console.error('Error al obtener evento:', err),
         });
     }
   }
@@ -84,7 +98,7 @@ export class EventDetail implements OnInit {
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
       const reader = new FileReader();
-      reader.onload = () => this.imagePreview = reader.result as string;
+      reader.onload = () => (this.imagePreview = reader.result as string);
       reader.readAsDataURL(this.selectedFile);
     }
   }
@@ -113,7 +127,9 @@ export class EventDetail implements OnInit {
 
       const body = { ...this.formData, image_path: imageUrl };
 
-      await this.http.put(`http://localhost:8000/api/events/${this.event.id}`, body, { headers }).toPromise();
+      await this.http
+        .put(`http://localhost:8000/api/events/${this.event.id}`, body, { headers })
+        .toPromise();
 
       this.event = { ...body };
       this.editMode = false;
@@ -131,14 +147,13 @@ export class EventDetail implements OnInit {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.delete(`http://localhost:8000/api/events/${this.event.id}`, { headers })
-      .subscribe({
-        next: () => this.router.navigate(['/home']),
-        error: (err) => console.error('Error al borrar evento:', err)
-      });
+    this.http.delete(`http://localhost:8000/api/events/${this.event.id}`, { headers }).subscribe({
+      next: () => this.router.navigate(['/home']),
+      error: (err) => console.error('Error al borrar evento:', err),
+    });
   }
 
-  // Navegación pública 
+  // Navegación pública
   goToCheckout(eventId: number) {
     this.router.navigate(['/checkout', eventId]);
   }

@@ -4,14 +4,20 @@ import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService, LoginResponse } from '../../services/auth.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faEnvelope, faLock, faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEnvelope,
+  faLock,
+  faCheckCircle,
+  faExclamationCircle,
+  faArrowRight,
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './login.html',
-  styleUrls: ['./login.scss']
+  styleUrls: ['./login.scss'],
 })
 export class Login {
   loginForm: FormGroup;
@@ -20,15 +26,12 @@ export class Login {
   faLock = faLock;
   faCheckCircle = faCheckCircle;
   faExclamationCircle = faExclamationCircle;
+  faArrowRight = faArrowRight;
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router
-  ) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]]
+      password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
 
@@ -45,7 +48,7 @@ export class Login {
       error: (err) => {
         this.errorMessage = 'Credenciales inválidas';
         console.error(err);
-      }
+      },
     });
   }
 }

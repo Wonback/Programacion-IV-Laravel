@@ -12,10 +12,27 @@
 
     <!-- Desktop Menu -->
     <div class="hidden md:flex items-center space-x-6 text-sm font-medium">
-      <a (click)="navigate('/home')" class="nav-link text-gray-300 hover:text-[#00d58b] transition">Inicio</a>
-      <a *ngIf="userRole === 'admin'" (click)="navigate('/create-event')" class="nav-link text-gray-300 hover:text-[#00d58b] transition">Crear Evento</a>
-      <a *ngIf="userRole === 'admin'" (click)="navigate('/validate-tickets')" class="nav-link text-gray-300 hover:text-[#00d58b] transition">Validar Tickets</a>
-      <a *ngIf="isLoggedIn" (click)="navigate('/my-tickets')" class="nav-link text-gray-300 hover:text-[#00d58b] transition">Mis Tickets</a>
+      <a (click)="navigate('/home')" class="nav-link text-gray-300 hover:text-[#00d58b] transition"
+        >Inicio</a
+      >
+      <a
+        *ngIf="userRole === 'admin'"
+        (click)="navigate('/create-event')"
+        class="nav-link text-gray-300 hover:text-[#00d58b] transition"
+        >Crear Evento</a
+      >
+      <a
+        *ngIf="userRole === 'admin'"
+        (click)="navigate('/validate-tickets')"
+        class="nav-link text-gray-300 hover:text-[#00d58b] transition"
+        >Validar Tickets</a
+      >
+      <a
+        *ngIf="isLoggedIn"
+        (click)="navigate('/my-tickets')"
+        class="nav-link text-gray-300 hover:text-[#00d58b] transition"
+        >Mis Tickets</a
+      >
 
       <!-- Estadísticas (Admin) -->
       <a
@@ -49,7 +66,6 @@
         placeholder="Buscar..."
         class="bg-[#141415] text-gray-200 placeholder-gray-500 rounded-full px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-[#00d58b] transition-all w-48 sm:w-60"
       />
-      
     </div>
 
     <button
@@ -82,26 +98,80 @@
   </div>
 </nav>
 
-<!-- Mobile Menu -->
-<div
-  *ngIf="isMenuOpen"
-  class="md:hidden bg-[#0f0f0f]/95 border-t border-[#00d58b]/10 px-6 py-5 space-y-4 animate-fadeIn"
->
-  <a (click)="navigate('/home')" class="block nav-link text-gray-300 hover:text-[#00d58b] transition">Inicio</a>
-  <a *ngIf="userRole === 'admin'" (click)="navigate('/create-event')" class="block nav-link text-gray-300 hover:text-[#00d58b] transition">Crear Evento</a>
-  <a *ngIf="userRole === 'admin'" (click)="navigate('/validate-tickets')" class="block nav-link text-gray-300 hover:text-[#00d58b] transition">Validar Tickets</a>
-  <a *ngIf="isLoggedIn" (click)="navigate('/my-tickets')" class="block nav-link text-[#00d58b]">Mis Tickets</a>
+<header class="text-gray-400 bg-gray-900 body-font">
+  <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+    <a
+      routerLink="/"
+      class="flex font-bold items-center mb-4 md:mb-0 bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent cursor-pointer"
+    >
+      <fa-icon [icon]="faMeteor" class="text-2xl" style="color: #00d58b"></fa-icon>
 
-  <button
-    *ngIf="isLoggedIn && !isVerified"
-    (click)="requestVerification()"
-    [disabled]="loadingVerify"
-    class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
-  >
-    {{ loadingVerify ? 'Enviando...' : 'Verificar cuenta' }}
-  </button>
-  <p *ngIf="verifyMessage" class="text-sm text-yellow-300 mt-1">{{ verifyMessage }}</p>
+      <span class="ml-3 text-xl">WamoEvents</span>
+    </a>
+    <nav
+      class="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-700 flex flex-wrap items-center text-base justify-center cursor-pointer"
+    >
+      <a
+        (click)="navigate('/home')"
+        class="relative mr-5 text-gray-300 hover:text-[#00d58b] transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#00d58b] after:shadow-[0_0_6px_#00d58b] after:transition-all after:duration-500 hover:after:w-full cursor-pointer"
+        >Inicio</a
+      >
+      <a
+        *ngIf="userRole === 'admin'"
+        (click)="navigate('/create-event')"
+        class="relative mr-5 text-gray-300 hover:text-[#00d58b] transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#00d58b] after:shadow-[0_0_6px_#00d58b] after:transition-all after:duration-500 hover:after:w-full cursor-pointer"
+        >Crear evento</a
+      >
+      <a
+        *ngIf="userRole === 'admin'"
+        (click)="navigate('/validate-tickets')"
+        class="relative mr-5 text-gray-300 hover:text-[#00d58b] transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#00d58b] after:shadow-[0_0_6px_#00d58b] after:transition-all after:duration-500 hover:after:w-full cursor-pointer"
+        >Validar tickets</a
+      >
+      <a
+        *ngIf="isLoggedIn"
+        (click)="navigate('/my-tickets')"
+        class="relative mr-5 text-gray-300 hover:text-[#00d58b] transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#00d58b] after:shadow-[0_0_6px_#00d58b] after:transition-all after:duration-500 hover:after:w-full cursor-pointer"
+        >Mis tickets</a
+      >
+      <a
+        *ngIf="userRole === 'admin'"
+        (click)="navigate('/my-events')"
+        class="relative mr-5 text-gray-300 hover:text-[#00d58b] transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#00d58b] after:shadow-[0_0_6px_#00d58b] after:transition-all after:duration-500 hover:after:w-full cursor-pointer"
+        >Estadísticas</a
+      >
+      <div class="relative ml-4">
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Buscar..."
+          (keyup.enter)="onSearch()"
+          class="w-48 lg:w-64 bg-[#002e35] border border-[#00d58b]/40 text-gray-200 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00d58b]/70 focus:border-[#00d58b] placeholder-gray-500 transition-all duration-300"
+        />
 
-  <a *ngIf="isLoggedIn" (click)="logout()" class="block nav-link text-red-400 hover:text-red-500">Cerrar sesión</a>
-  <a *ngIf="!isLoggedIn" (click)="navigate('/login')" class="block nav-link text-[#00d58b] hover:text-[#00b3ff]">Iniciar sesión</a>
-</div>
+        <a (click)="onSearch()" class="cursor-pointer">
+          <fa-icon
+            [icon]="faSearch"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-[#00d58b]"
+          ></fa-icon>
+        </a>
+      </div>
+    </nav>
+    <button
+      *ngIf="isLoggedIn"
+      (click)="logout()"
+      class="inline-flex items-center bg-gray-800 border-0 py-1 px-3 focus:outline-none hover:text-white hover:bg-red-700 rounded text-base mt-4 md:mt-0"
+    >
+      Salir
+      <fa-icon [icon]="faRightFromBracket" class="ml-2"></fa-icon>
+    </button>
+    <button
+      *ngIf="!isLoggedIn"
+      (click)="navigate('/login')"
+      class="inline-flex items-center bg-gray-800 border-0 py-1 px-3 focus:outline-none hover:text-black hover:bg-[#00d58b] rounded text-base mt-4 md:mt-0"
+    >
+      Ingresar
+      <fa-icon [icon]="faRightToBracket" class="ml-2"></fa-icon>
+    </button>
+  </div>
+</header>

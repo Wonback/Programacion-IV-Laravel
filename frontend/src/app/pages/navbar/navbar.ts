@@ -6,10 +6,17 @@ import { AuthService, User } from '../../services/auth.service';
 import { VerificationService } from '../../services/verification.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SearchService } from '../../services/search.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  faMeteor,
+  faSearch,
+  faRightFromBracket,
+  faRightToBracket,
+} from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, FontAwesomeModule],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.scss'],
 })
@@ -58,6 +65,12 @@ export class NavbarComponent implements OnInit {
     }
   }
 
+  // Icons
+  faMeteor = faMeteor;
+  faSearch = faSearch;
+  faRightFromBracket = faRightFromBracket;
+  faRightToBracket = faRightToBracket;
+
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
   }
@@ -69,7 +82,7 @@ export class NavbarComponent implements OnInit {
 
   onSearch(): void {
     const term = this.searchTerm.trim();
-    this.searchService.updateSearchTerm(term); 
+    this.searchService.updateSearchTerm(term);
 
     if (this.router.url !== '/home') {
       this.router.navigate(['/home']);

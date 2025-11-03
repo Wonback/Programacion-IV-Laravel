@@ -106,10 +106,14 @@
 
 <section class="min-h-screen text-gray-400 bg-black-900 body-font relative">
   <div
-    class="container-fluid px-5 mt-8 py-24 mx-auto bg-gradient-to-b from-transparent via-[#002e35] to-transparent"
+    class="container-fluid px-5 mt-4 mx-auto bg-gradient-to-b from-transparent via-[#002e35] to-transparent"
   >
-    <div class="flex flex-col text-center w-full mb-12">
-      <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-white">Nuevo evento</h1>
+    <div class="mt-10 flex flex-col text-center w-full mb-12">
+      <h1
+        class="text-4xl font-bold mb-6 bg-gradient-to-r from-[#00d58b] to-[#00b3ff] bg-clip-text text-transparent tracking-wide"
+      >
+        Nuevo evento
+      </h1>
     </div>
     <div class="lg:w-1/2 md:w-2/3 mx-auto">
       <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="space-y-4">

@@ -9,6 +9,7 @@ import {
   faDollarSign,
   faTicketAlt,
   faDownload,
+  faFingerprint,
 } from '@fortawesome/free-solid-svg-icons';
 import { FooterComponent } from '../footer/footer';
 
@@ -26,6 +27,7 @@ export class MyTickets implements OnInit {
   faDollarSign = faDollarSign;
   faTicketAlt = faTicketAlt;
   faDownload = faDownload;
+  faFingerprint = faFingerprint;
 
   constructor(private http: HttpClient) {}
 
