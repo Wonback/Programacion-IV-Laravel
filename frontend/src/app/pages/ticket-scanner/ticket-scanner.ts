@@ -8,8 +8,12 @@ import { BrowserMultiFormatReader, BarcodeFormat } from '@zxing/library';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faHome, faQrcode, faUser, faTicketAlt, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { NavbarComponent } from '../navbar/navbar';
+import { FooterComponent } from '../footer/footer';
 
-interface EventOption { id: number; title: string; }
+interface EventOption {
+  id: number;
+  title: string;
+}
 
 interface User {
   id: number;
@@ -29,9 +33,17 @@ interface Order {
 @Component({
   selector: 'app-ticket-scanner',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, RouterModule, FormsModule, ZXingScannerModule, FontAwesomeModule],
+  imports: [
+    CommonModule,
+    NavbarComponent,
+    RouterModule,
+    FormsModule,
+    ZXingScannerModule,
+    FontAwesomeModule,
+    FooterComponent,
+  ],
   templateUrl: './ticket-scanner.html',
-  styleUrls: ['./ticket-scanner.scss']
+  styleUrls: ['./ticket-scanner.scss'],
 })
 export class TicketScanner implements OnInit {
   events: EventOption[] = [];
@@ -60,8 +72,9 @@ export class TicketScanner implements OnInit {
     if (!token) return;
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.get<EventOption[]>('http://localhost:8000/api/my-events', { headers })
-      .subscribe({ next: res => this.events = res, error: err => console.error(err) });
+    this.http
+      .get<EventOption[]>('http://localhost:8000/api/my-events', { headers })
+      .subscribe({ next: (res) => (this.events = res), error: (err) => console.error(err) });
   }
 
   selectEvent() {
@@ -71,12 +84,13 @@ export class TicketScanner implements OnInit {
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
     // Llamamos al endpoint que devuelve las órdenes con el usuario incluido
-    this.http.get<Order[]>(`http://localhost:8000/api/events/${this.selectedEventId}/orders`, { headers })
+    this.http
+      .get<Order[]>(`http://localhost:8000/api/events/${this.selectedEventId}/orders`, { headers })
       .subscribe({
-        next: res => {
+        next: (res) => {
           this.orders = res;
         },
-        error: err => console.error(err)
+        error: (err) => console.error(err),
       });
   }
 
@@ -94,10 +108,13 @@ export class TicketScanner implements OnInit {
       const img = new Image();
       img.src = e.target?.result as string;
       img.onload = () => {
-        this.reader.decodeFromImage(img).then(result => {
-          this.qrResult = result.getText();
-          this.validateQR();
-        }).catch(() => this.message = 'No se pudo leer el QR desde la imagen');
+        this.reader
+          .decodeFromImage(img)
+          .then((result) => {
+            this.qrResult = result.getText();
+            this.validateQR();
+          })
+          .catch(() => (this.message = 'No se pudo leer el QR desde la imagen'));
       };
     };
     reader.readAsDataURL(file);
@@ -109,13 +126,14 @@ export class TicketScanner implements OnInit {
     if (!token) return;
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.post(`http://localhost:8000/api/orders/validate`, { qr_data: this.qrResult }, { headers })
+    this.http
+      .post(`http://localhost:8000/api/orders/validate`, { qr_data: this.qrResult }, { headers })
       .subscribe({
         next: (res: any) => {
           this.message = res.message;
           this.selectEvent(); // recarga la tabla
         },
-        error: (err) => this.message = err.error?.message || 'Error al validar ticket'
+        error: (err) => (this.message = err.error?.message || 'Error al validar ticket'),
       });
   }
 }

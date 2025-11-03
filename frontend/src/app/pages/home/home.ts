@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SearchService } from '../../services/search.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCalendar, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faArrowRight, faTicket, faRetweet } from '@fortawesome/free-solid-svg-icons';
 import { FooterComponent } from '../footer/footer';
 
 interface Event {
@@ -24,9 +24,26 @@ interface Event {
   standalone: true,
   imports: [CommonModule, NavbarComponent, FooterComponent, RouterLink, FontAwesomeModule],
   templateUrl: './home.html',
-  styleUrls: ['./home.scss']
+  styleUrls: ['./home.scss'],
 })
 export class Home implements OnInit, OnDestroy {
+  open = false;
+  options = [
+    { value: 'all', label: 'Todos los eventos' },
+    { value: 'today', label: 'Hoy' },
+    { value: 'week', label: 'Esta semana' },
+    { value: 'month', label: 'Este mes' },
+    { value: 'year', label: 'Este año' },
+  ];
+  selected = this.options[0];
+
+  select(opt: any) {
+    this.selected = opt;
+    this.open = false;
+    // emulá el change del <select>
+    this.onFilterDateChange({ target: { value: opt.value } } as any);
+  }
+
   events: Event[] = [];
   filteredEvents: Event[] = [];
   paginatedEvents: Event[] = [];
@@ -38,7 +55,7 @@ export class Home implements OnInit, OnDestroy {
   // Filtros
   filters = {
     term: '',
-    date: 'all'
+    date: 'all',
   };
 
   // Animación
@@ -49,6 +66,8 @@ export class Home implements OnInit, OnDestroy {
   // Icons
   faCalendar = faCalendar;
   faArrowRight = faArrowRight;
+  faTicket = faTicket;
+  faRetweet = faRetweet;
 
   constructor(private http: HttpClient, private searchService: SearchService) {}
 
@@ -60,15 +79,15 @@ export class Home implements OnInit, OnDestroy {
       next: (res) => {
         const now = new Date();
         this.events = res.data
-          .filter(e => new Date(e.starts_at) > now)
+          .filter((e) => new Date(e.starts_at) > now)
           .sort((a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime());
 
         this.applyFilters(true);
       },
-      error: (err) => console.error('Error al obtener eventos:', err)
+      error: (err) => console.error('Error al obtener eventos:', err),
     });
 
-    this.searchSub = this.searchService.searchTerm$.subscribe(term => {
+    this.searchSub = this.searchService.searchTerm$.subscribe((term) => {
       this.filters.term = term.toLowerCase();
       this.applyFilters();
     });
@@ -95,7 +114,7 @@ export class Home implements OnInit, OnDestroy {
 
     const now = new Date();
 
-    this.filteredEvents = this.events.filter(ev => {
+    this.filteredEvents = this.events.filter((ev) => {
       const starts = new Date(ev.starts_at);
 
       // Filtrado por término

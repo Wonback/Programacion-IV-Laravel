@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 
-<div *ngIf="event" class="min-h-screen bg-gradient-to-b from-[#002e35] to-[#0a0a0a] text-gray-100 flex flex-col">
+<div *ngIf="event" class="min-h-screen bg-[#0a0a0a] text-gray-100 flex flex-col">
   <!-- Imagen principal -->
   <div class="relative w-full h-[420px] overflow-hidden">
     <img
@@ -14,65 +14,102 @@
       [src]="imagePreview"
       class="w-full h-full object-cover brightness-90 hover:scale-105 transition-transform duration-700"
     />
-    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/90 via-transparent to-transparent"></div>
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/90 via-transparent to-transparent"
+    ></div>
 
     <!-- Título sobre imagen -->
-    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-center px-6">
+    <!-- <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-center px-6">
       <h1
         class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-[#00d58b] to-[#92fa87] bg-clip-text text-transparent tracking-tight"
       >
         {{ event.title }}
       </h1>
-    </div>
+    </div> -->
   </div>
 
   <!-- Contenido -->
-  <div class="flex-1 w-full max-w-5xl mx-auto px-6 py-10 space-y-10">
-    <!-- Descripción -->
-    <div class="text-gray-300 text-lg leading-relaxed">
-      {{ event.description }}
+  <div class="flex-1 w-full pt-4 max-w-5xl mx-auto space-y-10">
+    <div class="text-gray-400 bg-[#0a0a0a] body-font">
+      <div class="container mx-auto">
+        <div class="flex flex-col text-center w-full mb-10">
+          <h1 class="text-4xl font-bold title-font mb-4 text-[#00d58b]">
+            {{ event.title }}
+          </h1>
+          <p class="lg:w-2/3 mx-auto leading-relaxed text-lg">
+            {{ event.description }}
+          </p>
+        </div>
+        <div class="flex justify-center -m-4 text-center">
+          <div class="p-4 md:w-1/4 sm:w-1/2 w-full">
+            <div class="border-2 border-gray-800 px-4 py-6 rounded-lg">
+              <fa-icon [icon]="faCalendar" class="text-[#00d58b] text-4xl"></fa-icon>
+              <h2 class="title-font font-medium text-3xl text-white">
+                {{ event.starts_at | date : 'd MMM y' }}
+              </h2>
+              <p class="leading-relaxed">Fecha</p>
+            </div>
+          </div>
+          <div class="p-4 md:w-1/4 sm:w-1/2 w-full">
+            <div class="border-2 border-gray-800 px-4 py-6 rounded-lg">
+              <fa-icon [icon]="faUsers" class="text-[#00d58b] text-4xl mb-3"></fa-icon>
+              <h2 class="title-font font-medium text-3xl text-white">{{ event.capacity }}</h2>
+              <p class="leading-relaxed">Capacidad</p>
+            </div>
+          </div>
+          <div class="p-4 md:w-1/4 sm:w-1/2 w-full">
+            <div class="border-2 border-gray-800 px-4 py-6 rounded-lg">
+              <fa-icon [icon]="faDollarSign" class="text-[#00d58b] text-4xl mb-3"></fa-icon>
+              <h2 class="title-font font-medium text-3xl text-white">${{ event.price }}</h2>
+              <p class="leading-relaxed">Precio</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+    <!-- Descripción -->
+    <!-- <div class="text-gray-300 text-2xl leading-relaxed">
+      {{ event.description }}
+    </div> -->
 
     <!-- Datos del evento -->
-    <div
+    <!-- <div
       class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center py-6 rounded-2xl bg-[#00343a]/40 border border-[#00d58b]/20 backdrop-blur-sm"
     >
-      <div class="flex flex-col items-center">
-        <fa-icon [icon]="faCalendar" class="text-[#92fa87] text-2xl mb-2"></fa-icon>
-        <span class="text-gray-400 text-sm">Fecha</span>
-        <span class="font-semibold text-gray-100 mt-1">{{ event.starts_at | date:'fullDate' }}</span>
+      <div class="text-lg flex flex-col items-center">
+        <fa-icon [icon]="faCalendar" class="text-[#00d58b] text-4xl mb-2"></fa-icon>
+        <span class="text-gray-400">Fecha</span>
+        <span class="font-semibold text-gray-100 mt-1">{{
+          event.starts_at | date : 'fullDate'
+        }}</span>
       </div>
-      <div class="flex flex-col items-center">
-        <fa-icon [icon]="faUsers" class="text-[#92fa87] text-2xl mb-2"></fa-icon>
-        <span class="text-gray-400 text-sm">Capacidad</span>
+      <div class="text-lg flex flex-col items-center">
+        <fa-icon [icon]="faUsers" class="text-[#00d58b] text-4xl mb-2"></fa-icon>
+        <span class="text-gray-400">Capacidad</span>
         <span class="font-semibold text-gray-100 mt-1">{{ event.capacity }}</span>
       </div>
-      <div class="flex flex-col items-center">
-        <fa-icon [icon]="faMoney" class="text-[#92fa87] text-2xl mb-2"></fa-icon>
-        <span class="text-gray-400 text-sm">Precio</span>
+      <div class="text-lg flex flex-col items-center">
+        <fa-icon [icon]="faDollarSign" class="text-[#00d58b] text-4xl mb-2"></fa-icon>
+        <span class="text-gray-400">Precio</span>
         <span class="font-semibold text-gray-100 mt-1">${{ event.price }}</span>
       </div>
-    </div>
+    </div> -->
 
     <!-- Botones de acción -->
-    <div class="flex flex-wrap justify-center gap-5 mt-8">
+    <div class="flex flex-wrap justify-center gap-5">
       <button
         (click)="router.navigate(['/checkout', event.id])"
         class="px-8 py-3 bg-gradient-to-r from-[#00d58b] to-[#92fa87] text-black font-semibold rounded-full hover:opacity-90 transition shadow-lg"
       >
         <fa-icon [icon]="faTicket" class="mr-2"></fa-icon> Comprar Entrada
       </button>
-
-      <button
-        routerLink="/home"
-        class="px-8 py-3 bg-[#005d99] hover:bg-[#002e35] rounded-full text-white font-semibold shadow-lg transition"
-      >
-        <fa-icon [icon]="faArrowLeft" class="mr-2"></fa-icon> Volver al Inicio
-      </button>
     </div>
 
     <!-- Modo edición -->
-    <div *ngIf="canEdit()" class="flex flex-wrap justify-center gap-4 pt-10 border-t border-[#00d58b]/20">
+    <div
+      *ngIf="canEdit()"
+      class="flex flex-wrap justify-center gap-4 pt-10 border-t border-[#00d58b]/20"
+    >
       <button
         (click)="toggleEdit()"
         class="px-6 py-2.5 bg-[#00d58b] hover:bg-[#92fa87] text-black font-medium rounded-xl transition shadow-md"

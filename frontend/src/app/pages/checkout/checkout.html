@@ -1,25 +1,29 @@
-<div class="checkout-container bg-[#0a0a0a] min-h-screen flex flex-col items-center justify-center px-6 py-10">
-  <div class="bg-gradient-to-br from-[#002e35] via-[#00373f] to-[#002e35] p-8 rounded-3xl shadow-2xl max-w-md w-full text-center transform transition-all duration-300 hover:scale-105">
-
-    <h2 class="text-3xl font-extrabold text-cyan-400 mb-6 drop-shadow-lg flex items-center justify-center gap-2">
-      <fa-icon [icon]="faTicketAlt" class="text-green-400"></fa-icon>
+<div
+  class="checkout-container bg-[#0a0a0a] min-h-screen flex flex-col items-center justify-center px-6 py-10"
+>
+  <div
+    class="bg-[#0a0a0a] border-[#00d58b] border-2 shadow-[0_0_30px_#00d58b80] p-8 rounded-3xl shadow-2xl max-w-md w-full text-center transform transition-all duration-300 hover:scale-125"
+  >
+    <h2
+      class="text-3xl font-extrabold text-[#00d58b] mb-6 drop-shadow-lg flex items-center justify-center gap-2"
+    >
       Compra tu entrada
     </h2>
 
     <p class="text-gray-400 mb-2">
-      <fa-icon [icon]="faCalendar" class="text-[#92fa87] mr-2"></fa-icon>
+      <fa-icon [icon]="faCalendar" class="text-[#00d58b] mr-2"></fa-icon>
       Evento: <span class="text-white font-semibold">{{ eventTitle }}</span>
     </p>
     <p class="text-gray-400 mb-6">
-      <fa-icon [icon]="faDollarSign" class="text-[#92fa87] mr-2"></fa-icon>
-      Precio: <span class="text-green-400 font-bold">${{ price }}</span>
+      <fa-icon [icon]="faDollarSign" class="text-[#00d58b] mr-2"></fa-icon>
+      Precio: <span class="text-[#00d58b] font-bold">${{ price }}</span>
     </p>
 
     <!-- Botón de pago -->
     <button
       *ngIf="!paymentDone"
       (click)="processPayment()"
-      class="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:opacity-90 text-white py-3 rounded-full font-semibold transition-all"
+      class="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#00d58b] to-blue-500 hover:opacity-90 text-black py-3 rounded-full font-semibold transition-all"
     >
       <fa-icon [icon]="faCreditCard"></fa-icon>
       Pagar ahora
@@ -53,6 +57,5 @@
         Volver al inicio
       </button>
     </div>
-
   </div>
 </div>

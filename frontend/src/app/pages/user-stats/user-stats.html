@@ -1,13 +1,13 @@
 <app-navbar></app-navbar>
 
-<section class="min-h-screen bg-gradient-to-b from-[#0a0a0a] to-[#00191c] text-gray-200 px-6 sm:px-12 py-14">
-
+<section
+  class="min-h-screen bg-gradient-to-b from-[#0a0a0a] to-[#00191c] text-gray-200 px-6 sm:px-12 py-14"
+>
   <!-- Encabezado -->
   <header class="text-center mb-16">
     <h2
       class="text-5xl font-extrabold bg-gradient-to-r from-[#00d58b] via-[#00ffa2] to-[#005d99] bg-clip-text text-transparent drop-shadow-md"
     >
-      <fa-icon [icon]="faCalendar" class="text-[#00d58b] mr-3"></fa-icon>
       Mis Estadísticas
     </h2>
     <p class="text-gray-400 mt-4 text-lg">Resumen de tus eventos y ventas en tiempo real</p>
@@ -34,7 +34,6 @@
   <div
     class="bg-gradient-to-b from-[#002e35] to-[#0f0f0f] border border-[#00d58b]/30 rounded-2xl p-8 shadow-lg hover:shadow-[#00d58b]/40 transition-all duration-500 mb-14"
   >
-    <h3 class="text-2xl font-semibold text-[#ffffa3] mb-4 text-center">Entradas vendidas por evento</h3>
     <canvas
       baseChart
       [datasets]="barChartData.datasets"
@@ -55,8 +54,12 @@
       >
         <h4 class="text-lg font-semibold text-[#ffffa3] truncate">{{ event.title }}</h4>
         <div class="mt-3 text-sm">
-          <p class="text-gray-400">Capacidad: <span class="text-gray-200 font-medium">{{ event.capacity }}</span></p>
-          <p class="text-[#00d58b] font-semibold mt-1">Tickets vendidos: {{ event.orders_count }}</p>
+          <p class="text-gray-400">
+            Capacidad: <span class="text-gray-200 font-medium">{{ event.capacity }}</span>
+          </p>
+          <p class="text-[#00d58b] font-semibold mt-1">
+            Tickets vendidos: {{ event.orders_count }}
+          </p>
         </div>
       </div>
     </div>
@@ -65,7 +68,6 @@
       <p>No se encontraron eventos 😔</p>
     </div>
   </div>
-
 </section>
 
 <app-footer></app-footer>
