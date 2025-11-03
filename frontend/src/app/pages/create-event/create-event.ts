@@ -6,20 +6,21 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NavbarComponent } from '../navbar/navbar';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCalendar, faUsers, faMoneyBillWave, faImage } from '@fortawesome/free-solid-svg-icons';
+import { FooterComponent } from '../footer/footer';
 
 @Component({
   selector: 'app-create-event',
   standalone: true,
-  imports: [ReactiveFormsModule, NavbarComponent, CommonModule, FontAwesomeModule],
+  imports: [ReactiveFormsModule, NavbarComponent, CommonModule, FontAwesomeModule, FooterComponent],
   templateUrl: './create-event.html',
-  styleUrls: ['./create-event.scss']
+  styleUrls: ['./create-event.scss'],
 })
 export class CreateEvent {
   eventForm: FormGroup;
   selectedFile: File | null = null;
   errorMessage: string | null = null;
   uploading: boolean = false;
-  imagePreview: string | null = null;  
+  imagePreview: string | null = null;
 
   faCalendar = faCalendar;
   faUsers = faUsers;
@@ -33,7 +34,7 @@ export class CreateEvent {
       starts_at: ['', Validators.required],
       capacity: [0, [Validators.required, Validators.min(0)]],
       price: [0, [Validators.required, Validators.min(0)]],
-      image: [null]
+      image: [null],
     });
   }
 
@@ -42,7 +43,7 @@ export class CreateEvent {
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
       const reader = new FileReader();
-      reader.onload = () => this.imagePreview = reader.result as string;
+      reader.onload = () => (this.imagePreview = reader.result as string);
       reader.readAsDataURL(this.selectedFile);
     }
   }
@@ -59,7 +60,9 @@ export class CreateEvent {
         formData.append('file', this.selectedFile);
         formData.append('upload_preset', 'utnentradas');
 
-        const cloudRes: any = await this.http.post('https://api.cloudinary.com/v1_1/da80v8vj1/image/upload', formData).toPromise();
+        const cloudRes: any = await this.http
+          .post('https://api.cloudinary.com/v1_1/da80v8vj1/image/upload', formData)
+          .toPromise();
         imageUrl = cloudRes.secure_url;
       }
 

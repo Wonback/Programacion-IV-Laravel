@@ -14,9 +14,7 @@
 
     <!-- Selección de evento -->
     <div class="mb-8 text-left">
-      <label class="block mb-2 font-semibold text-sm text-gray-400"
-        >Selecciona un evento:</label
-      >
+      <label class="block mb-2 font-semibold text-sm text-gray-400">Selecciona un evento:</label>
       <select
         [(ngModel)]="selectedEventId"
         (change)="selectEvent()"
@@ -36,7 +34,10 @@
     </button>
 
     <!-- Scanner de cámara -->
-    <div *ngIf="!useFileInput && selectedEventId" class="rounded-xl overflow-hidden mb-6 border border-[#00d58b]/20 shadow-inner">
+    <div
+      *ngIf="!useFileInput && selectedEventId"
+      class="rounded-xl overflow-hidden mb-6 border border-[#00d58b]/20 shadow-inner"
+    >
       <zxing-scanner
         (scanSuccess)="onCodeResult($event)"
         [formats]="formats"
@@ -56,10 +57,7 @@
 
     <!-- Resultado QR -->
     <div *ngIf="qrResult || message" class="mb-6 space-y-2">
-      <p
-        *ngIf="qrResult"
-        class="text-gray-300 flex items-center justify-center gap-2 text-sm"
-      >
+      <p *ngIf="qrResult" class="text-gray-300 flex items-center justify-center gap-2 text-sm">
         <fa-icon [icon]="faQrcode"></fa-icon>
         <span class="break-all">{{ qrResult }}</span>
       </p>
@@ -77,12 +75,12 @@
 
     <!-- Tabla de tickets -->
     <div *ngIf="orders.length" class="mt-8 text-left">
-      <h3 class="text-xl text-[#00d58b] font-semibold mb-4 text-center">
-        Tickets del evento
-      </h3>
+      <h3 class="text-xl text-[#00d58b] font-semibold mb-4 text-center">Tickets del evento</h3>
       <div class="overflow-x-auto rounded-xl border border-[#00d58b]/10">
         <table class="w-full text-sm border-collapse">
-          <thead class="bg-[#161616] border-b border-[#00d58b]/20 text-gray-400 uppercase text-xs tracking-wider">
+          <thead
+            class="bg-[#161616] border-b border-[#00d58b]/20 text-gray-400 uppercase text-xs tracking-wider"
+          >
             <tr>
               <th class="px-4 py-2">ID</th>
               <th class="px-4 py-2"><fa-icon [icon]="faUser"></fa-icon> Usuario</th>
@@ -91,10 +89,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              *ngFor="let o of orders"
-              class="hover:bg-[#0f0f0f] transition"
-            >
+            <tr *ngFor="let o of orders" class="hover:bg-[#0f0f0f] transition">
               <td class="px-4 py-2 border-t border-[#1a1a1a]">{{ o.id }}</td>
               <td class="px-4 py-2 border-t border-[#1a1a1a]">
                 <div class="font-semibold text-gray-100">{{ o.user?.name }}</div>
@@ -129,3 +124,5 @@
     </button>
   </div>
 </div>
+
+<app-footer></app-footer>

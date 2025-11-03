@@ -5,6 +5,7 @@
 }
 
 .nav-link {
+  font-size: large;
   color: #92fa87; // color4
   font-weight: 500;
   transition: all 0.25s ease;
@@ -16,7 +17,7 @@
   }
 
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     bottom: -3px;
     left: 0;
