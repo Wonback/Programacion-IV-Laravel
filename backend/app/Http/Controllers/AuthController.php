@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -77,7 +78,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Usuario creado correctamente',
-            'user' => $user
+            'user' => $this->formatUserResponse($user)
         ], 201);
     }
 
@@ -136,14 +137,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Login exitoso',
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role, // 🔥 asegurate de incluirlo
-                'created_at' => $user->created_at,
-                'updated_at' => $user->updated_at,
-            ],
+            'user' => $this->formatUserResponse($user),
             'token' => $token,
         ]);
         
@@ -185,15 +179,93 @@ class AuthController extends Controller
     }
 
     // Devuelve solo los campos necesarios o todo el usuario
-    return response()->json([
-        'id' => $user->id,
-        'name' => $user->name,
-        'email' => $user->email,
-        'role' => $user->role,
-        'created_at' => $user->created_at,
-        'updated_at' => $user->updated_at
-    ]);
+    return response()->json($this->formatUserResponse($user));
 }
+
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:100',
+            'email' => [
+                'sometimes',
+                'email',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+            'phone' => 'sometimes|nullable|string|max:30',
+            'bio' => 'sometimes|nullable|string|max:500',
+            'email_notifications' => 'sometimes|boolean',
+            'current_password' => 'required_with:password|string',
+            'password' => 'sometimes|string|min:8|confirmed',
+            'avatar' => 'sometimes|file|image|max:2048',
+            'remove_avatar' => 'sometimes|boolean',
+        ]);
+
+        if (array_key_exists('current_password', $validated)) {
+            if (! Hash::check($validated['current_password'], $user->password)) {
+                return response()->json([
+                    'message' => 'La contraseña actual no coincide.',
+                ], 422);
+            }
+
+            unset($validated['current_password']);
+        }
+
+        if (array_key_exists('password', $validated)) {
+            $user->password = Hash::make($validated['password']);
+            unset($validated['password']);
+        }
+
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar_path) {
+                Storage::disk('public')->delete($user->avatar_path);
+            }
+
+            $validated['avatar_path'] = $request->file('avatar')->store('avatars', 'public');
+        }
+
+        if (! empty($validated['remove_avatar']) && $user->avatar_path) {
+            Storage::disk('public')->delete($user->avatar_path);
+            $validated['avatar_path'] = null;
+        }
+
+        unset($validated['remove_avatar']);
+
+        if (array_key_exists('phone', $validated) && $validated['phone'] === '') {
+            $validated['phone'] = null;
+        }
+
+        if (array_key_exists('bio', $validated) && trim((string) $validated['bio']) === '') {
+            $validated['bio'] = null;
+        }
+
+        $user->fill($validated);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Perfil actualizado correctamente.',
+            'user' => $this->formatUserResponse($user->fresh()),
+        ]);
+    }
+
+    private function formatUserResponse(User $user): array
+    {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'is_verified' => (bool) $user->is_verified,
+            'phone' => $user->phone,
+            'bio' => $user->bio,
+            'avatar_url' => $user->avatar_url,
+            'email_notifications' => (bool) $user->email_notifications,
+            'is_active' => (bool) $user->is_active,
+            'created_at' => $user->created_at,
+            'updated_at' => $user->updated_at,
+        ];
+    }
 
 
     /**
