@@ -12,6 +12,7 @@ import {
   faSearch,
   faRightFromBracket,
   faRightToBracket,
+  faExclamation,
 } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'app-navbar',
@@ -70,6 +71,7 @@ export class NavbarComponent implements OnInit {
   faSearch = faSearch;
   faRightFromBracket = faRightFromBracket;
   faRightToBracket = faRightToBracket;
+  faExclamation = faExclamation;
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;

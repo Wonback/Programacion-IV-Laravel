@@ -4,7 +4,7 @@
 - [@jonimende](https://github.com/jonimende) (Jonas Mendelovich)
 - [@wonback](https://github.com/Wonback) (Mateo Zaballo)
 - [@Knd0](https://github.com/Knd0) (Franco De Iriondo)
-- [@NunezGaston](https://github.com/NunezGaston) (Gaston Nuñez)
+
 
 ---
 

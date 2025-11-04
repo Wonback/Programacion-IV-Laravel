@@ -1,16 +1,11 @@
 <app-navbar></app-navbar>
 
-<div
-  class="scanner-container text-gray-200 bg-gradient-to-b from-[#050505] to-[#0a0a0a] min-h-screen flex flex-col items-center px-6 py-12"
->
+<div class="min-h-screen bg-[#0a0a0a] text-gray-200 flex flex-col items-center px-6 py-12">
+  <!-- Card estilo login -->
   <div
-    class="bg-[#101010]/90 p-10 rounded-2xl shadow-[0_0_25px_#00d58b25] w-full max-w-3xl text-center border border-[#00d58b]/20 backdrop-blur-md animate-fadeIn"
+    class="w-full max-w-3xl text-center border-2 border-[#00d58b] bg-black p-10 rounded-3xl shadow-[0_0_30px_#00d58b80] backdrop-blur-md transform transition-all duration-300"
   >
-    <h2
-      class="text-3xl font-bold mb-6 bg-gradient-to-r from-[#00d58b] to-[#00b3ff] bg-clip-text text-transparent tracking-wide"
-    >
-      Validar Tickets
-    </h2>
+    <h2 class="text-3xl font-extrabold mb-6 text-[#00d58b] tracking-wide">Validar Tickets</h2>
 
     <!-- Selección de evento -->
     <div class="mb-8 text-left">
@@ -18,9 +13,9 @@
       <select
         [(ngModel)]="selectedEventId"
         (change)="selectEvent()"
-        class="w-full p-3 rounded-xl bg-[#161616] border border-[#00d58b]/20 focus:ring-2 focus:ring-[#00d58b] text-gray-100 transition"
+        class="w-full p-3 rounded-xl bg-[#0f0f0f] text-gray-100 placeholder-gray-500 border border-[#00d58b]/30 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-[#00d58b] focus:shadow-[0_0_12px_#00d58b66] transition"
       >
-        <option [value]="null">-- Seleccionar --</option>
+        <option [value]="null">-Selecciona un evento-</option>
         <option *ngFor="let e of events" [value]="e.id">{{ e.title }}</option>
       </select>
     </div>
@@ -28,7 +23,7 @@
     <!-- Toggle cámara / archivo -->
     <button
       (click)="useFileInput = !useFileInput"
-      class="mb-6 px-5 py-2.5 bg-gradient-to-r from-[#00d58b] to-[#00b3ff] hover:opacity-90 text-black font-semibold rounded-full shadow-lg transition-all"
+      class="mb-6 px-5 py-2.5 rounded-full font-semibold text-black bg-[#00d58b] hover:opacity-90 shadow-[0_0_14px_#00d58b80] transition-all"
     >
       {{ useFileInput ? 'Usar cámara' : 'Subir QR desde archivo' }}
     </button>
@@ -36,7 +31,7 @@
     <!-- Scanner de cámara -->
     <div
       *ngIf="!useFileInput && selectedEventId"
-      class="rounded-xl overflow-hidden mb-6 border border-[#00d58b]/20 shadow-inner"
+      class="rounded-2xl overflow-hidden mb-6 border-2 border-[#00d58b]/40 shadow-[0_0_18px_#00d58b40]"
     >
       <zxing-scanner
         (scanSuccess)="onCodeResult($event)"
@@ -51,14 +46,14 @@
         type="file"
         (change)="onFileSelected($event)"
         accept="image/*"
-        class="w-full p-3 rounded-xl bg-[#161616] border border-[#00d58b]/20 text-gray-300 cursor-pointer hover:border-[#00d58b]/40 transition"
+        class="w-full p-3 rounded-xl bg-[#0f0f0f] text-gray-300 cursor-pointer border border-[#00d58b]/30 hover:border-[#00d58b]/60 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-[#00d58b] focus:shadow-[0_0_12px_#00d58b66] transition"
       />
     </div>
 
     <!-- Resultado QR -->
     <div *ngIf="qrResult || message" class="mb-6 space-y-2">
       <p *ngIf="qrResult" class="text-gray-300 flex items-center justify-center gap-2 text-sm">
-        <fa-icon [icon]="faQrcode"></fa-icon>
+        <fa-icon [icon]="faQrcode" class="text-[#00d58b]"></fa-icon>
         <span class="break-all">{{ qrResult }}</span>
       </p>
       <p
@@ -76,35 +71,39 @@
     <!-- Tabla de tickets -->
     <div *ngIf="orders.length" class="mt-8 text-left">
       <h3 class="text-xl text-[#00d58b] font-semibold mb-4 text-center">Tickets del evento</h3>
-      <div class="overflow-x-auto rounded-xl border border-[#00d58b]/10">
+
+      <div
+        class="overflow-x-auto rounded-2xl border border-[#00d58b]/15 shadow-[0_0_10px_#00d58b1f]"
+      >
         <table class="w-full text-sm border-collapse">
           <thead
-            class="bg-[#161616] border-b border-[#00d58b]/20 text-gray-400 uppercase text-xs tracking-wider"
+            class="bg-[#0f0f0f] border-b border-[#00d58b]/25 text-gray-400 uppercase text-xs tracking-wider"
           >
             <tr>
-              <th class="px-4 py-2">ID</th>
-              <th class="px-4 py-2"><fa-icon [icon]="faUser"></fa-icon> Usuario</th>
-              <th class="px-4 py-2"><fa-icon [icon]="faTicketAlt"></fa-icon> QR</th>
-              <th class="px-4 py-2">Estado</th>
+              <th class="px-4 py-3 text-left">ID</th>
+              <th class="px-4 py-3 text-left">
+                <fa-icon [icon]="faUser" class="text-[#00d58b]"></fa-icon> Usuario
+              </th>
+              <th class="px-4 py-3 text-left">
+                <fa-icon [icon]="faTicketAlt" class="text-[#00d58b]"></fa-icon> QR
+              </th>
+              <th class="px-4 py-3 text-left">Estado</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let o of orders" class="hover:bg-[#0f0f0f] transition">
-              <td class="px-4 py-2 border-t border-[#1a1a1a]">{{ o.id }}</td>
-              <td class="px-4 py-2 border-t border-[#1a1a1a]">
+            <tr *ngFor="let o of orders" class="hover:bg-[#0c0c0c] transition">
+              <td class="px-4 py-3 border-t border-[#1a1a1a]">{{ o.id }}</td>
+              <td class="px-4 py-3 border-t border-[#1a1a1a]">
                 <div class="font-semibold text-gray-100">{{ o.user?.name }}</div>
                 <div class="text-xs text-gray-400">{{ o.user?.email }}</div>
                 <div class="text-[10px] text-gray-500">ID: {{ o.user?.id }}</div>
               </td>
-              <td class="px-4 py-2 border-t border-[#1a1a1a] break-all text-xs text-gray-400">
+              <td class="px-4 py-3 border-t border-[#1a1a1a] break-all text-xs text-gray-400">
                 {{ o.qr_code }}
               </td>
               <td
-                class="px-4 py-2 border-t border-[#1a1a1a] font-semibold"
-                [ngClass]="{
-                  'text-green-400': !o.used,
-                  'text-red-400': o.used
-                }"
+                class="px-4 py-3 border-t border-[#1a1a1a] font-semibold"
+                [ngClass]="{ 'text-green-400': !o.used, 'text-red-400': o.used }"
               >
                 {{ o.used ? 'Usado' : 'Disponible' }}
               </td>
@@ -113,8 +112,6 @@
         </table>
       </div>
     </div>
-
-    <!-- Botón volver -->
   </div>
 </div>
 

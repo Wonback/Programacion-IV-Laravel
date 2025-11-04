@@ -104,90 +104,87 @@
   </form>
 </div> -->
 
-<section class="min-h-screen text-gray-400 bg-black-900 body-font relative">
-  <div
-    class="container-fluid px-5 mt-4 mx-auto bg-gradient-to-b from-transparent via-[#002e35] to-transparent"
-  >
-    <div class="mt-10 flex flex-col text-center w-full mb-12">
-      <h1
-        class="text-4xl font-bold mb-6 bg-gradient-to-r from-[#00d58b] to-[#00b3ff] bg-clip-text text-transparent tracking-wide"
-      >
-        Nuevo evento
-      </h1>
+<section class="min-h-screen text-gray-300 bg-[#0a0a0a] body-font">
+  <div class="container px-5 py-12 mx-auto">
+    <div class="flex flex-col items-center text-center mb-10">
+      <h1 class="text-4xl font-extrabold text-[#00d58b] drop-shadow-lg">Nuevo evento</h1>
     </div>
-    <div class="lg:w-1/2 md:w-2/3 mx-auto">
-      <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="space-y-4">
-        <div class="flex flex-wrap -m-2">
-          <div class="p-2 w-full">
-            <div class="relative">
-              <input
-                placeholder="Ingrese el título del evento..."
-                formControlName="title"
-                class="w-full p-3 rounded-lg bg-[#001a1f] border border-[#00d58b]/30 focus:ring-2 focus:ring-[#00d58b] focus:outline-none"
-              />
-            </div>
+
+    <!-- Card estilo login -->
+    <div
+      class="max-w-3xl mx-auto border-2 border-[#00d58b] bg-black p-8 rounded-3xl shadow-[0_0_30px_#00d58b80] transform transition-all duration-300"
+    >
+      <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Grid 1 / 2 cols -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="md:col-span-2">
+            <label class="text-gray-400 mb-1 block">Título</label>
+            <input
+              placeholder="Ingrese el título del evento..."
+              formControlName="title"
+              class="w-full p-3 rounded-xl bg-[#0f0f0f] text-white placeholder-gray-500 border border-[#00d58b]/30 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-[#00d58b] focus:shadow-[0_0_12px_#00d58b66] transition"
+            />
           </div>
 
-          <div class="p-2 w-full">
-            <div class="relative">
-              <textarea
-                placeholder="Ingrese una breve descripción del evento..."
-                formControlName="description"
-                rows="3"
-                class="w-full p-3 rounded-lg bg-[#001a1f] border border-[#00d58b]/30 focus:ring-2 focus:ring-[#00d58b] focus:outline-none"
-              ></textarea>
-            </div>
+          <div class="md:col-span-2">
+            <label class="text-gray-400 mb-1 block">Descripción</label>
+            <textarea
+              rows="3"
+              placeholder="Ingrese una breve descripción del evento..."
+              formControlName="description"
+              class="w-full p-3 rounded-xl bg-[#0f0f0f] text-white placeholder-gray-500 border border-[#00d58b]/30 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-[#00d58b] focus:shadow-[0_0_12px_#00d58b66] transition"
+            ></textarea>
           </div>
-          <div class="p-2 w-1/2">
-            <div class="relative">
-              <label for="name" class="leading-7 text-sm text-gray-400">Fecha y hora</label>
-              <input
-                type="datetime-local"
-                formControlName="starts_at"
-                class="w-full p-3 rounded-lg bg-[#001a1f] border border-[#00d58b]/30 focus:ring-2 focus:ring-[#00d58b] focus:outline-none"
-              />
-            </div>
+
+          <div>
+            <label class="text-gray-400 mb-1 block">Fecha y hora</label>
+            <input
+              type="datetime-local"
+              formControlName="starts_at"
+              class="w-full p-3 rounded-xl bg-[#0f0f0f] text-white border border-[#00d58b]/30 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-[#00d58b] focus:shadow-[0_0_12px_#00d58b66] transition"
+            />
           </div>
-          <div class="p-2 w-1/2">
-            <div class="relative">
-              <label for="email" class="leading-7 text-sm text-gray-400">Capacidad</label>
-              <input
-                value="0"
-                type="number"
-                formControlName="capacity"
-                class="w-full p-3 rounded-lg bg-[#001a1f] border border-[#00d58b]/30 focus:ring-2 focus:ring-[#00d58b] focus:outline-none"
-              />
-            </div>
+
+          <div>
+            <label class="text-gray-400 mb-1 block">Capacidad</label>
+            <input
+              type="number"
+              formControlName="capacity"
+              class="w-full p-3 rounded-xl bg-[#0f0f0f] text-white border border-[#00d58b]/30 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-[#00d58b] focus:shadow-[0_0_12px_#00d58b66] transition"
+            />
           </div>
-          <div class="p-2 w-1/2">
-            <div class="relative">
-              <label for="name" class="leading-7 text-sm text-gray-400">Precio</label>
-              <input
-                placeholder="$99999"
-                type="number"
-                formControlName="price"
-                class="w-full p-3 rounded-lg bg-[#001a1f] border border-[#00d58b]/30 focus:ring-2 focus:ring-[#00d58b] focus:outline-none"
-              />
-            </div>
+
+          <div>
+            <label class="text-gray-400 mb-1 block">Precio</label>
+            <input
+              type="number"
+              placeholder="$99999"
+              formControlName="price"
+              class="w-full p-3 rounded-xl bg-[#0f0f0f] text-white placeholder-gray-500 border border-[#00d58b]/30 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-[#00d58b] focus:shadow-[0_0_12px_#00d58b66] transition"
+            />
           </div>
-          <div class="p-2 w-1/2">
-            <div class="relative">
-              <label for="email" class="leading-7 text-sm text-gray-400">Imagen</label>
-              <input
-                type="file"
-                (change)="onFileChange($event)"
-                class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-[#00d58b] file:text-black hover:file:bg-[#92fa87] transition"
-              />
-            </div>
+
+          <div>
+            <label class="text-gray-400 mb-1 block">Imagen</label>
+            <input
+              type="file"
+              (change)="onFileChange($event)"
+              class="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-[#00d58b] file:text-black hover:file:bg-[#92fa87] transition rounded-xl bg-[#0f0f0f] border border-[#00d58b]/30"
+            />
           </div>
-          <div class="p-2 w-full">
-            <button
-              class="flex mx-auto bg-[#00d58b] hover:bg-[#92fa87] text-black border-0 py-2 px-8 focus:outline-none rounded text-lg"
-            >
-              Crear Evento
-            </button>
-            <p *ngIf="errorMessage" class="text-red-500 mt-2">{{ errorMessage }}</p>
-          </div>
+        </div>
+
+        <!-- Submit -->
+        <div>
+          <button
+            type="submit"
+            class="w-full bg-[#00d58b] py-3 rounded-full font-semibold text-black flex justify-center items-center gap-2 hover:opacity-90 transition"
+          >
+            Crear Evento
+          </button>
+          <p *ngIf="errorMessage" class="text-red-500 mt-2 text-sm text-center">
+            {{ errorMessage }}
+          </p>
         </div>
       </form>
     </div>
