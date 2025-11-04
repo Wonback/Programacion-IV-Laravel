@@ -518,17 +518,16 @@
                 ]
             }
         },
-        "/api/orders": {
+        "/api/my-events": {
             "get": {
                 "tags": [
-                    "Orders"
+                    "Events"
                 ],
-                "summary": "Listar órdenes del usuario autenticado",
-                "description": "Devuelve todas las órdenes realizadas por el usuario autenticado, junto con la información del evento asociado.",
-                "operationId": "2cd7e03021e72d9d799c12dfe179c865",
+                "summary": "Listar eventos del usuario autenticado con estadísticas",
+                "operationId": "760b94f7e3bb0a4c5316bbfb0b99737e",
                 "responses": {
                     "200": {
-                        "description": "Listado de órdenes del usuario autenticado",
+                        "description": "Listado de eventos propios con cantidad de tickets vendidos",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -539,41 +538,17 @@
                                                 "type": "integer",
                                                 "example": 1
                                             },
-                                            "quantity": {
-                                                "type": "integer",
-                                                "example": 2
-                                            },
-                                            "total": {
-                                                "type": "number",
-                                                "format": "float",
-                                                "example": 1500
-                                            },
-                                            "created_at": {
+                                            "title": {
                                                 "type": "string",
-                                                "format": "date-time",
-                                                "example": "2025-10-08T18:00:00Z"
+                                                "example": "Concierto A"
                                             },
-                                            "event": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 3
-                                                    },
-                                                    "title": {
-                                                        "type": "string",
-                                                        "example": "Concierto de Rock"
-                                                    },
-                                                    "starts_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2025-11-01T21:00:00Z"
-                                                    },
-                                                    "price": {
-                                                        "type": "number",
-                                                        "example": 750
-                                                    }
-                                                },
-                                                "type": "object"
+                                            "capacity": {
+                                                "type": "integer",
+                                                "example": 100
+                                            },
+                                            "orders_count": {
+                                                "type": "integer",
+                                                "example": 25
                                             }
                                         },
                                         "type": "object"
@@ -581,6 +556,25 @@
                                 }
                             }
                         }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/orders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Listar órdenes del usuario autenticado",
+                "operationId": "2cd7e03021e72d9d799c12dfe179c865",
+                "responses": {
+                    "200": {
+                        "description": "Listado de órdenes obtenido correctamente"
                     },
                     "401": {
                         "description": "No autenticado"
@@ -596,7 +590,7 @@
                 "tags": [
                     "Orders"
                 ],
-                "summary": "Crear una orden",
+                "summary": "Crear una orden (compra)",
                 "operationId": "d690d6834318e9b064df441e854de8b9",
                 "requestBody": {
                     "required": true,
@@ -609,10 +603,16 @@
                                 ],
                                 "properties": {
                                     "event_id": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "example": 5
                                     },
                                     "quantity": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "qr_code": {
+                                        "type": "string",
+                                        "example": "orden:12345|evento:7|monto:1500"
                                     }
                                 },
                                 "type": "object"
@@ -622,10 +622,160 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Orden creada"
+                        "description": "Orden creada correctamente"
+                    },
+                    "401": {
+                        "description": "No autenticado"
                     },
                     "422": {
                         "description": "No hay suficiente cupo"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/verify-qr": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Verificar un código QR escaneado",
+                "description": "Permite al dueño del evento validar si el QR corresponde a una orden válida.",
+                "operationId": "1369071271547edc93a4fbd51c8f3865",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "qr_code"
+                                ],
+                                "properties": {
+                                    "qr_code": {
+                                        "type": "string",
+                                        "example": "orden:12345|evento:7|monto:1500"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "QR válido"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "404": {
+                        "description": "QR inválido o no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/validate": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Validar un QR de ticket",
+                "operationId": "73c960d35a2742eedc70431cec8324df",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "qr_data"
+                                ],
+                                "properties": {
+                                    "qr_data": {
+                                        "type": "string",
+                                        "example": "ORDEN-12-EVENT-5-USER-3"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ticket validado con éxito"
+                    },
+                    "403": {
+                        "description": "No autorizado o ticket no encontrado"
+                    },
+                    "404": {
+                        "description": "QR inválido"
+                    },
+                    "422": {
+                        "description": "Ticket ya utilizado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events/{eventId}/orders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Listar tickets de un evento (solo para el dueño del evento)",
+                "operationId": "3ed04ebdfe18aea2b2d6b595284a8921",
+                "parameters": [
+                    {
+                        "name": "eventId",
+                        "in": "path",
+                        "description": "ID del evento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Listado de tickets del evento"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/my-tickets": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Listar eventos comprados por el usuario autenticado",
+                "operationId": "583002f53884750b68150fbc30def2b8",
+                "responses": {
+                    "200": {
+                        "description": "Listado de eventos comprados"
+                    },
+                    "401": {
+                        "description": "No autenticado"
                     }
                 },
                 "security": [
@@ -779,9 +929,146 @@
                     }
                 ]
             }
+        },
+        "/api/send-verification": {
+            "post": {
+                "tags": [
+                    "Verificación"
+                ],
+                "summary": "Enviar correo de verificación de cuenta",
+                "operationId": "1c49fea635e517038b1e549bec50af6d",
+                "responses": {
+                    "200": {
+                        "description": "Correo de verificación enviado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Correo de verificación enviado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Cuenta ya verificada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tu cuenta ya está verificada."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/verify-email/{token}": {
+            "get": {
+                "tags": [
+                    "Verificación"
+                ],
+                "summary": "Verificar cuenta mediante token recibido por correo",
+                "operationId": "afd348dd795b8c0fa337032e703bf5e9",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "description": "Token de verificación recibido en el correo",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "d41d8cd98f00b204e9800998ecf8427e"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cuenta verificada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cuenta verificada correctamente."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token inválido o expirado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token inválido o expirado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
+        "responses": {
+            "200": {
+                "description": "Usuario promovido a administrador exitosamente",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Ahora eres administrador."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "403": {
+                "description": "Cuenta no verificada",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Debes verificar tu cuenta antes de solicitar rol de administrador."
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
         "securitySchemes": {
             "sanctum": {
                 "type": "http",
@@ -797,7 +1084,7 @@
         },
         {
             "name": "Orders",
-            "description": "Operaciones de compras"
+            "description": "Operaciones de compras, validación y gestión de tickets"
         },
         {
             "name": "Users",
@@ -806,6 +1093,10 @@
         {
             "name": "Autenticación",
             "description": "Autenticación"
+        },
+        {
+            "name": "Verificación",
+            "description": "Verificación"
         }
     ]
 }
