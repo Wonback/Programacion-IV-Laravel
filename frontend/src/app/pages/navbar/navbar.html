@@ -90,17 +90,13 @@
     >
       Iniciar sesión
     </button>
-
-    <!-- Menu Button -->
-    <button (click)="toggleMenu()" class="md:hidden text-gray-300 hover:text-[#00d58b] transition">
-      <span class="material-icons text-[28px]">menu</span>
-    </button>
   </div>
 </nav>
 
 <header class="text-gray-400 bg-gray-900 body-font">
   <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
     <a
+      (click)="navigate('/home')"
       routerLink="/"
       class="flex font-bold items-center mb-4 md:mb-0 bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent cursor-pointer"
     >
@@ -157,6 +153,15 @@
         </a>
       </div>
     </nav>
+    <button
+      *ngIf="isLoggedIn && !isVerified && userRole != 'admin'"
+      (click)="requestVerification()"
+      [disabled]="loadingVerify"
+      class="mr-5 inline-flex items-center text-black bg-yellow-500 border-0 py-1 px-3 focus:outline-none hover:text-black hover:bg-yellow-400 rounded text-base mt-4 md:mt-0"
+    >
+      {{ loadingVerify ? 'Enviando...' : 'Verificar cuenta' }}
+      <fa-icon [icon]="faExclamation" class="ml-2"></fa-icon>
+    </button>
     <button
       *ngIf="isLoggedIn"
       (click)="logout()"
