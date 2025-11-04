@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Usuario autenticado
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::match(['put', 'patch'], '/auth/profile', [AuthController::class, 'updateProfile']);
     Route::post('/send-verification', [VerificationController::class, 'sendVerificationEmail']);
     Route::post('/request-admin', [VerificationController::class, 'requestAdmin']);
 

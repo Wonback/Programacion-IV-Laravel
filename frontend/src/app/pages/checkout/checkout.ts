@@ -5,15 +5,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NavbarComponent } from '../navbar/navbar';
+import { FooterComponent } from '../footer/footer';
 
 // Íconos FontAwesome (solo los que mantenemos)
 import {
   faCheckCircle,
   faEnvelope,
   faUserShield,
-  faTimesCircle,
   faTicketAlt,
-  faCalendar,
   faDollarSign,
   faDownload,
   faCreditCard,
@@ -24,7 +24,15 @@ import {
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, QRCodeComponent, FontAwesomeModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    QRCodeComponent,
+    FontAwesomeModule,
+    NavbarComponent,
+    FooterComponent,
+  ],
   templateUrl: './checkout.html',
   styleUrls: ['./checkout.scss'],
 })
@@ -43,14 +51,13 @@ export class Checkout implements OnInit {
   cardType: 'visa' | 'mastercard' | 'amex' | 'unknown' = 'unknown';
   cardTouched = false;
   loading = false;
+  userEmail = '';
 
   // Íconos FontAwesome (los que dejamos)
   faCheckCircle = faCheckCircle;
   faEnvelope = faEnvelope;
   faUserShield = faUserShield;
-  faTimesCircle = faTimesCircle;
   faTicketAlt = faTicketAlt;
-  faCalendar = faCalendar;
   faDollarSign = faDollarSign;
   faDownload = faDownload;
   faCreditCard = faCreditCard;
@@ -61,6 +68,7 @@ export class Checkout implements OnInit {
 
   ngOnInit(): void {
     this.eventId = Number(this.route.snapshot.paramMap.get('id'));
+    this.userEmail = localStorage.getItem('email') || '';
     this.loadEvent();
   }
 

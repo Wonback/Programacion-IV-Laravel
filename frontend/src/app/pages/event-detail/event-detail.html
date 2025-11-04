@@ -1,133 +1,197 @@
 <app-navbar></app-navbar>
 
-<div *ngIf="event" class="min-h-screen bg-[#0a0a0a] text-gray-100 flex flex-col">
-  <!-- Imagen principal -->
-  <div class="relative w-full h-[420px] overflow-hidden">
-    <img
-      *ngIf="!editMode"
-      [src]="event.image_path"
-      [alt]="event.title"
-      class="w-full h-full object-cover brightness-90 hover:scale-105 transition-transform duration-700"
-    />
-    <img
-      *ngIf="editMode && imagePreview"
-      [src]="imagePreview"
-      class="w-full h-full object-cover brightness-90 hover:scale-105 transition-transform duration-700"
-    />
-    <div
-      class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/90 via-transparent to-transparent"
-    ></div>
-  </div>
+<section *ngIf="event; else loading" class="neo-page neo-page--with-nav event-detail">
+  <div class="neo-wrapper neo-wrapper--wide event-detail__wrapper">
+    <div class="event-detail__layout">
+      <figure
+        class="event-detail__media"
+        [class.event-detail__media--empty]="!(imagePreview || event.image_path)"
+        [style.background-image]="heroImage()"
+      >
+        <div class="event-detail__media-overlay"></div>
+        <div class="event-detail__media-fallback" *ngIf="!(imagePreview || event.image_path)">
+          <fa-icon [icon]="faTicket"></fa-icon>
+        </div>
+      </figure>
 
-  <!-- Contenido principal -->
-  <div class="flex-1 w-full pt-4 max-w-5xl mx-auto space-y-10">
-
-    <!-- Vista normal -->
-    <div *ngIf="!editMode" class="text-gray-400 bg-[#0a0a0a] body-font">
-      <div class="container mx-auto">
-        <div class="flex flex-col text-center w-full mb-10">
-          <h1 class="text-4xl font-bold title-font mb-4 text-[#00d58b]">
-            {{ event.title }}
-          </h1>
-          <p class="lg:w-2/3 mx-auto leading-relaxed text-lg">
+      <article class="neo-card neo-card--accent event-detail__summary">
+        <header class="neo-card__header">
+          <button class="event-detail__back" type="button" (click)="goHome()">
+            <fa-icon [icon]="faArrowLeft"></fa-icon>
+            Volver
+          </button>
+          <span
+            class="event-detail__badge"
+            *ngIf="event.category"
+            [style.border-color]="categoryAccent(event.category)"
+            [style.background]="categoryAccentSoft(event.category)"
+            [style.color]="categoryAccent(event.category)"
+          >
+            <fa-icon [icon]="faLayerGroup"></fa-icon>
+            {{ categoryLabel(event.category) }}
+          </span>
+          <h1 class="neo-card__title">{{ event.title }}</h1>
+          <p class="neo-card__subtitle" *ngIf="event.description">
             {{ event.description }}
           </p>
-        </div>
+        </header>
 
-        <div class="flex justify-center -m-4 text-center">
-          <div class="p-4 md:w-1/4 sm:w-1/2 w-full">
-            <div class="border-2 border-gray-800 px-4 py-6 rounded-lg">
-              <fa-icon [icon]="faCalendar" class="text-[#00d58b] text-4xl"></fa-icon>
-              <h2 class="title-font font-medium text-3xl text-white">
-                {{ event.starts_at | date : 'd MMM y' }}
-              </h2>
-              <p class="leading-relaxed">Fecha</p>
+        <dl class="event-detail__meta">
+          <div class="event-detail__meta-item">
+            <fa-icon [icon]="faCalendar"></fa-icon>
+            <div>
+              <dt>Fecha y horario</dt>
+              <dd>{{ event.starts_at | date: 'EEEE d MMMM • HH:mm' }}</dd>
             </div>
           </div>
-          <div class="p-4 md:w-1/4 sm:w-1/2 w-full">
-            <div class="border-2 border-gray-800 px-4 py-6 rounded-lg">
-              <fa-icon [icon]="faUsers" class="text-[#00d58b] text-4xl mb-3"></fa-icon>
-              <h2 class="title-font font-medium text-3xl text-white">{{ event.capacity }}</h2>
-              <p class="leading-relaxed">Capacidad</p>
+          <div class="event-detail__meta-item">
+            <fa-icon [icon]="faUsers"></fa-icon>
+            <div>
+              <dt>Capacidad</dt>
+              <dd>{{ event.capacity }} asistentes</dd>
             </div>
           </div>
-          <div class="p-4 md:w-1/4 sm:w-1/2 w-full">
-            <div class="border-2 border-gray-800 px-4 py-6 rounded-lg">
-              <fa-icon [icon]="faMoney" class="text-[#00d58b] text-4xl mb-3"></fa-icon>
-              <h2 class="title-font font-medium text-3xl text-white">${{ event.price }}</h2>
-              <p class="leading-relaxed">Precio</p>
+          <div class="event-detail__meta-item">
+            <fa-icon [icon]="faDollarSign"></fa-icon>
+            <div>
+              <dt>Valor de la entrada</dt>
+              <dd>${{ event.price }}</dd>
             </div>
           </div>
+        </dl>
+
+        <div class="event-detail__cta" *ngIf="!editMode">
+          <button type="button" class="neo-button neo-button--primary" (click)="goToCheckout(event.id)">
+            <fa-icon [icon]="faTicket"></fa-icon>
+            Comprar entrada
+          </button>
+        </div>
+      </article>
+    </div>
+
+    <article *ngIf="!editMode" class="neo-card event-detail__details">
+      <h2>Sobre el evento</h2>
+      <p>
+        {{ event.description || 'Este evento no tiene una descripción detallada, pero podés consultar con el organizador para más información.' }}
+      </p>
+
+      <div class="event-detail__highlights">
+        <div class="event-detail__highlight">
+          <span>Organizado por</span>
+          <strong>#{{ event.user_id }}</strong>
+        </div>
+        <div class="event-detail__highlight">
+          <span>Identificador</span>
+          <strong>EVT-{{ event.id }}</strong>
+        </div>
+        <div class="event-detail__highlight" *ngIf="event.category">
+          <span>Categoría</span>
+          <strong>{{ categoryLabel(event.category) }}</strong>
         </div>
       </div>
-    </div>
+    </article>
 
-    <!-- Botón de compra -->
-    <div *ngIf="!editMode" class="flex flex-wrap justify-center gap-5">
-      <button
-        (click)="router.navigate(['/checkout', event.id])"
-        class="px-8 py-3 bg-gradient-to-r from-[#00d58b] to-[#92fa87] text-black font-semibold rounded-full hover:opacity-90 transition shadow-lg"
-      >
-        <fa-icon [icon]="faTicket" class="mr-2"></fa-icon> Comprar Entrada
-      </button>
-    </div>
+    <article *ngIf="editMode" class="neo-card neo-card--inset event-detail__editor">
+      <header class="neo-card__header">
+        <span class="neo-card__eyebrow">Edición activa</span>
+        <h2 class="neo-card__title">Actualizar evento</h2>
+        <p class="neo-card__subtitle">
+          Ajustá la información y subí una imagen nueva si lo necesitás. Los cambios se verán reflejados de inmediato.
+        </p>
+      </header>
 
-    <!-- Vista de edición -->
-    <div *ngIf="editMode" class="bg-[#111] p-6 rounded-2xl border border-[#00d58b]/30 shadow-lg space-y-5">
-      <h2 class="text-2xl font-semibold text-[#00d58b] text-center mb-4">Editar Evento</h2>
+      <form #editForm="ngForm" (ngSubmit)="saveEdit(editForm)" class="neo-form">
+        <div class="neo-form__grid">
+          <label class="neo-field neo-field--full">
+            <span>Título</span>
+            <div class="neo-field__control">
+              <input type="text" name="title" [(ngModel)]="formData.title" required placeholder="Nombre del evento" />
+            </div>
+          </label>
 
-      <form (ngSubmit)="saveEdit(editForm)" #editForm="ngForm" class="space-y-4">
-        <input type="text" [(ngModel)]="formData.title" name="title"
-          class="w-full p-2 rounded bg-[#0a0a0a] border border-[#00d58b]/30 text-gray-200"
-          placeholder="Título del evento" required />
+          <label class="neo-field neo-field--full">
+            <span>Descripción</span>
+            <div class="neo-field__control">
+              <textarea
+                name="description"
+                rows="4"
+                [(ngModel)]="formData.description"
+                placeholder="Contanos de qué se trata"
+              ></textarea>
+            </div>
+          </label>
 
-        <textarea [(ngModel)]="formData.description" name="description" rows="4"
-          class="w-full p-2 rounded bg-[#0a0a0a] border border-[#00d58b]/30 text-gray-200"
-          placeholder="Descripción"></textarea>
+          <label class="neo-field">
+            <span>Categoría</span>
+            <div class="neo-field__control">
+              <select name="category" [(ngModel)]="formData.category">
+                <option [ngValue]="null">Seleccioná una categoría</option>
+                <option *ngFor="let category of categories" [ngValue]="category.value">{{ category.label }}</option>
+              </select>
+            </div>
+          </label>
 
-        <input type="number" [(ngModel)]="formData.capacity" name="capacity"
-          class="w-full p-2 rounded bg-[#0a0a0a] border border-[#00d58b]/30 text-gray-200"
-          placeholder="Capacidad" required />
+          <label class="neo-field">
+            <span>Capacidad</span>
+            <div class="neo-field__control">
+              <input type="number" name="capacity" [(ngModel)]="formData.capacity" min="1" required />
+            </div>
+          </label>
 
-        <input type="number" [(ngModel)]="formData.price" name="price"
-          class="w-full p-2 rounded bg-[#0a0a0a] border border-[#00d58b]/30 text-gray-200"
-          placeholder="Precio" required />
+          <label class="neo-field">
+            <span>Precio</span>
+            <div class="neo-field__control">
+              <input type="number" name="price" [(ngModel)]="formData.price" min="0" required />
+            </div>
+          </label>
 
-        <input type="file" (change)="onFileChange($event)"
-          class="block w-full text-gray-300 border border-[#00d58b]/30 rounded-lg p-2 cursor-pointer bg-[#0a0a0a]" />
+          <label class="neo-field neo-field--full">
+            <span>Imagen destacada</span>
+            <div class="neo-field__control neo-field__control--file">
+              <input type="file" (change)="onFileChange($event)" accept="image/*" />
+            </div>
+            <small *ngIf="imagePreview">Se utilizará la vista previa mostrada en la cabecera.</small>
+          </label>
+        </div>
 
-        <div class="flex justify-center gap-4 mt-4">
-          <button type="submit"
-            [disabled]="uploading"
-            class="px-6 py-2 bg-[#00d58b] hover:bg-[#92fa87] text-black font-semibold rounded-xl shadow-md transition">
-            {{ uploading ? 'Guardando...' : 'Guardar Cambios' }}
+        <div class="event-detail__editor-actions">
+          <button type="submit" class="neo-button neo-button--primary" [disabled]="uploading">
+            <fa-icon [icon]="faPen"></fa-icon>
+            {{ uploading ? 'Guardando...' : 'Guardar cambios' }}
           </button>
-
-          <button type="button" (click)="toggleEdit()"
-            class="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-xl shadow-md transition">
+          <button type="button" class="neo-button neo-button--ghost" (click)="toggleEdit()">
             Cancelar
           </button>
         </div>
-      </form>
-    </div>
 
-    <!-- Controles del autor -->
-    <div
-      *ngIf="canEdit() && !editMode"
-      class="flex flex-wrap justify-center gap-4 pt-10 border-t border-[#00d58b]/20"
-    >
-      <button
-        (click)="toggleEdit()"
-        class="px-6 py-2.5 bg-[#00d58b] hover:bg-[#92fa87] text-black font-medium rounded-xl transition shadow-md"
-      >
-        <fa-icon [icon]="faPen" class="mr-2"></fa-icon> Editar
+        <div *ngIf="errorMessage" class="neo-feedback neo-feedback--error">
+          {{ errorMessage }}
+        </div>
+      </form>
+    </article>
+
+    <div class="event-detail__actions" *ngIf="canEdit()">
+      <button *ngIf="!editMode" type="button" class="neo-button neo-button--primary" (click)="toggleEdit()">
+        <fa-icon [icon]="faPen"></fa-icon>
+        Editar evento
       </button>
-      <button
-        (click)="deleteEvent()"
-        class="px-6 py-2.5 bg-red-600 hover:bg-red-700 rounded-xl text-white font-medium shadow-md transition"
-      >
-        <fa-icon [icon]="faTrash" class="mr-2"></fa-icon> Cancelar Evento
+      <button type="button" class="neo-button neo-button--danger" (click)="deleteEvent()">
+        <fa-icon [icon]="faTrash"></fa-icon>
+        Cancelar evento
       </button>
     </div>
   </div>
-</div>
+</section>
+
+<ng-template #loading>
+  <section class="neo-page neo-page--with-nav event-detail event-detail--loading">
+    <div class="neo-wrapper neo-wrapper--medium">
+      <article class="neo-card event-detail__loading-card">
+        <div class="event-detail__loader"></div>
+        <p class="neo-text--muted">Recuperando información del evento...</p>
+      </article>
+    </div>
+  </section>
+</ng-template>
+
+<app-footer></app-footer>

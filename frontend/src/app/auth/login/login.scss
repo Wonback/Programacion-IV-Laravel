@@ -1,1 +1,33 @@
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
 
+  .auth-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .auth-card {
+    width: 100%;
+  }
+
+  .auth-links {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .auth-helper {
+    text-align: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-page {
+    .auth-links {
+      justify-content: center;
+    }
+  }
+}

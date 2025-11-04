@@ -6,8 +6,9 @@ import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SearchService } from '../../services/search.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCalendar, faArrowRight, faTicket, faRetweet } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faArrowRight, faTicket, faRetweet, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FooterComponent } from '../footer/footer';
+import { EVENT_CATEGORIES, EVENT_CATEGORY_LOOKUP, EventCategory } from '../../shared/event-categories';
 
 interface Event {
   id: number;
@@ -17,6 +18,7 @@ interface Event {
   capacity: number;
   price: number;
   image_path?: string;
+  category?: string;
 }
 
 @Component({
@@ -37,6 +39,12 @@ export class Home implements OnInit, OnDestroy {
   ];
   selected = this.options[0];
 
+  categories: (EventCategory & { isAll?: boolean })[] = [
+    { value: 'all', label: 'Todas las categorías', description: '', accent: '#5eead4', accentSoft: 'rgba(94, 234, 212, 0.14)', isAll: true },
+    ...EVENT_CATEGORIES,
+  ];
+  categoryLookup = EVENT_CATEGORY_LOOKUP;
+
   select(opt: any) {
     this.selected = opt;
     this.open = false;
@@ -56,6 +64,7 @@ export class Home implements OnInit, OnDestroy {
   filters = {
     term: '',
     date: 'all',
+    category: 'all',
   };
 
   // Animación
@@ -68,6 +77,7 @@ export class Home implements OnInit, OnDestroy {
   faArrowRight = faArrowRight;
   faTicket = faTicket;
   faRetweet = faRetweet;
+  faChevronDown = faChevronDown;
 
   constructor(private http: HttpClient, private searchService: SearchService) {}
 
@@ -102,10 +112,17 @@ export class Home implements OnInit, OnDestroy {
 
   // Resetear filtros
   resetFilters() {
-    this.filters = { term: '', date: 'all' };
+    this.filters = { term: '', date: 'all', category: 'all' };
     this.currentPage = 1;
+    this.selected = this.options[0];
+    this.open = false;
     this.applyFilters(true);
     this.searchService.updateSearchTerm('');
+  }
+
+  filterByCategory(category: string) {
+    this.filters.category = category;
+    this.applyFilters(true);
   }
 
   // Aplicar filtros
@@ -137,7 +154,12 @@ export class Home implements OnInit, OnDestroy {
         matchDate = starts >= now && starts <= month;
       }
 
-      return matchTerm && matchDate;
+      const matchCategory =
+        this.filters.category === 'all' ||
+        !this.filters.category ||
+        ev.category === this.filters.category;
+
+      return matchTerm && matchDate && matchCategory;
     });
 
     this.updatePagination();
@@ -179,5 +201,18 @@ export class Home implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.searchSub) this.searchSub.unsubscribe();
+  }
+
+  categoryLabel(category?: string): string {
+    if (!category) return 'Sin categoría';
+    return this.categoryLookup[category]?.label || category;
+  }
+
+  categoryAccent(category?: string): string {
+    return (category && this.categoryLookup[category]?.accent) || '#5eead4';
+  }
+
+  categoryAccentSoft(category?: string): string {
+    return (category && this.categoryLookup[category]?.accentSoft) || 'rgba(94, 234, 212, 0.14)';
   }
 }

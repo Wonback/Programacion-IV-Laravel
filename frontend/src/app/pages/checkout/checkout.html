@@ -1,123 +1,146 @@
-<div class="min-h-screen bg-[#0a0a0a] text-gray-100 flex flex-col items-center py-10 px-4">
-  <div class="max-w-lg w-full bg-[#141414] p-6 rounded-2xl shadow-lg border border-gray-800">
-    <h2 class="text-2xl font-semibold text-center mb-6">Checkout</h2>
+<app-navbar></app-navbar>
 
-    <!-- Pago realizado -->
-    <div *ngIf="paymentDone" class="flex flex-col items-center">
-      <fa-icon [icon]="faCheckCircle" class="text-green-500 text-5xl mb-4"></fa-icon>
-      <h3 class="text-xl font-medium mb-2">¡Pago realizado con éxito!</h3>
-      <p class="text-gray-400 mb-4 text-center">
-        Ya podés descargar tu ticket y presentarlo en el evento.
-      </p>
+<section class="neo-page neo-page--full checkout-page">
+  <div class="neo-wrapper neo-wrapper--narrow">
+    <article class="neo-card neo-card--accent checkout-card">
+      <header class="neo-card__header">
+        <span class="neo-card__eyebrow">Confirmá tu compra</span>
+        <h1 class="neo-card__title">Checkout</h1>
+        <p class="neo-card__subtitle">
+          Revisá los datos del evento y completá la información de pago para obtener tu ticket digital al instante.
+        </p>
+      </header>
 
-      <div class="bg-white p-4 rounded-xl mb-4">
-        <qrcode *ngIf="qrData" [qrdata]="qrData" [width]="180" [errorCorrectionLevel]="'M'"></qrcode>
+      <section class="checkout-summary">
+        <div class="checkout-summary__icon">
+          <fa-icon [icon]="faTicketAlt"></fa-icon>
+        </div>
+        <div class="checkout-summary__content">
+          <h2>{{ eventTitle || 'Cargando evento...' }}</h2>
+          <p *ngIf="eventTitle">Tu entrada incluye acceso general para una persona.</p>
+        </div>
+        <div class="checkout-summary__price">
+          <span>Total</span>
+          <strong>
+            <fa-icon [icon]="faDollarSign"></fa-icon>
+            {{ price | currency: 'USD' }}
+          </strong>
+        </div>
+      </section>
 
-      </div>
-
-      <button
-        (click)="downloadQR()"
-        class="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl transition-all"
-      >
-        <fa-icon [icon]="faDownload"></fa-icon>
-        <span>Descargar ticket</span>
-      </button>
-
-      <button
-        (click)="goHome()"
-        class="mt-4 flex items-center space-x-2 text-gray-300 hover:text-white transition-all"
-      >
-        <fa-icon [icon]="faHome"></fa-icon>
-        <span>Volver al inicio</span>
-      </button>
-    </div>
-
-    <!-- Formulario -->
-    <form *ngIf="!paymentDone" (ngSubmit)="processPayment()" class="flex flex-col space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 class="text-lg font-medium">{{ eventTitle }}</h3>
-        <span class="text-blue-500 font-semibold text-xl">
-          <fa-icon [icon]="faDollarSign" class="mr-1"></fa-icon>{{ price | currency:'USD' }}
-        </span>
-      </div>
-
-      <!-- Número de tarjeta -->
-      <div>
-        <label class="block text-sm text-gray-400 mb-1">Número de tarjeta</label>
-        <div
-          class="flex items-center space-x-3 bg-[#1b1b1b] border border-gray-700 rounded-xl px-3 py-2 focus-within:border-blue-500 transition-all"
-        >
-          <input
-            type="text"
-            maxlength="19"
-            [(ngModel)]="cardNumber"
-            name="cardNumber"
-            (input)="formatCardNumber()"
-            placeholder="XXXX XXXX XXXX XXXX"
-            class="bg-transparent outline-none flex-1 text-gray-200"
-            required
-          />
-
-          
-          
+      <div *ngIf="paymentDone; else paymentForm" class="checkout-success">
+        <div class="neo-feedback neo-feedback--success checkout-success__banner">
+          <fa-icon [icon]="faCheckCircle"></fa-icon>
+          ¡Pago realizado con éxito!
+        </div>
+        <p class="neo-text--muted">
+          Ya podés descargar tu ticket y guardarlo para presentarlo en el ingreso.
+        </p>
+        <div class="checkout-success__qr">
+          <qrcode *ngIf="qrData" [qrdata]="qrData" [width]="180" [errorCorrectionLevel]="'M'"></qrcode>
+          <span>{{ qrData }}</span>
+        </div>
+        <div class="checkout-success__actions">
+          <button type="button" class="neo-button neo-button--primary" (click)="downloadQR()">
+            <fa-icon [icon]="faDownload"></fa-icon>
+            Descargar ticket
+          </button>
+          <button type="button" class="neo-button neo-button--ghost" (click)="goHome()">
+            <fa-icon [icon]="faHome"></fa-icon>
+            Volver al inicio
+          </button>
         </div>
       </div>
 
-      <!-- Titular -->
-      <div>
-        <label class="block text-sm text-gray-400 mb-1">Titular de la tarjeta</label>
-        <input
-          type="text"
-          [(ngModel)]="cardHolder"
-          name="cardHolder"
-          placeholder="Nombre como figura en la tarjeta"
-          class="w-full bg-[#1b1b1b] border border-gray-700 rounded-xl px-3 py-2 text-gray-200 focus:border-blue-500 transition-all"
-          required
-        />
-      </div>
+      <ng-template #paymentForm>
+        <form (ngSubmit)="processPayment()" class="neo-form checkout-form">
+          <div class="checkout-form__row">
+            <label class="neo-field neo-field--full">
+              <span>Correo asociado</span>
+              <div class="neo-field__control">
+                <fa-icon [icon]="faEnvelope" class="neo-field__icon"></fa-icon>
+                <input type="email" placeholder="tucorreo@ejemplo.com" [value]="userEmail" disabled />
+              </div>
+            </label>
+          </div>
 
-      <!-- Fecha y CVV -->
-      <div class="flex space-x-3">
-        <div class="w-1/2">
-          <label class="block text-sm text-gray-400 mb-1">Vencimiento</label>
-          <input
-            type="text"
-            [(ngModel)]="expiration"
-            name="expiration"
-            maxlength="5"
-            placeholder="MM/AA"
-            class="w-full bg-[#1b1b1b] border border-gray-700 rounded-xl px-3 py-2 text-gray-200 focus:border-blue-500 transition-all"
-            required
-          />
-        </div>
-        <div class="w-1/2">
-          <label class="block text-sm text-gray-400 mb-1">CVV</label>
-          <input
-            type="password"
-            maxlength="4"
-            [(ngModel)]="cvv"
-            name="cvv"
-            placeholder="***"
-            class="w-full bg-[#1b1b1b] border border-gray-700 rounded-xl px-3 py-2 text-gray-200 focus:border-blue-500 transition-all"
-            required
-          />
-        </div>
-      </div>
+          <div class="checkout-form__row">
+            <label class="neo-field neo-field--full">
+              <span>Número de tarjeta</span>
+              <div class="neo-field__control checkout-card-number">
+                <fa-icon [icon]="faCreditCard" class="neo-field__icon"></fa-icon>
+                <input
+                  type="text"
+                  maxlength="19"
+                  name="cardNumber"
+                  [(ngModel)]="cardNumber"
+                  (input)="formatCardNumber()"
+                  placeholder="XXXX XXXX XXXX XXXX"
+                  required
+                />
+              </div>
+            </label>
+          </div>
 
-      <!-- Botón pagar -->
-      <button
-        type="submit"
-        [disabled]="loading"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold flex justify-center items-center space-x-2 transition-all disabled:opacity-70"
-      >
-        <fa-icon *ngIf="loading" [icon]="faSpinner" [animation]="'spin'" class="text-white"></fa-icon>
-        <span>{{ loading ? 'Procesando...' : 'Pagar ahora' }}</span>
-      </button>
+          <div class="checkout-form__row">
+            <label class="neo-field neo-field--full">
+              <span>Titular de la tarjeta</span>
+              <div class="neo-field__control">
+                <fa-icon [icon]="faUserShield" class="neo-field__icon"></fa-icon>
+                <input
+                  type="text"
+                  name="cardHolder"
+                  [(ngModel)]="cardHolder"
+                  placeholder="Nombre como figura en la tarjeta"
+                  required
+                />
+              </div>
+            </label>
+          </div>
 
-      <div class="text-xs text-gray-500 text-center mt-2">
-        <fa-icon [icon]="faUserShield" class="mr-1"></fa-icon>
-        Pagos seguros y encriptados.
-      </div>
-    </form>
+          <div class="checkout-form__row checkout-form__row--split">
+            <label class="neo-field">
+              <span>Vencimiento</span>
+              <div class="neo-field__control">
+                <input
+                  type="text"
+                  name="expiration"
+                  maxlength="5"
+                  [(ngModel)]="expiration"
+                  placeholder="MM/AA"
+                  required
+                />
+              </div>
+            </label>
+
+            <label class="neo-field">
+              <span>CVV</span>
+              <div class="neo-field__control">
+                <input
+                  type="password"
+                  name="cvv"
+                  maxlength="4"
+                  [(ngModel)]="cvv"
+                  placeholder="***"
+                  required
+                />
+              </div>
+            </label>
+          </div>
+
+          <button type="submit" class="neo-button neo-button--primary checkout-form__submit" [disabled]="loading">
+            <fa-icon *ngIf="loading" [icon]="faSpinner" [animation]="'spin'" class="checkout-form__spinner"></fa-icon>
+            {{ loading ? 'Procesando...' : 'Pagar ahora' }}
+          </button>
+
+          <p class="checkout-form__disclaimer">
+            <fa-icon [icon]="faUserShield"></fa-icon>
+            Transacción segura y encriptada. No almacenamos los datos de tu tarjeta.
+          </p>
+        </form>
+      </ng-template>
+    </article>
   </div>
-</div>
+</section>
+
+<app-footer></app-footer>

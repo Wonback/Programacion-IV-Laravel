@@ -1,0 +1,28 @@
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+
+  .auth-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .auth-card {
+    width: 100%;
+  }
+
+  .auth-helper {
+    text-align: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-page {
+    .auth-card {
+      padding: 1.5rem;
+    }
+  }
+}

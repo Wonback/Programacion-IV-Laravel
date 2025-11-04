@@ -6,7 +6,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { BrowserMultiFormatReader, BarcodeFormat } from '@zxing/library';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faHome, faQrcode, faUser, faTicketAlt, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faQrcode, faTicketAlt, faCheck, faImage } from '@fortawesome/free-solid-svg-icons';
 import { NavbarComponent } from '../navbar/navbar';
 import { FooterComponent } from '../footer/footer';
 
@@ -55,11 +55,10 @@ export class TicketScanner implements OnInit {
   useFileInput = false;
 
   reader = new BrowserMultiFormatReader();
-  faHome = faHome;
   faQrcode = faQrcode;
-  faUser = faUser;
   faTicketAlt = faTicketAlt;
   faCheck = faCheck;
+  faImage = faImage;
 
   constructor(private http: HttpClient) {}
 

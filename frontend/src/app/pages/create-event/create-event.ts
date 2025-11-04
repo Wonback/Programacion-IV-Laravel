@@ -7,6 +7,7 @@ import { NavbarComponent } from '../navbar/navbar';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCalendar, faUsers, faMoneyBillWave, faImage } from '@fortawesome/free-solid-svg-icons';
 import { FooterComponent } from '../footer/footer';
+import { EVENT_CATEGORIES } from '../../shared/event-categories';
 
 @Component({
   selector: 'app-create-event',
@@ -21,6 +22,7 @@ export class CreateEvent {
   errorMessage: string | null = null;
   uploading: boolean = false;
   imagePreview: string | null = null;
+  categories = EVENT_CATEGORIES;
 
   faCalendar = faCalendar;
   faUsers = faUsers;
@@ -31,10 +33,10 @@ export class CreateEvent {
     this.eventForm = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(180)]],
       description: [''],
+      category: ['', Validators.required],
       starts_at: ['', Validators.required],
       capacity: [0, [Validators.required, Validators.min(0)]],
       price: [0, [Validators.required, Validators.min(0)]],
-      image: [null],
     });
   }
 
@@ -49,7 +51,10 @@ export class CreateEvent {
   }
 
   async onSubmit() {
-    if (this.eventForm.invalid) return;
+    if (this.eventForm.invalid) {
+      this.eventForm.markAllAsTouched();
+      return;
+    }
     this.uploading = true;
 
     try {

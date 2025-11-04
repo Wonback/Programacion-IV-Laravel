@@ -12,6 +12,7 @@ import {
   faFingerprint,
 } from '@fortawesome/free-solid-svg-icons';
 import { FooterComponent } from '../footer/footer';
+import { EVENT_CATEGORY_LOOKUP } from '../../shared/event-categories';
 
 @Component({
   selector: 'app-my-tickets',
@@ -63,5 +64,18 @@ export class MyTickets implements OnInit {
     link.href = canvas.toDataURL('image/png');
     link.download = `ticket_${orderId}.png`;
     link.click();
+  }
+
+  categoryLabel(category?: string): string {
+    if (!category) return 'Sin categoría';
+    return EVENT_CATEGORY_LOOKUP[category]?.label || category;
+  }
+
+  categoryAccent(category?: string): string {
+    return (category && EVENT_CATEGORY_LOOKUP[category]?.accent) || 'rgba(94, 234, 212, 1)';
+  }
+
+  categoryAccentSoft(category?: string): string {
+    return (category && EVENT_CATEGORY_LOOKUP[category]?.accentSoft) || 'rgba(94, 234, 212, 0.18)';
   }
 }

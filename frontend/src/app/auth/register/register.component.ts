@@ -4,20 +4,14 @@ import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import {
-  faUserShield,
-  faEnvelope,
-  faLock,
-  faTimesCircle,
-  faCheckCircle,
-  faExclamationCircle,
-  faCheckDouble,
-} from '@fortawesome/free-solid-svg-icons';
+import { faUserShield, faEnvelope, faLock, faCheckCircle, faExclamationCircle, faCheckDouble } from '@fortawesome/free-solid-svg-icons';
+import { NavbarComponent } from '../../pages/navbar/navbar';
+import { FooterComponent } from '../../pages/footer/footer';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule, FontAwesomeModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule, FontAwesomeModule, NavbarComponent, FooterComponent],
   templateUrl: './register.component.html',
   styleUrls: ['./register.scss'],
 })
@@ -27,7 +21,6 @@ export class RegisterComponent {
   faUserShield = faUserShield;
   faEnvelope = faEnvelope;
   faLock = faLock;
-  faTimesCircle = faTimesCircle;
   faCheckCircle = faCheckCircle;
   faExclamationCircle = faExclamationCircle;
   faCheckDouble = faCheckDouble;

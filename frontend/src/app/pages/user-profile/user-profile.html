@@ -1,0 +1,151 @@
+<app-navbar></app-navbar>
+<section class="profile-page">
+  <div class="wrapper">
+    <header class="profile-header">
+      <div class="avatar">
+        <img *ngIf="avatarPreview; else defaultAvatar" [src]="avatarPreview" alt="Avatar" />
+        <ng-template #defaultAvatar>
+          <div class="placeholder">{{ user?.name?.charAt(0) || 'U' }}</div>
+        </ng-template>
+      </div>
+      <div class="info">
+        <h1>{{ user?.name || 'Mi perfil' }}</h1>
+        <p class="email">{{ user?.email }}</p>
+        <p class="meta">
+          Miembro desde {{ user?.created_at | date: 'longDate' }} ·
+          <span [class.text-green]="user?.is_verified" [class.text-warning]="!user?.is_verified">
+            {{ user?.is_verified ? 'Cuenta verificada' : 'Cuenta pendiente de verificación' }}
+          </span>
+        </p>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <div class="card-header">
+          <h2><fa-icon [icon]="faFloppyDisk"></fa-icon> Información personal</h2>
+          <button type="button" class="ghost" (click)="resetProfile()">
+            <fa-icon [icon]="faRotateLeft"></fa-icon>
+            Revertir cambios
+          </button>
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="onProfileSubmit()" class="form">
+          <div class="feedback" *ngIf="successMessage">
+            <fa-icon [icon]="faCircleInfo"></fa-icon>
+            {{ successMessage }}
+          </div>
+          <div class="feedback error" *ngIf="errorMessage">
+            <fa-icon [icon]="faCircleInfo"></fa-icon>
+            {{ errorMessage }}
+          </div>
+
+          <label class="field">
+            <span>Nombre</span>
+            <input type="text" formControlName="name" placeholder="Tu nombre completo" />
+            <small *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+              Ingresá un nombre válido (máx. 100 caracteres).
+            </small>
+          </label>
+
+          <label class="field">
+            <span>Correo electrónico</span>
+            <input type="email" formControlName="email" placeholder="tucorreo@ejemplo.com" />
+            <small *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+              Ingresá un correo válido.
+            </small>
+          </label>
+
+          <div class="field-group">
+            <label class="field">
+              <span>Teléfono</span>
+              <input type="text" formControlName="phone" placeholder="Opcional" />
+            </label>
+            <label class="field">
+              <span>Notificaciones por correo</span>
+              <label class="toggle">
+                <input type="checkbox" formControlName="email_notifications" />
+                <span class="slider"></span>
+              </label>
+            </label>
+          </div>
+
+          <label class="field">
+            <span>Biografía</span>
+            <textarea formControlName="bio" rows="4" placeholder="Contale al resto quién sos o qué haces"></textarea>
+          </label>
+
+          <div class="avatar-uploader">
+            <div class="preview" [class.placeholder]="!avatarPreview">
+              <img *ngIf="avatarPreview" [src]="avatarPreview" alt="Vista previa" />
+              <span *ngIf="!avatarPreview">
+                <fa-icon [icon]="faCamera"></fa-icon>
+                Subí una foto (máx. 2 MB)
+              </span>
+            </div>
+            <div class="actions">
+              <label class="upload">
+                <input type="file" accept="image/*" (change)="onAvatarChange($event)" />
+                <fa-icon [icon]="faCamera"></fa-icon>
+                Cambiar avatar
+              </label>
+              <button type="button" class="ghost danger" (click)="clearAvatar()" [disabled]="!avatarPreview">
+                <fa-icon [icon]="faTrash"></fa-icon>
+                Quitar avatar
+              </button>
+            </div>
+          </div>
+
+          <button class="primary" type="submit" [disabled]="loadingProfile">
+            <span *ngIf="loadingProfile" class="loader"></span>
+            <fa-icon *ngIf="!loadingProfile" [icon]="faFloppyDisk"></fa-icon>
+            Guardar cambios
+          </button>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <h2><fa-icon [icon]="faShieldHalved"></fa-icon> Seguridad</h2>
+        </div>
+        <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()" class="form">
+          <div class="feedback success" *ngIf="passwordMessage">
+            <fa-icon [icon]="faCircleInfo"></fa-icon>
+            {{ passwordMessage }}
+          </div>
+          <div class="feedback error" *ngIf="passwordError">
+            <fa-icon [icon]="faCircleInfo"></fa-icon>
+            {{ passwordError }}
+          </div>
+          <label class="field">
+            <span>Contraseña actual</span>
+            <input type="password" formControlName="current_password" placeholder="••••••••" />
+          </label>
+          <label class="field">
+            <span>Nueva contraseña</span>
+            <input type="password" formControlName="password" placeholder="Mínimo 8 caracteres" />
+          </label>
+          <label class="field">
+            <span>Confirmar contraseña</span>
+            <input type="password" formControlName="password_confirmation" placeholder="Repetí la nueva contraseña" />
+          </label>
+          <button class="primary" type="submit" [disabled]="loadingPassword">
+            <span *ngIf="loadingPassword" class="loader"></span>
+            <fa-icon *ngIf="!loadingPassword" [icon]="faLock"></fa-icon>
+            Actualizar contraseña
+          </button>
+        </form>
+
+        <div class="tips">
+          <h3><fa-icon [icon]="faBell"></fa-icon> Consejos rápidos</h3>
+          <ul>
+            <li>Usá una contraseña única y difícil de adivinar.</li>
+            <li>Activá las notificaciones para enterarte de tus compras y cambios importantes.</li>
+            <li>Mantené tus datos al día para recibir novedades relevantes.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+<app-footer></app-footer>
