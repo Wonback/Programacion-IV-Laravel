@@ -13,6 +13,8 @@ import {
   faRightFromBracket,
   faRightToBracket,
   faExclamation,
+  faCircleUser,
+  faGear,
 } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'app-navbar',
@@ -29,6 +31,8 @@ export class NavbarComponent implements OnInit {
   isVerified: boolean = false;
   verifyMessage: string = '';
   loadingVerify: boolean = false;
+  userName: string = '';
+  avatarUrl: string | null = null;
 
   constructor(
     private router: Router,
@@ -60,6 +64,8 @@ export class NavbarComponent implements OnInit {
           if (user && user.email) {
             localStorage.setItem('email', user.email);
           }
+          this.userName = user?.name ?? '';
+          this.avatarUrl = user?.avatar_url ?? null;
         },
         error: () => this.logout(false),
       });
@@ -72,6 +78,8 @@ export class NavbarComponent implements OnInit {
   faRightFromBracket = faRightFromBracket;
   faRightToBracket = faRightToBracket;
   faExclamation = faExclamation;
+  faCircleUser = faCircleUser;
+  faGear = faGear;
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
@@ -98,6 +106,8 @@ export class NavbarComponent implements OnInit {
     this.isLoggedIn = false;
     this.userRole = '';
     this.isVerified = false;
+    this.userName = '';
+    this.avatarUrl = null;
     this.cdr.detectChanges();
     if (navigate) this.router.navigate(['/login']);
   }
@@ -122,5 +132,9 @@ export class NavbarComponent implements OnInit {
         this.loadingVerify = false;
       },
     });
+  }
+
+  goToProfile(): void {
+    this.navigate('/profile');
   }
 }
