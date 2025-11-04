@@ -4,18 +4,14 @@ import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService, LoginResponse } from '../../services/auth.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import {
-  faEnvelope,
-  faLock,
-  faCheckCircle,
-  faExclamationCircle,
-  faArrowRight,
-} from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faLock, faExclamationCircle, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { NavbarComponent } from '../../pages/navbar/navbar';
+import { FooterComponent } from '../../pages/footer/footer';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule, FontAwesomeModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule, FontAwesomeModule, NavbarComponent, FooterComponent],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
 })
@@ -24,7 +20,6 @@ export class Login {
   errorMessage: string | null = null;
   faEnvelope = faEnvelope;
   faLock = faLock;
-  faCheckCircle = faCheckCircle;
   faExclamationCircle = faExclamationCircle;
   faArrowRight = faArrowRight;
 

@@ -1,118 +1,103 @@
 <app-navbar></app-navbar>
 
-<div class="min-h-screen bg-[#0a0a0a] text-gray-200 flex flex-col items-center px-6 py-12">
-  <!-- Card estilo login -->
-  <div
-    class="w-full max-w-3xl text-center border-2 border-[#00d58b] bg-black p-10 rounded-3xl shadow-[0_0_30px_#00d58b80] backdrop-blur-md transform transition-all duration-300"
-  >
-    <h2 class="text-3xl font-extrabold mb-6 text-[#00d58b] tracking-wide">Validar Tickets</h2>
+<section class="neo-page neo-page--with-nav scanner-page">
+  <div class="neo-wrapper neo-wrapper--wide">
+    <article class="neo-card neo-card--accent scanner-card">
+      <header class="neo-card__header">
+        <span class="neo-card__eyebrow">Controlá el acceso en tiempo real</span>
+        <h1 class="neo-card__title">Validar tickets</h1>
+        <p class="neo-card__subtitle">
+          Elegí un evento, escaneá el código QR o subí una imagen y asegurate de que cada ticket sea auténtico.
+        </p>
+      </header>
 
-    <!-- Selección de evento -->
-    <div class="mb-8 text-left">
-      <label class="block mb-2 font-semibold text-sm text-gray-400">Selecciona un evento:</label>
-      <select
-        [(ngModel)]="selectedEventId"
-        (change)="selectEvent()"
-        class="w-full p-3 rounded-xl bg-[#0f0f0f] text-gray-100 placeholder-gray-500 border border-[#00d58b]/30 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-[#00d58b] focus:shadow-[0_0_12px_#00d58b66] transition"
-      >
-        <option [value]="null">-Selecciona un evento-</option>
-        <option *ngFor="let e of events" [value]="e.id">{{ e.title }}</option>
-      </select>
-    </div>
+      <div class="scanner-actions">
+        <label class="neo-field">
+          <span>Seleccioná un evento</span>
+          <div class="neo-field__control">
+            <select [(ngModel)]="selectedEventId" (change)="selectEvent()">
+              <option [ngValue]="null">Elegí un evento</option>
+              <option *ngFor="let e of events" [ngValue]="e.id">{{ e.title }}</option>
+            </select>
+          </div>
+        </label>
 
-    <!-- Toggle cámara / archivo -->
-    <button
-      (click)="useFileInput = !useFileInput"
-      class="mb-6 px-5 py-2.5 rounded-full font-semibold text-black bg-[#00d58b] hover:opacity-90 shadow-[0_0_14px_#00d58b80] transition-all"
-    >
-      {{ useFileInput ? 'Usar cámara' : 'Subir QR desde archivo' }}
-    </button>
-
-    <!-- Scanner de cámara -->
-    <div
-      *ngIf="!useFileInput && selectedEventId"
-      class="rounded-2xl overflow-hidden mb-6 border-2 border-[#00d58b]/40 shadow-[0_0_18px_#00d58b40]"
-    >
-      <zxing-scanner
-        (scanSuccess)="onCodeResult($event)"
-        [formats]="formats"
-        class="w-full h-72"
-      ></zxing-scanner>
-    </div>
-
-    <!-- Input de archivo -->
-    <div *ngIf="useFileInput && selectedEventId" class="mb-8">
-      <input
-        type="file"
-        (change)="onFileSelected($event)"
-        accept="image/*"
-        class="w-full p-3 rounded-xl bg-[#0f0f0f] text-gray-300 cursor-pointer border border-[#00d58b]/30 hover:border-[#00d58b]/60 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-[#00d58b] focus:shadow-[0_0_12px_#00d58b66] transition"
-      />
-    </div>
-
-    <!-- Resultado QR -->
-    <div *ngIf="qrResult || message" class="mb-6 space-y-2">
-      <p *ngIf="qrResult" class="text-gray-300 flex items-center justify-center gap-2 text-sm">
-        <fa-icon [icon]="faQrcode" class="text-[#00d58b]"></fa-icon>
-        <span class="break-all">{{ qrResult }}</span>
-      </p>
-      <p
-        *ngIf="message"
-        class="text-sm font-semibold flex items-center justify-center gap-2"
-        [ngClass]="{
-          'text-green-400': message.includes('válido') || message.includes('exitosamente'),
-          'text-red-400': message.includes('inválido') || message.includes('usado')
-        }"
-      >
-        <fa-icon [icon]="faCheck"></fa-icon> {{ message }}
-      </p>
-    </div>
-
-    <!-- Tabla de tickets -->
-    <div *ngIf="orders.length" class="mt-8 text-left">
-      <h3 class="text-xl text-[#00d58b] font-semibold mb-4 text-center">Tickets del evento</h3>
-
-      <div
-        class="overflow-x-auto rounded-2xl border border-[#00d58b]/15 shadow-[0_0_10px_#00d58b1f]"
-      >
-        <table class="w-full text-sm border-collapse">
-          <thead
-            class="bg-[#0f0f0f] border-b border-[#00d58b]/25 text-gray-400 uppercase text-xs tracking-wider"
-          >
-            <tr>
-              <th class="px-4 py-3 text-left">ID</th>
-              <th class="px-4 py-3 text-left">
-                <fa-icon [icon]="faUser" class="text-[#00d58b]"></fa-icon> Usuario
-              </th>
-              <th class="px-4 py-3 text-left">
-                <fa-icon [icon]="faTicketAlt" class="text-[#00d58b]"></fa-icon> QR
-              </th>
-              <th class="px-4 py-3 text-left">Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let o of orders" class="hover:bg-[#0c0c0c] transition">
-              <td class="px-4 py-3 border-t border-[#1a1a1a]">{{ o.id }}</td>
-              <td class="px-4 py-3 border-t border-[#1a1a1a]">
-                <div class="font-semibold text-gray-100">{{ o.user?.name }}</div>
-                <div class="text-xs text-gray-400">{{ o.user?.email }}</div>
-                <div class="text-[10px] text-gray-500">ID: {{ o.user?.id }}</div>
-              </td>
-              <td class="px-4 py-3 border-t border-[#1a1a1a] break-all text-xs text-gray-400">
-                {{ o.qr_code }}
-              </td>
-              <td
-                class="px-4 py-3 border-t border-[#1a1a1a] font-semibold"
-                [ngClass]="{ 'text-green-400': !o.used, 'text-red-400': o.used }"
-              >
-                {{ o.used ? 'Usado' : 'Disponible' }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <button type="button" class="neo-button neo-button--ghost" (click)="useFileInput = !useFileInput" [disabled]="!selectedEventId">
+          <fa-icon [icon]="faQrcode"></fa-icon>
+          {{ useFileInput ? 'Usar cámara' : 'Subir QR desde archivo' }}
+        </button>
       </div>
-    </div>
+
+      <div class="scanner-viewport" *ngIf="selectedEventId">
+        <div *ngIf="!useFileInput" class="scanner-camera">
+          <zxing-scanner (scanSuccess)="onCodeResult($event)" [formats]="formats"></zxing-scanner>
+        </div>
+
+        <div *ngIf="useFileInput" class="scanner-upload">
+          <label class="neo-upload">
+            <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+            <fa-icon [icon]="faImage"></fa-icon>
+            Seleccionar imagen
+          </label>
+        </div>
+      </div>
+
+      <div class="scanner-result" *ngIf="qrResult || message">
+        <div class="neo-feedback neo-feedback--info" *ngIf="qrResult">
+          <fa-icon [icon]="faQrcode"></fa-icon>
+          <span class="scanner-result__code">{{ qrResult }}</span>
+        </div>
+        <div
+          *ngIf="message"
+          class="neo-feedback"
+          [ngClass]="{
+            'neo-feedback--success': message.includes('válido') || message.includes('exitosamente'),
+            'neo-feedback--error': message.includes('inválido') || message.includes('usado')
+          }"
+        >
+          <fa-icon [icon]="faCheck"></fa-icon>
+          {{ message }}
+        </div>
+      </div>
+
+      <div *ngIf="orders.length" class="scanner-table">
+        <h2 class="neo-section-title">
+          <fa-icon [icon]="faTicketAlt"></fa-icon>
+          Tickets escaneados
+        </h2>
+        <div class="neo-table-container">
+          <table class="neo-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>QR</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let o of orders">
+                <td>{{ o.id }}</td>
+                <td>
+                  <div class="scanner-user">
+                    <strong>{{ o.user?.name }}</strong>
+                    <span>{{ o.user?.email }}</span>
+                    <small>ID: {{ o.user?.id }}</small>
+                  </div>
+                </td>
+                <td class="scanner-code">{{ o.qr_code }}</td>
+                <td>
+                  <span class="neo-badge" [ngClass]="o.used ? 'neo-badge--warning' : 'neo-badge--success'">
+                    {{ o.used ? 'Usado' : 'Disponible' }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </article>
   </div>
-</div>
+</section>
 
 <app-footer></app-footer>

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -77,7 +79,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Usuario creado correctamente',
-            'user' => $user
+            'user' => $this->formatUserResponse($user)
         ], 201);
     }
 
@@ -136,14 +138,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Login exitoso',
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role, // 🔥 asegurate de incluirlo
-                'created_at' => $user->created_at,
-                'updated_at' => $user->updated_at,
-            ],
+            'user' => $this->formatUserResponse($user),
             'token' => $token,
         ]);
         
@@ -157,10 +152,20 @@ class AuthController extends Controller
      *     security={{"sanctum":{}}},
      *     @OA\Response(
      *         response=200,
-     *         description="Datos del usuario",
+     *         description="Perfil del usuario autenticado",
      *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="user", type="object")
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="name", type="string", example="Juan Pérez"),
+     *             @OA\Property(property="email", type="string", example="juan@example.com"),
+     *             @OA\Property(property="role", type="string", example="user"),
+     *             @OA\Property(property="is_verified", type="boolean", example=true),
+     *             @OA\Property(property="phone", type="string", nullable=true, example="+54 9 11 5555-1234"),
+     *             @OA\Property(property="bio", type="string", nullable=true, example="Amante de la música en vivo"),
+     *             @OA\Property(property="avatar_url", type="string", nullable=true, example="https://res.cloudinary.com/..."),
+     *             @OA\Property(property="email_notifications", type="boolean", example=true),
+     *             @OA\Property(property="is_active", type="boolean", example=true),
+     *             @OA\Property(property="created_at", type="string", format="date-time"),
+     *             @OA\Property(property="updated_at", type="string", format="date-time")
      *         )
      *     ),
      *     @OA\Response(
@@ -174,26 +179,162 @@ class AuthController extends Controller
      * )
      */
     public function me(Request $r)
-{
-    $user = $r->user();
+    {
+        $user = $r->user();
 
-    if (!$user->is_active) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Usuario desactivado'
-        ], 403);
+        if (! $user->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuario desactivado'
+            ], 403);
+        }
+
+        // Devuelve solo los campos necesarios o todo el usuario
+        return response()->json($this->formatUserResponse($user));
     }
 
-    // Devuelve solo los campos necesarios o todo el usuario
-    return response()->json([
-        'id' => $user->id,
-        'name' => $user->name,
-        'email' => $user->email,
-        'role' => $user->role,
-        'created_at' => $user->created_at,
-        'updated_at' => $user->updated_at
-    ]);
-}
+    /**
+     * @OA\Patch(
+     *     path="/api/auth/profile",
+     *     summary="Actualizar perfil del usuario autenticado",
+     *     tags={"Autenticación"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=false,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", example="Juan Pérez"),
+     *             @OA\Property(property="email", type="string", format="email", example="juan@example.com"),
+     *             @OA\Property(property="phone", type="string", nullable=true, example="+54 9 11 5555-1234"),
+     *             @OA\Property(property="bio", type="string", nullable=true, example="Organizador de eventos tecnológicos"),
+     *             @OA\Property(property="email_notifications", type="boolean", example=true),
+     *             @OA\Property(property="current_password", type="string", format="password"),
+     *             @OA\Property(property="password", type="string", format="password"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password"),
+     *             @OA\Property(property="avatar_url", type="string", nullable=true, example="https://res.cloudinary.com/demo/avatar.png"),
+     *             @OA\Property(property="remove_avatar", type="boolean", example=false)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Perfil actualizado correctamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Perfil actualizado correctamente."),
+     *             @OA\Property(
+     *                 property="user",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Juan Pérez"),
+     *                 @OA\Property(property="email", type="string", example="juan@example.com"),
+     *                 @OA\Property(property="avatar_url", type="string", nullable=true),
+     *                 @OA\Property(property="phone", type="string", nullable=true),
+     *                 @OA\Property(property="bio", type="string", nullable=true)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Datos inválidos",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="La contraseña actual no coincide.")
+     *         )
+     *     )
+     * )
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:100',
+            'email' => [
+                'sometimes',
+                'email',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+            'phone' => 'sometimes|nullable|string|max:30',
+            'bio' => 'sometimes|nullable|string|max:500',
+            'email_notifications' => 'sometimes|boolean',
+            'current_password' => 'required_with:password|string',
+            'password' => 'sometimes|string|min:8|confirmed',
+            'avatar_url' => 'sometimes|nullable|url|max:500',
+            'remove_avatar' => 'sometimes|boolean',
+        ]);
+
+        if (array_key_exists('current_password', $validated)) {
+            if (! Hash::check($validated['current_password'], $user->password)) {
+                return response()->json([
+                    'message' => 'La contraseña actual no coincide.',
+                ], 422);
+            }
+
+            unset($validated['current_password']);
+        }
+
+        if (array_key_exists('password', $validated)) {
+            $user->password = Hash::make($validated['password']);
+            unset($validated['password']);
+        }
+
+        $shouldRemoveAvatar = ! empty($validated['remove_avatar']);
+        unset($validated['remove_avatar']);
+
+        if ($shouldRemoveAvatar && $user->avatar_path) {
+            if (! Str::startsWith($user->avatar_path, ['http://', 'https://'])) {
+                Storage::disk('public')->delete($user->avatar_path);
+            }
+
+            $validated['avatar_path'] = null;
+        }
+
+        if (array_key_exists('avatar_url', $validated)) {
+            $newAvatarUrl = $validated['avatar_url'];
+            unset($validated['avatar_url']);
+
+            if ($newAvatarUrl) {
+                if ($user->avatar_path && ! Str::startsWith($user->avatar_path, ['http://', 'https://'])) {
+                    Storage::disk('public')->delete($user->avatar_path);
+                }
+
+                $validated['avatar_path'] = $newAvatarUrl;
+            } else {
+                $validated['avatar_path'] = null;
+            }
+        }
+
+        if (array_key_exists('phone', $validated) && $validated['phone'] === '') {
+            $validated['phone'] = null;
+        }
+
+        if (array_key_exists('bio', $validated) && trim((string) $validated['bio']) === '') {
+            $validated['bio'] = null;
+        }
+
+        $user->fill($validated);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Perfil actualizado correctamente.',
+            'user' => $this->formatUserResponse($user->fresh()),
+        ]);
+    }
+
+    private function formatUserResponse(User $user): array
+    {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'is_verified' => (bool) $user->is_verified,
+            'phone' => $user->phone,
+            'bio' => $user->bio,
+            'avatar_url' => $user->avatar_url,
+            'email_notifications' => (bool) $user->email_notifications,
+            'is_active' => (bool) $user->is_active,
+            'created_at' => $user->created_at,
+            'updated_at' => $user->updated_at,
+        ];
+    }
 
 
     /**

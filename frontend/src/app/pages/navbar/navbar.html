@@ -59,6 +59,25 @@
       </div>
     </nav>
     <button
+      *ngIf="isLoggedIn"
+      (click)="goToProfile()"
+      class="inline-flex items-center bg-gray-800 border-0 py-1 px-3 focus:outline-none hover:text-black hover:bg-[#00d58b] rounded text-base mt-4 md:mt-0 mr-3"
+    >
+      <span class="relative flex items-center justify-center w-8 h-8 mr-2">
+        <img
+          *ngIf="avatarUrl; else defaultAvatar"
+          [src]="avatarUrl"
+          alt="Avatar"
+          class="w-8 h-8 rounded-full border border-[#00d58b]/60 object-cover"
+        />
+        <ng-template #defaultAvatar>
+          <fa-icon [icon]="faCircleUser" class="text-xl text-[#00d58b]"></fa-icon>
+        </ng-template>
+      </span>
+      <span class="hidden sm:inline">{{ userName || 'Mi perfil' }}</span>
+      <fa-icon [icon]="faGear" class="ml-2 text-sm"></fa-icon>
+    </button>
+    <button
       *ngIf="isLoggedIn && !isVerified && userRole != 'admin'"
       (click)="requestVerification()"
       [disabled]="loadingVerify"

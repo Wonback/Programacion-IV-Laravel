@@ -29,6 +29,17 @@
           <h1 class="text-4xl font-bold title-font mb-4 text-[#00d58b]">
             {{ event.title }}
           </h1>
+          <div
+            class="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-1 text-sm uppercase tracking-widest"
+            [ngStyle]="{
+              borderColor: categoryAccent(event.category),
+              color: categoryAccent(event.category),
+              background: categoryAccentSoft(event.category)
+            }"
+          >
+            <fa-icon [icon]="faLayerGroup"></fa-icon>
+            {{ categoryLabel(event.category) }}
+          </div>
           <p class="lg:w-2/3 mx-auto leading-relaxed text-lg">
             {{ event.description }}
           </p>
@@ -58,6 +69,19 @@
               <p class="leading-relaxed">Precio</p>
             </div>
           </div>
+          <div class="p-4 md:w-1/4 sm:w-1/2 w-full">
+            <div class="border-2 border-gray-800 px-4 py-6 rounded-lg">
+              <fa-icon
+                [icon]="faLayerGroup"
+                class="text-4xl mb-3"
+                [ngStyle]="{ color: categoryAccent(event.category) }"
+              ></fa-icon>
+              <h2 class="title-font font-medium text-2xl text-white">
+                {{ categoryLabel(event.category) }}
+              </h2>
+              <p class="leading-relaxed">Categoría</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -84,6 +108,13 @@
         <textarea [(ngModel)]="formData.description" name="description" rows="4"
           class="w-full p-2 rounded bg-[#0a0a0a] border border-[#00d58b]/30 text-gray-200"
           placeholder="Descripción"></textarea>
+
+        <select [(ngModel)]="formData.category" name="category"
+          class="w-full p-2 rounded bg-[#0a0a0a] border border-[#00d58b]/30 text-gray-200"
+        >
+          <option [ngValue]="null">Seleccioná una categoría</option>
+          <option *ngFor="let category of categories" [ngValue]="category.value">{{ category.label }}</option>
+        </select>
 
         <input type="number" [(ngModel)]="formData.capacity" name="capacity"
           class="w-full p-2 rounded bg-[#0a0a0a] border border-[#00d58b]/30 text-gray-200"

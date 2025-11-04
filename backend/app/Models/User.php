@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 // 👇 Importante para Sanctum
 use Laravel\Sanctum\HasApiTokens;
 
@@ -24,6 +26,19 @@ class User extends Authenticatable
         'password',
         'role',
         'is_active',
+        'phone',
+        'bio',
+        'avatar_path',
+        'email_notifications',
+    ];
+
+    /**
+     * Atributos calculados que deben incluirse en la serialización.
+     *
+     * @var list<string>
+     */
+    protected $appends = [
+        'avatar_url',
     ];
 
     /**
@@ -47,6 +62,24 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'email_notifications' => 'boolean',
         ];
+    }
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        if (! $this->avatar_path) {
+            return null;
+        }
+
+        try {
+            if (Str::startsWith($this->avatar_path, ['http://', 'https://'])) {
+                return $this->avatar_path;
+            }
+
+            return Storage::disk('public')->url($this->avatar_path);
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 }
