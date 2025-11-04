@@ -227,17 +227,61 @@
                 "operationId": "b9abb1a7a74670a19c215c2c133f14d8",
                 "responses": {
                     "200": {
-                        "description": "Datos del usuario",
+                        "description": "Perfil del usuario autenticado",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "success": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Juan Pérez"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "juan@example.com"
+                                        },
+                                        "role": {
+                                            "type": "string",
+                                            "example": "user"
+                                        },
+                                        "is_verified": {
                                             "type": "boolean",
                                             "example": true
                                         },
-                                        "user": {
-                                            "type": "object"
+                                        "phone": {
+                                            "type": "string",
+                                            "example": "+54 9 11 5555-1234",
+                                            "nullable": true
+                                        },
+                                        "bio": {
+                                            "type": "string",
+                                            "example": "Amante de la música en vivo",
+                                            "nullable": true
+                                        },
+                                        "avatar_url": {
+                                            "type": "string",
+                                            "example": "https://res.cloudinary.com/...",
+                                            "nullable": true
+                                        },
+                                        "email_notifications": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "is_active": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time"
                                         }
                                     },
                                     "type": "object"
@@ -258,6 +302,139 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Usuario desactivado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/profile": {
+            "patch": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Actualizar perfil del usuario autenticado",
+                "operationId": "0789f73372d9222ca394d0d6af4bb1ed",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Juan Pérez"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan@example.com"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "+54 9 11 5555-1234",
+                                        "nullable": true
+                                    },
+                                    "bio": {
+                                        "type": "string",
+                                        "example": "Organizador de eventos tecnológicos",
+                                        "nullable": true
+                                    },
+                                    "email_notifications": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "current_password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "avatar_url": {
+                                        "type": "string",
+                                        "example": "https://res.cloudinary.com/demo/avatar.png",
+                                        "nullable": true
+                                    },
+                                    "remove_avatar": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Perfil actualizado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Perfil actualizado correctamente."
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Juan Pérez"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "juan@example.com"
+                                                },
+                                                "avatar_url": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "bio": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Datos inválidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "La contraseña actual no coincide."
                                         }
                                     },
                                     "type": "object"
