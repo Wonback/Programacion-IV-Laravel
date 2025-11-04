@@ -1,135 +1,103 @@
 <app-navbar></app-navbar>
 
-<div class="min-h-screen bg-[#0a0a0a] px-6 py-8">
-  <h2
-    class="text-4xl font-extrabold text-[#00d58b] mb-10 text-center drop-shadow-lg border-b-2 border-[#00d58b]/30 pb-4"
-  >
-    Mis Tickets
-  </h2>
+<section class="neo-page neo-page--with-nav tickets-page">
+  <div class="neo-wrapper">
+    <header class="neo-hero tickets-hero">
+      <span class="neo-card__eyebrow">Tus accesos digitales</span>
+      <h1 class="neo-hero__title">Mis tickets</h1>
+      <p class="neo-hero__subtitle">
+        Revisá tus compras recientes, descargá los códigos QR y mantené toda la información de tus eventos en un solo lugar.
+      </p>
+    </header>
 
-  <ng-container *ngIf="!loading; else loadingTpl">
-    <div
-      *ngIf="myEvents.length > 0; else noEventsTpl"
-      class="grid gap-4 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4"
-    >
-      <!-- <div
-        *ngFor="let e of myEvents"
-        class="bg-gradient-to-br from-[#002e35] via-[#00373f] to-[#002e35] rounded-3xl shadow-2xl overflow-hidden transform hover:scale-105 transition-all duration-300"
-      >
-        <!-- Imagen del evento 
-        <div class="overflow-hidden rounded-t-3xl">
-          <img
-            [src]="e.image_path || 'https://via.placeholder.com/400x200?text=Evento'"
-            alt="Imagen del evento"
-            class="w-full h-52 object-cover hover:brightness-90 transition"
-          />
-        </div>
-
-        <!-- Info del evento 
-        <div class="p-6 bg-[#0f0f0f]">
-          <h3 class="text-2xl font-bold text-white mb-2">{{ e.title }}</h3>
-          <p class="text-gray-400 mb-3 line-clamp-3">
-            {{ e.description || 'Sin descripción disponible' }}
-          </p>
-
-          <div class="flex flex-col gap-2 mb-4 text-gray-300">
-            <p class="flex items-center gap-2">
-              <fa-icon [icon]="faCalendar" class="text-[#92fa87]"></fa-icon>
-              {{ e.starts_at | date : 'medium' }}
-            </p>
-            <p class="flex items-center gap-2">
-              <fa-icon [icon]="faDollarSign" class="text-[#92fa87]"></fa-icon>
-              ${{ e.price }}
-            </p>
-            <p class="flex items-center gap-2">
-              <fa-icon [icon]="faTicketAlt" class="text-[#92fa87]"></fa-icon>
-              Cantidad: {{ e.quantity || 1 }}
-            </p>
-          </div>
-
-          <!-- QR 
-          <div
-            *ngIf="e.qrData"
-            class="flex flex-col items-center bg-[#002e35] p-4 rounded-xl shadow-inner"
-          >
-            <qrcode
-              [qrdata]="e.qrData"
-              [width]="160"
-              [errorCorrectionLevel]="'M'"
-              [id]="'qr-' + e.orderId"
-            ></qrcode>
-            <p class="text-sm text-gray-400 mt-2 break-all text-center">{{ e.orderId }}</p>
-            <button
-              (click)="downloadQR(e.orderId)"
-              class="mt-4 w-full flex justify-center items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-full font-semibold transition"
+    <ng-container *ngIf="!loading; else loadingTpl">
+      <div *ngIf="myEvents.length > 0; else emptyTpl" class="neo-grid tickets-grid">
+        <article class="neo-card tickets-card" *ngFor="let e of myEvents">
+          <header class="tickets-card__header">
+            <span
+              class="tickets-card__badge"
+              *ngIf="e.category"
+              [style.border-color]="categoryAccent(e.category)"
+              [style.background]="categoryAccentSoft(e.category)"
+              [style.color]="categoryAccent(e.category)"
             >
-              <fa-icon [icon]="faDownload"></fa-icon>
-              Descargar QR
-            </button>
-          </div>
-        </div>
-      </div> -->
-      <div class="group md:w-full p-4 transition-all duration-300" *ngFor="let e of myEvents">
-        <div
-          class="bg-[#001f22] border-2 border-[#00d58b]/60 rounded-xl p-6 shadow-[0_0_10px_#00d58b33] transition-all duration-300 hover:border-[#00d58b] hover:shadow-[0_0_25px_#00d58b,0_0_50px_#00d58b] hover:scale-105"
-        >
-          <!-- QR centrado -->
-          <div class="flex justify-center mb-4">
+              <fa-icon [icon]="faTicketAlt"></fa-icon>
+              {{ categoryLabel(e.category) }}
+            </span>
+            <h2 class="tickets-card__title">{{ e.title }}</h2>
+            <p class="tickets-card__description" *ngIf="e.description">{{ e.description }}</p>
+          </header>
+
+          <div class="tickets-card__qr">
             <qrcode
               [qrdata]="e.qrData"
-              [width]="160"
+              [width]="168"
               [errorCorrectionLevel]="'M'"
               [id]="'qr-' + e.orderId"
             ></qrcode>
+            <span class="tickets-card__qr-label">Código: {{ e.orderId }}</span>
           </div>
 
-          <h2 class="text-2xl font-semibold text-[#00d58b] my-3 text-center">
-            {{ e.title }}
-          </h2>
-          <p class="text-gray-400 mb-3 line-clamp-3">
-            {{ e.description || 'Sin descripción disponible' }}
-          </p>
+          <dl class="tickets-card__meta">
+            <div class="tickets-card__meta-item">
+              <fa-icon [icon]="faCalendar"></fa-icon>
+              <div>
+                <dt>Fecha del evento</dt>
+                <dd>{{ e.starts_at | date: 'dd/MM/yyyy HH:mm' }}</dd>
+              </div>
+            </div>
+            <div class="tickets-card__meta-item">
+              <fa-icon [icon]="faDollarSign"></fa-icon>
+              <div>
+                <dt>Precio unitario</dt>
+                <dd>${{ e.price }}</dd>
+              </div>
+            </div>
+            <div class="tickets-card__meta-item">
+              <fa-icon [icon]="faTicketAlt"></fa-icon>
+              <div>
+                <dt>Cantidad</dt>
+                <dd>{{ e.quantity || 1 }}</dd>
+              </div>
+            </div>
+            <div class="tickets-card__meta-item">
+              <fa-icon [icon]="faFingerprint"></fa-icon>
+              <div>
+                <dt>Identificador</dt>
+                <dd>{{ e.qrData }}</dd>
+              </div>
+            </div>
+          </dl>
 
-          <div class="flex flex-col gap-2 mb-4 text-gray-300">
-            <p class="flex items-center gap-2">
-              <fa-icon [icon]="faCalendar" class="text-[#00d58b]"></fa-icon>
-              {{ e.starts_at | date : 'medium' }}
-            </p>
-            <p class="flex items-center gap-2">
-              <fa-icon [icon]="faDollarSign" class="text-[#00d58b]"></fa-icon>
-              ${{ e.price }}
-            </p>
-            <p class="flex items-center gap-2">
-              <fa-icon [icon]="faTicketAlt" class="text-[#00d58b]"></fa-icon>
-              Cantidad: {{ e.quantity || 1 }}
-            </p>
-            <p class="flex items-center gap-2">
-              <fa-icon [icon]="faFingerprint" class="text-[#00d58b]"></fa-icon>
-              ID: {{ e.orderId }}
-            </p>
+          <div class="tickets-card__actions">
+            <button type="button" class="neo-button neo-button--primary" (click)="downloadQR(e.orderId)">
+              <fa-icon [icon]="faDownload"></fa-icon>
+              Descargar ticket
+            </button>
+            <span class="neo-text--muted">Guardalo en tu wallet o presentalo en la entrada.</span>
           </div>
-
-          <button
-            (click)="downloadQR(e.orderId)"
-            class="mt-4 w-full flex justify-center items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-full font-semibold transition"
-          >
-            <fa-icon [icon]="faDownload"></fa-icon>
-            Descargar QR
-          </button>
-        </div>
+        </article>
       </div>
-    </div>
-  </ng-container>
+    </ng-container>
 
-  <ng-template #loadingTpl>
-    <div class="text-gray-400 text-center mt-20 text-lg animate-pulse">
-      Cargando tus entradas...
-    </div>
-  </ng-template>
+    <ng-template #loadingTpl>
+      <article class="neo-card tickets-state">
+        <div class="tickets-state__loader"></div>
+        <p class="neo-text--muted">Cargando tus tickets...</p>
+      </article>
+    </ng-template>
 
-  <ng-template #noEventsTpl>
-    <div class="text-gray-400 text-center mt-20 text-lg">No compraste ningún evento todavía 😢</div>
-  </ng-template>
-</div>
+    <ng-template #emptyTpl>
+      <article class="neo-card tickets-state">
+        <div class="neo-feedback neo-feedback--info">
+          Todavía no compraste entradas. Explorá la cartelera y elegí tu próximo evento.
+        </div>
+        <button type="button" class="neo-button neo-button--ghost" routerLink="/home">
+          Descubrir eventos
+        </button>
+      </article>
+    </ng-template>
+  </div>
+</section>
 
 <app-footer></app-footer>

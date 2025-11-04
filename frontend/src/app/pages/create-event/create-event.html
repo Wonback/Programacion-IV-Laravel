@@ -1,193 +1,106 @@
 <app-navbar></app-navbar>
 
-<!--<div
-  class="scanner-container min-h-screen max-w-2xl mx-auto bg-gradient-to-b from-[#002e35] to-[#0a0a0a] text-gray-200 p-8 rounded-2xl mt-10 shadow-xl border border-[#00d58b]/20"
->
-  <h2
-    class="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-[#00d58b] to-[#92fa87] bg-clip-text text-transparent"
-  >
-    Crear Nuevo Evento
-  </h2>
+<section class="neo-page neo-page--with-nav create-event-page">
+  <div class="neo-wrapper neo-wrapper--medium">
+    <article class="neo-card neo-card--accent">
+      <header class="neo-card__header">
+        <span class="neo-card__eyebrow">Organizá tu próximo encuentro</span>
+        <h1 class="neo-card__title">Crear nuevo evento</h1>
+        <p class="neo-card__subtitle">
+          Completá la información clave para publicar un evento atractivo. Podrás editarlo en cualquier momento.
+        </p>
+      </header>
 
-  <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="space-y-4">
-    <!-- Título 
-    <div>
-      <label class="block mb-1 font-semibold text-[#92fa87]">Título</label>
-      <input
-        formControlName="title"
-        class="w-full p-3 rounded-lg bg-[#001a1f] border border-[#00d58b]/30 focus:ring-2 focus:ring-[#00d58b] focus:outline-none"
-      />
-    </div>
+      <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="neo-form create-event-form">
+        <div class="neo-form__grid">
+          <label class="neo-field neo-field--full">
+            <span>Título del evento</span>
+            <div class="neo-field__control">
+              <input formControlName="title" placeholder="Ej. Concierto sinfónico en vivo" />
+            </div>
+          </label>
 
-    <!-- Descripción 
-    <div>
-      <label class="block mb-1 font-semibold text-[#92fa87]">Descripción</label>
-      <textarea
-        formControlName="description"
-        rows="3"
-        class="w-full p-3 rounded-lg bg-[#001a1f] border border-[#00d58b]/30 focus:ring-2 focus:ring-[#00d58b] focus:outline-none"
-      ></textarea>
-    </div>
+          <label class="neo-field neo-field--full">
+            <span>Descripción</span>
+            <div class="neo-field__control">
+              <textarea rows="4" formControlName="description" placeholder="Contá en qué consiste tu evento"></textarea>
+            </div>
+          </label>
 
-    <!-- Fecha y hora / Capacidad 
-    <div class="grid sm:grid-cols-2 gap-4">
-      <div>
-        <label class="block mb-1 font-semibold text-[#92fa87]">Fecha y hora</label>
-        <div class="flex items-center gap-2">
-          <fa-icon [icon]="faCalendar" class="text-[#00d58b]"></fa-icon>
-          <input
-            type="datetime-local"
-            formControlName="starts_at"
-            class="w-full p-3 rounded-lg bg-[#001a1f] border border-[#00d58b]/30 focus:ring-2 focus:ring-[#00d58b] focus:outline-none"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label class="block mb-1 font-semibold text-[#92fa87]">Capacidad</label>
-        <div class="flex items-center gap-2">
-          <fa-icon [icon]="faUsers" class="text-[#00d58b]"></fa-icon>
-          <input
-            type="number"
-            formControlName="capacity"
-            class="w-full p-3 rounded-lg bg-[#001a1f] border border-[#00d58b]/30 focus:ring-2 focus:ring-[#00d58b] focus:outline-none"
-          />
-        </div>
-      </div>
-    </div>
-
-    <!-- Precio / Imagen 
-    <div class="grid sm:grid-cols-2 gap-4">
-      <div>
-        <label class="block mb-1 font-semibold text-[#92fa87]">Precio</label>
-        <div class="flex items-center gap-2">
-          <fa-icon [icon]="faMoneyBillWave" class="text-[#00d58b]"></fa-icon>
-          <input
-            type="number"
-            formControlName="price"
-            class="w-full p-3 rounded-lg bg-[#001a1f] border border-[#00d58b]/30 focus:ring-2 focus:ring-[#00d58b] focus:outline-none"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label class="block mb-1 font-semibold text-[#92fa87]">Imagen</label>
-        <div class="flex items-center gap-2">
-          <fa-icon [icon]="faImage" class="text-[#00d58b]"></fa-icon>
-          <input
-            type="file"
-            (change)="onFileChange($event)"
-            class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-[#00d58b] file:text-black hover:file:bg-[#92fa87] transition"
-          />
-        </div>
-      </div>
-    </div>
-
-    <!-- Preview 
-    <img
-      *ngIf="imagePreview"
-      [src]="imagePreview"
-      class="w-full rounded-lg mt-2 h-48 object-cover"
-    />
-
-    <!-- Botón submit 
-    <button
-      type="submit"
-      class="w-full py-3 bg-[#00d58b] hover:bg-[#92fa87] text-black font-semibold rounded-xl transition shadow-md disabled:opacity-50"
-      [disabled]="uploading"
-    >
-      Crear Evento
-    </button>
-
-    <!-- Error 
-    <p *ngIf="errorMessage" class="text-red-500 mt-2">{{ errorMessage }}</p>
-  </form>
-</div> -->
-
-<section class="min-h-screen text-gray-300 bg-[#0a0a0a] body-font">
-  <div class="container px-5 py-12 mx-auto">
-    <div class="flex flex-col items-center text-center mb-10">
-      <h1 class="text-4xl font-extrabold text-[#00d58b] drop-shadow-lg">Nuevo evento</h1>
-    </div>
-
-    <!-- Card estilo login -->
-    <div
-      class="max-w-3xl mx-auto border-2 border-[#00d58b] bg-black p-8 rounded-3xl shadow-[0_0_30px_#00d58b80] transform transition-all duration-300"
-    >
-      <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="space-y-6">
-        <!-- Grid 1 / 2 cols -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="md:col-span-2">
-            <label class="text-gray-400 mb-1 block">Título</label>
-            <input
-              placeholder="Ingrese el título del evento..."
-              formControlName="title"
-              class="w-full p-3 rounded-xl bg-[#0f0f0f] text-white placeholder-gray-500 border border-[#00d58b]/30 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-[#00d58b] focus:shadow-[0_0_12px_#00d58b66] transition"
-            />
+          <div class="neo-field neo-field--full create-event-categories">
+            <span>Categoría</span>
+            <div class="create-event-categories__grid">
+              <label
+                class="create-event-category"
+                *ngFor="let category of categories"
+                [class.create-event-category--active]="eventForm.get('category')?.value === category.value"
+                [style.--accent]="category.accent"
+                [style.--accent-soft]="category.accentSoft"
+              >
+                <input type="radio" formControlName="category" [value]="category.value" />
+                <div class="create-event-category__content">
+                  <strong>{{ category.label }}</strong>
+                  <p>{{ category.description }}</p>
+                </div>
+              </label>
+            </div>
+            <div class="create-event-categories__error" *ngIf="eventForm.get('category')?.invalid && eventForm.get('category')?.touched">
+              Seleccioná una categoría para que los asistentes puedan encontrar tu evento.
+            </div>
           </div>
 
-          <div class="md:col-span-2">
-            <label class="text-gray-400 mb-1 block">Descripción</label>
-            <textarea
-              rows="3"
-              placeholder="Ingrese una breve descripción del evento..."
-              formControlName="description"
-              class="w-full p-3 rounded-xl bg-[#0f0f0f] text-white placeholder-gray-500 border border-[#00d58b]/30 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-[#00d58b] focus:shadow-[0_0_12px_#00d58b66] transition"
-            ></textarea>
-          </div>
+          <label class="neo-field">
+            <span>Fecha y hora</span>
+            <div class="neo-field__control">
+              <fa-icon [icon]="faCalendar" class="neo-field__icon"></fa-icon>
+              <input type="datetime-local" formControlName="starts_at" />
+            </div>
+          </label>
 
-          <div>
-            <label class="text-gray-400 mb-1 block">Fecha y hora</label>
-            <input
-              type="datetime-local"
-              formControlName="starts_at"
-              class="w-full p-3 rounded-xl bg-[#0f0f0f] text-white border border-[#00d58b]/30 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-[#00d58b] focus:shadow-[0_0_12px_#00d58b66] transition"
-            />
-          </div>
+          <label class="neo-field">
+            <span>Capacidad</span>
+            <div class="neo-field__control">
+              <fa-icon [icon]="faUsers" class="neo-field__icon"></fa-icon>
+              <input type="number" formControlName="capacity" min="0" />
+            </div>
+          </label>
 
-          <div>
-            <label class="text-gray-400 mb-1 block">Capacidad</label>
-            <input
-              type="number"
-              formControlName="capacity"
-              class="w-full p-3 rounded-xl bg-[#0f0f0f] text-white border border-[#00d58b]/30 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-[#00d58b] focus:shadow-[0_0_12px_#00d58b66] transition"
-            />
-          </div>
+          <label class="neo-field">
+            <span>Precio</span>
+            <div class="neo-field__control">
+              <fa-icon [icon]="faMoneyBillWave" class="neo-field__icon"></fa-icon>
+              <input type="number" formControlName="price" min="0" placeholder="0" />
+            </div>
+          </label>
 
-          <div>
-            <label class="text-gray-400 mb-1 block">Precio</label>
-            <input
-              type="number"
-              placeholder="$99999"
-              formControlName="price"
-              class="w-full p-3 rounded-xl bg-[#0f0f0f] text-white placeholder-gray-500 border border-[#00d58b]/30 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-[#00d58b] focus:shadow-[0_0_12px_#00d58b66] transition"
-            />
-          </div>
-
-          <div>
-            <label class="text-gray-400 mb-1 block">Imagen</label>
-            <input
-              type="file"
-              (change)="onFileChange($event)"
-              class="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-[#00d58b] file:text-black hover:file:bg-[#92fa87] transition rounded-xl bg-[#0f0f0f] border border-[#00d58b]/30"
-            />
+          <div class="neo-field">
+            <span>Imagen destacada</span>
+            <label class="neo-upload create-event-upload">
+              <input type="file" accept="image/*" (change)="onFileChange($event)" />
+              <fa-icon [icon]="faImage"></fa-icon>
+              Subir imagen
+            </label>
+            <small>Formatos JPG o PNG. Tamaño recomendado 1200x600px.</small>
           </div>
         </div>
 
-        <!-- Submit -->
-        <div>
-          <button
-            type="submit"
-            class="w-full bg-[#00d58b] py-3 rounded-full font-semibold text-black flex justify-center items-center gap-2 hover:opacity-90 transition"
-          >
-            Crear Evento
-          </button>
-          <p *ngIf="errorMessage" class="text-red-500 mt-2 text-sm text-center">
-            {{ errorMessage }}
-          </p>
+        <div class="create-event-preview" *ngIf="imagePreview">
+          <img [src]="imagePreview" alt="Vista previa" />
         </div>
+
+        <div *ngIf="errorMessage" class="neo-feedback neo-feedback--error">
+          {{ errorMessage }}
+        </div>
+
+        <button type="submit" class="neo-button neo-button--primary" [disabled]="uploading || eventForm.invalid">
+          <ng-container *ngIf="uploading; else buttonLabel">
+            <span class="neo-loader"></span>
+            Guardando...
+          </ng-container>
+          <ng-template #buttonLabel>Publicar evento</ng-template>
+        </button>
       </form>
-    </div>
+    </article>
   </div>
 </section>
 

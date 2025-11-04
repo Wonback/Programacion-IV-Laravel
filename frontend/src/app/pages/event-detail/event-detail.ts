@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../navbar/navbar';
+import { FooterComponent } from '../footer/footer';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import {
@@ -13,9 +14,10 @@ import {
   faTrash,
   faCalendar,
   faUsers,
-  faMoneyBill,
   faDollarSign,
+  faLayerGroup,
 } from '@fortawesome/free-solid-svg-icons';
+import { EVENT_CATEGORIES, EVENT_CATEGORY_LOOKUP, EventCategory } from '../../shared/event-categories';
 
 interface EventModel {
   id: number;
@@ -26,6 +28,7 @@ interface EventModel {
   price: number;
   image_path?: string;
   user_id: number;
+  category?: string;
 }
 
 @Component({
@@ -35,6 +38,7 @@ interface EventModel {
     CommonModule,
     RouterModule,
     NavbarComponent,
+    FooterComponent,
     FormsModule,
     FaIconComponent,
     FontAwesomeModule,
@@ -51,6 +55,7 @@ export class EventDetail implements OnInit {
   uploading = false;
   imagePreview: string | null = null;
   errorMessage: string | null = null;
+  categories: EventCategory[] = EVENT_CATEGORIES;
 
   faTicket = faTicket;
   faArrowLeft = faArrowLeft;
@@ -58,8 +63,8 @@ export class EventDetail implements OnInit {
   faTrash = faTrash;
   faCalendar = faCalendar;
   faUsers = faUsers;
-  faMoney = faMoneyBill;
   faDollarSign = faDollarSign;
+  faLayerGroup = faLayerGroup;
 
   constructor(public router: Router, private route: ActivatedRoute, private http: HttpClient) {}
 
@@ -140,6 +145,7 @@ export class EventDetail implements OnInit {
         .toPromise();
 
       this.event = response; // Actualizamos los datos locales
+      this.formData = { ...response };
       this.editMode = false;
       this.selectedFile = null;
       this.imagePreview = null;
@@ -171,5 +177,23 @@ export class EventDetail implements OnInit {
 
   goHome() {
     this.router.navigate(['/home']);
+  }
+
+  heroImage(): string {
+    const source = this.imagePreview || this.event?.image_path;
+    return source ? `url('${source}')` : 'none';
+  }
+
+  categoryLabel(category?: string): string {
+    if (!category) return 'Sin categoría';
+    return EVENT_CATEGORY_LOOKUP[category]?.label || category;
+  }
+
+  categoryAccent(category?: string): string {
+    return (category && EVENT_CATEGORY_LOOKUP[category]?.accent) || '#5eead4';
+  }
+
+  categoryAccentSoft(category?: string): string {
+    return (category && EVENT_CATEGORY_LOOKUP[category]?.accentSoft) || 'rgba(94, 234, 212, 0.14)';
   }
 }
