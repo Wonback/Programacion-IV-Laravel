@@ -31,6 +31,8 @@
     "@angular/router": "^20.2.0",
     "@fortawesome/angular-fontawesome": "^3.0.0",
     "@fortawesome/fontawesome-free": "^7.1.0",
+    "@fortawesome/fontawesome-svg-core": "^7.1.0",
+    "@fortawesome/free-brands-svg-icons": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@tailwindcss/vite": "^4.1.13",
     "@zxing/ngx-scanner": "^20.0.0",
