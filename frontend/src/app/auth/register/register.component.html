@@ -1,125 +1,83 @@
-<div
-  class="register-container bg-[#0a0a0a] min-h-screen flex flex-col items-center justify-center px-6 py-10"
->
-  <div
-    class="bg-black-900 border-[#00d58b] border-2 p-8 rounded-3xl shadow-[0_0_30px_#00d58b80] max-w-md w-full text-center transform transition-all duration-300 hover:scale-125"
-  >
-    <h2
-      class="text-3xl font-extrabold text-[#00d58b] mb-6 drop-shadow-lg flex items-center justify-center gap-2"
-    >
-      Registrarse
-    </h2>
+<app-navbar></app-navbar>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
-      <!-- Nombre -->
-      <div class="input-group flex flex-col text-left">
-        <label for="name" class="text-gray-400 mb-1">Nombre</label>
-        <div class="flex items-center gap-2">
-          <fa-icon [icon]="faUserShield" class="text-[#00d58b]"></fa-icon>
-          <input
-            id="name"
-            type="text"
-            formControlName="name"
-            placeholder="Tu nombre"
-            class="w-full p-2 rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-          />
-        </div>
-        <p
-          *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
-          class="text-red-500 text-sm flex items-center gap-2"
-        >
-          <fa-icon [icon]="faTimesCircle"></fa-icon>
-          El nombre es obligatorio y debe tener al menos 3 caracteres
+<section class="neo-page neo-page--full auth-page">
+  <div class="neo-wrapper neo-wrapper--narrow auth-wrapper">
+    <article class="neo-card neo-card--accent auth-card">
+      <header class="neo-card__header">
+        <span class="neo-card__eyebrow">Sumate a la experiencia</span>
+        <h1 class="neo-card__title">Crear cuenta</h1>
+        <p class="neo-card__subtitle">
+          Organizá tus eventos, comprá tickets y guardá tus preferencias en un solo lugar.
         </p>
-      </div>
+      </header>
 
-      <!-- Email -->
-      <div class="input-group flex flex-col text-left">
-        <label for="email" class="text-gray-400 mb-1">Email</label>
-        <div class="flex items-center gap-2">
-          <fa-icon [icon]="faEnvelope" class="text-[#00d58b]"></fa-icon>
-          <input
-            id="email"
-            type="email"
-            formControlName="email"
-            placeholder="correo@ejemplo.com"
-            class="w-full p-2 rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-          />
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="neo-form auth-form">
+        <label class="neo-field">
+          <span>Nombre completo</span>
+          <div class="neo-field__control">
+            <fa-icon [icon]="faUserShield" class="neo-field__icon"></fa-icon>
+            <input id="name" type="text" formControlName="name" placeholder="Tu nombre" />
+          </div>
+          <small *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
+            El nombre es obligatorio y debe tener al menos 3 caracteres.
+          </small>
+        </label>
+
+        <label class="neo-field">
+          <span>Correo electrónico</span>
+          <div class="neo-field__control">
+            <fa-icon [icon]="faEnvelope" class="neo-field__icon"></fa-icon>
+            <input id="email" type="email" formControlName="email" placeholder="correo@ejemplo.com" />
+          </div>
+          <small *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+            Debe ser un correo válido.
+          </small>
+        </label>
+
+        <label class="neo-field">
+          <span>Contraseña</span>
+          <div class="neo-field__control">
+            <fa-icon [icon]="faLock" class="neo-field__icon"></fa-icon>
+            <input id="password" type="password" formControlName="password" placeholder="Mínimo 8 caracteres" />
+          </div>
+          <small *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+            La contraseña debe tener al menos 8 caracteres.
+          </small>
+        </label>
+
+        <label class="neo-field">
+          <span>Confirmar contraseña</span>
+          <div class="neo-field__control">
+            <fa-icon [icon]="faCheckDouble" class="neo-field__icon"></fa-icon>
+            <input
+              id="password_confirmation"
+              type="password"
+              formControlName="password_confirmation"
+              placeholder="Repetí tu contraseña"
+            />
+          </div>
+          <small *ngIf="registerForm.errors?.['mismatch'] && registerForm.get('password_confirmation')?.touched">
+            Las contraseñas no coinciden.
+          </small>
+        </label>
+
+        <div *ngIf="errorMessage" class="neo-feedback neo-feedback--error">
+          <fa-icon [icon]="faExclamationCircle"></fa-icon>
+          {{ errorMessage }}
         </div>
-        <p
-          *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
-          class="text-red-500 text-sm flex items-center gap-2"
-        >
-          <fa-icon [icon]="faTimesCircle"></fa-icon>
-          Debe ser un email válido
+
+        <button type="submit" class="neo-button neo-button--primary" [disabled]="registerForm.invalid">
+          Crear cuenta
+          <fa-icon [icon]="faCheckCircle"></fa-icon>
+        </button>
+
+        <p class="neo-text--muted auth-helper">
+          ¿Ya tenés cuenta?
+          <a routerLink="/login" class="neo-link">Iniciá sesión</a>
         </p>
-      </div>
-
-      <!-- Password -->
-      <div class="input-group flex flex-col text-left">
-        <label for="password" class="text-gray-400 mb-1">Contraseña</label>
-        <div class="flex items-center gap-2">
-          <fa-icon [icon]="faLock" class="text-[#00d58b]"></fa-icon>
-          <input
-            id="password"
-            type="password"
-            formControlName="password"
-            placeholder="********"
-            class="w-full p-2 rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-          />
-        </div>
-        <p
-          *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
-          class="text-red-500 text-sm flex items-center gap-2"
-        >
-          <fa-icon [icon]="faTimesCircle"></fa-icon>
-          La contraseña debe tener al menos 8 caracteres
-        </p>
-      </div>
-
-      <!-- Password confirmation -->
-      <div class="input-group flex flex-col text-left">
-        <label for="password_confirmation" class="text-gray-400 mb-1">Confirmar contraseña</label>
-        <div class="flex items-center gap-2">
-          <fa-icon [icon]="faCheckDouble" class="text-[#00d58b]"></fa-icon>
-          <input
-            id="password_confirmation"
-            type="password"
-            formControlName="password_confirmation"
-            placeholder="********"
-            class="w-full p-2 rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-          />
-        </div>
-        <p
-          *ngIf="registerForm.errors?.['mismatch'] && registerForm.get('password_confirmation')?.touched"
-          class="text-red-500 text-sm flex items-center gap-2"
-        >
-          <fa-icon [icon]="faTimesCircle"></fa-icon>
-          Las contraseñas no coinciden
-        </p>
-      </div>
-
-      <button
-        type="submit"
-        [disabled]="registerForm.invalid"
-        class="mt-4 w-full bg-[#00d58b] py-3 rounded-full font-semibold text-white flex justify-center items-center gap-2 hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        Registrarse
-        <fa-icon [icon]="faCheckCircle"></fa-icon>
-      </button>
-    </form>
-
-    <p class="text-gray-400 text-sm text-center mt-2">
-      ¿Ya tenés cuenta?
-      <a routerLink="/login" class="text-[#00d58b] hover:underline">Inicia sesión</a>
-    </p>
-
-    <p
-      *ngIf="errorMessage"
-      class="text-red-500 text-sm flex items-center justify-center gap-2 mt-2"
-    >
-      <fa-icon [icon]="faExclamationCircle"></fa-icon>
-      {{ errorMessage }}
-    </p>
+      </form>
+    </article>
   </div>
-</div>
+</section>
+
+<app-footer></app-footer>

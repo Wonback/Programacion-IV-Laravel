@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SearchService } from '../../services/search.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCalendar, faArrowRight, faTicket, faRetweet } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faArrowRight, faTicket, faRetweet, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FooterComponent } from '../footer/footer';
 
 interface Event {
@@ -68,6 +68,7 @@ export class Home implements OnInit, OnDestroy {
   faArrowRight = faArrowRight;
   faTicket = faTicket;
   faRetweet = faRetweet;
+  faChevronDown = faChevronDown;
 
   constructor(private http: HttpClient, private searchService: SearchService) {}
 
@@ -104,6 +105,8 @@ export class Home implements OnInit, OnDestroy {
   resetFilters() {
     this.filters = { term: '', date: 'all' };
     this.currentPage = 1;
+    this.selected = this.options[0];
+    this.open = false;
     this.applyFilters(true);
     this.searchService.updateSearchTerm('');
   }

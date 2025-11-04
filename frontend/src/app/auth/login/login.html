@@ -1,66 +1,70 @@
-<div
-  class="login-container bg-[#0a0a0a] min-h-screen flex flex-col items-center justify-center px-6 py-10"
->
-  <div
-    class="border-[#00d58b] border-2 bg-black p-8 rounded-3xl shadow-[0_0_30px_#00d58b80] max-w-md w-full text-center transform transition-all duration-300 hover:scale-125"
-  >
-    <h2
-      class="text-3xl font-extrabold text-[#00d58b] mb-6 drop-shadow-lg flex items-center justify-center gap-2"
-    >
-      Login
-    </h2>
+<app-navbar></app-navbar>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
-      <div class="input-group flex flex-col text-left">
-        <label for="email" class="text-gray-400 mb-1">Correo</label>
-        <div class="flex items-center gap-2">
-          <fa-icon [icon]="faEnvelope" class="text-[#00d58b]"></fa-icon>
-          <input
-            id="email"
-            type="email"
-            formControlName="email"
-            placeholder="Ingresa tu email"
-            class="w-full p-2 rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-          />
+<section class="neo-page neo-page--full auth-page">
+  <div class="neo-wrapper neo-wrapper--narrow auth-wrapper">
+    <article class="neo-card neo-card--accent auth-card">
+      <header class="neo-card__header">
+        <span class="neo-card__eyebrow">Bienvenido nuevamente</span>
+        <h1 class="neo-card__title">Iniciar sesión</h1>
+        <p class="neo-card__subtitle">
+          Accedé a tu cuenta para seguir tus compras, gestionar tus eventos y descubrir nuevas experiencias.
+        </p>
+      </header>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="neo-form auth-form">
+        <label class="neo-field">
+          <span>Correo electrónico</span>
+          <div class="neo-field__control">
+            <fa-icon [icon]="faEnvelope" class="neo-field__icon"></fa-icon>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="tucorreo@ejemplo.com"
+            />
+          </div>
+          <small *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            Ingresá un correo válido.
+          </small>
+        </label>
+
+        <label class="neo-field">
+          <span>Contraseña</span>
+          <div class="neo-field__control">
+            <fa-icon [icon]="faLock" class="neo-field__icon"></fa-icon>
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              placeholder="Tu contraseña segura"
+            />
+          </div>
+          <small *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            La contraseña debe tener al menos 8 caracteres.
+          </small>
+        </label>
+
+        <div class="auth-links">
+          <a href="#" class="neo-link neo-link--ghost">¿Olvidaste tu contraseña?</a>
         </div>
-      </div>
 
-      <div class="input-group flex flex-col text-left">
-        <label for="password" class="text-gray-400 mb-1">Contraseña</label>
-        <div class="flex items-center gap-2">
-          <fa-icon [icon]="faLock" class="text-[#00d58b]"></fa-icon>
-          <input
-            id="password"
-            type="password"
-            formControlName="password"
-            placeholder="Ingresa tu contraseña"
-            class="w-full p-2 rounded-lg bg-[#0f0f0f] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-          />
+        <div *ngIf="errorMessage" class="neo-feedback neo-feedback--error">
+          <fa-icon [icon]="faExclamationCircle"></fa-icon>
+          {{ errorMessage }}
         </div>
-      </div>
 
-      <a href="#" class="text-sm text-[#00d58b] hover:underline self-end"
-        >¿Olvidaste tu contraseña?</a
-      >
+        <button type="submit" class="neo-button neo-button--primary" [disabled]="loginForm.invalid">
+          Ingresar
+          <fa-icon [icon]="faArrowRight"></fa-icon>
+        </button>
 
-      <button
-        type="submit"
-        [disabled]="loginForm.invalid"
-        class="w-full bg-[#00d58b] py-3 rounded-full font-semibold text-black flex justify-center items-center gap-2 hover:opacity-90 transition-all"
-      >
-        Ingresar
-        <fa-icon [icon]="faArrowRight" class="text-black"></fa-icon>
-      </button>
-
-      <p class="text-gray-400 text-sm text-center">
-        ¿No tienes cuenta?
-        <a routerLink="/register" class="text-[#00d58b] hover:underline">Registrate</a>
-      </p>
-
-      <p *ngIf="errorMessage" class="text-red-500 text-sm flex items-center justify-center gap-2">
-        <fa-icon [icon]="faExclamationCircle"></fa-icon>
-        {{ errorMessage }}
-      </p>
-    </form>
+        <p class="neo-text--muted auth-helper">
+          ¿No tenés cuenta?
+          <a routerLink="/register" class="neo-link">Registrate</a>
+        </p>
+      </form>
+    </article>
   </div>
-</div>
+</section>
+
+<app-footer></app-footer>

@@ -10,8 +10,9 @@ import { Checkout } from './pages/checkout/checkout';
 import { TicketScanner } from './pages/ticket-scanner/ticket-scanner';
 import { MyTickets } from './pages/my-tickets/my-tickets';
 import { VerifyAccount} from './pages/verify-account/verify-account';
-import { Verified } from './pages/verified/verified'; 
+import { Verified } from './pages/verified/verified';
 import { UserStats } from './pages/user-stats/user-stats';
+import { UserProfile } from './pages/user-profile/user-profile';
 export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: Login },
@@ -24,7 +25,8 @@ export const routes: Routes = [
   { path: 'my-tickets', component: MyTickets },
   { path: 'verify-account', component: VerifyAccount },
   { path: 'verified', component: Verified },
-  { path: 'my-events', component: UserStats }
+  { path: 'my-events', component: UserStats },
+  { path: 'profile', component: UserProfile }
 ];
 
 @NgModule({
